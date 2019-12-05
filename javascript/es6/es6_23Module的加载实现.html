@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Module的加载实现</title>
+</head>
+<body>
+<script>
+  let writeln = (v) => {document.write(`${v}<br>`)};
+/** 1.浏览器加载
+ * （1）传统方法
+ * <script type="application/javascript">默认情况下，浏览器同步加载javascript脚本，即浏览器引擎遇到<script>标签就会停下来，等到执行
+ * 完，再继续向下渲染。如果是外部脚本，必须加入脚本下载时间。如果脚本体积很大，下载和执行的时间就会很长，造成浏览器堵塞，用户会感觉到卡死，
+ * 没有任何相应。
+ * 浏览器允许脚本异步加载，如下两种语法
+ * <script src="path/to/myModule.js" defer><\/script>
+ * <script src="path/to/myModule.js" async><\/script>
+ * 在<script>标签中添加defer或async属性，脚本就会异步加载，引擎遇到这个命令，就会加载外部脚本，但是不会等它下载和执行，而知直接执行后面的
+ * 命令。
+ * defer和async的区别是
+ * */
+</script>
+</body>
+</html>

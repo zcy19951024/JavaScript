@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>六种方式实现元素水平横排</title>
+    <style>
+
+        .pagination a {
+            display: block;
+            color: #f2f2f2;
+            text-shadow: 1px 0 0 #101011;
+            padding: 0 10px;
+            border-radius: 2px;
+            box-shadow: 0 1px 0 #5a5b5c inset,0 1px 0 #080808;
+            background: linear-gradient(to top,#434345,#2f3032);
+            text-decoration: none;
+        }
+        .pagination a:hover {
+            text-decoration: none;
+            box-shadow: 0 1px 0 #f9bd71 inset,0 1px 0 #0a0a0a;
+            background: linear-gradient(to top,#f48b03,#c87100);
+        }
+        li {
+            list-style: none;
+        }
+        /*第一种方式*/
+        /*.pagination li {*/
+            /*line-height: 25px;*/
+            /*list-style: none;*/
+            /*display: inline;*/
+            /*float: left;*/
+            /*margin: 0 5px;*/
+        /*}*/
+        /*!*给容器一个宽度*!*/
+        /*.pagination {*/
+            /*width: 500px;*/
+            /*margin-left: auto; !**!*/
+            /*margin-right: auto;*/
+        /*}*/
+        /*第二种方式，容器设置text-align:center,li设置display:inline-block*/
+        /*.pagination{*/
+            /*text-align: center;*/
+            /*font-size: 0;*/
+            /*letter-spacing: -4px;*/
+            /*word-spacing: -4px;*/
+        /*}*/
+        /*.pagination li {*/
+            /*line-height: 25px;*/
+            /*margin: 0 5px;*/
+            /*display: inline-block;*/
+            /**display: inline;*/
+            /*zoom: 1;*/
+            /*letter-spacing: normal;*/
+            /*word-spacing: normal;*/
+            /*font-size: 12px;*/
+        /*}*/
+        /*第三种方式*/
+        /*.pagination {*/
+            /*float: left; !*分页容器浮动到左边*!*/
+            /*width: 100%; !*分页容器宽度为100%*!*/
+            /*overflow: hidden;*/
+            /*position: relative; !*相对征程位置定位*!*/
+        /*}*/
+        /*.pagination ul {*/
+            /*clear: left;*/
+            /*float: left; !*容器浮动到左边*!*/
+            /*position: relative; !*相对正常位置定位*!*/
+            /*left: 50%; !* 整个分页向右边移动宽度的50% *!*/
+            /*text-align: center;*/
+        /*}*/
+        /*.pagination li {*/
+            /*line-height: 25px;*/
+            /*margin: 0 5px;*/
+            /*display: block;*/
+            /*float: left; !*每个分页也浮动到左边*!*/
+            /*position: relative; !*相对正常位置定位*!*/
+            /*right: 50%; !* 每个分页项向左移动宽度的50% *!*/
+        /*}*/
+        /*第四种方式*/
+        /*.pagination {*/
+            /*position: relative; !*div相对定位*!*/
+        /*}*/
+        /*.pagination ul {*/
+            /*position: absolute; !*分页容器绝对定位*!*/
+            /*left: 50%; !*分页容器向右移动50%*!*/
+        /*}*/
+        /*.pagination li {*/
+            /*line-height: 25px;*/
+            /*margin: 0 5px;*/
+            /*position: relative; !*分页元素相对定位，注意这里不是absolute*!*/
+            /*float: left; !*分页元素浮动在右边*!*/
+            /*right: 50%; !*分页元素向左移动50%*!*/
+        /*}*/
+        /*第五中方式*/
+        /*.pagination{*/
+            /*display: -webkit-box;*/
+            /*-webkit-box-orient: horizontal;*/
+            /*-webkit-box-pack: center;*/
+            /*display: -moz-box;*/
+            /*-moz-box-orient: horizontal;*/
+            /*-moz-box-pack: center;*/
+            /*display: -o-box;*/
+            /*-o-box-orient: horizontal;*/
+            /*-o-box-pack: center;*/
+            /*display: -ms-box;*/
+            /*-ms-box-orient: horizontal;*/
+            /*-ms-box-pack: center;*/
+            /*display: box;*/
+            /*box-orient: horizontal;*/
+            /*box-pack: center;*/
+
+        /*}*/
+        /*.pagination li {*/
+            /*line-height: 25px;*/
+            /*margin: 0 5px;*/
+            /*float: left;*/
+        /*}*/
+        /* 第六种方式 */
+        .pagination ul {
+            width: -moz-fit-content;
+            width: -webkit-fit-content;
+            width: fit-content; /*给with属性值设置为fit-content*/
+            margin: 0 auto;
+        }
+        .pagination li {
+            line-height: 25px;
+            margin: 0 5px;
+            float: left;
+        }
+    </style>
+</head>
+<body>
+<div class="pagination">
+    <ul>
+        <li>
+            <a href="#">Prev</a></li>
+        <li>
+            <a href="#">1</a></li>
+        <li>
+            <a href="#">2</a></li>
+        <li>
+            <a href="#">3</a></li>
+        <li>
+            <a href="#">4</a></li>
+        <li>
+            <a href="#">5</a></li>
+        <li>
+            <a href="#">Next</a></li>
+    </ul>
+</div>
+<!--<a href="https://www.w3cplus.com/css/elements-horizontally-center-with-css.html">原文链接</a>-->
+</body>
+</html>

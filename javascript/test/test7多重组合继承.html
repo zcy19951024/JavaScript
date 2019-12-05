@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JS面向对象之继承--多种组合继承</title>
+</head>
+<body>
+<script>
+    /**javascript中的继承有多重方式*/
+<<<<<<< HEAD
+    function SuperType(name) {
+        this.name = name;
+        this.colors = ['red', 'blue', 'green'];
+        this.sayColor = function () {
+            alert(this.colors);
+        }
+    }
+
+    SuperType.prototype.sayName = function () {
+        alert(this.name);
+    };
+    SuperType.prototype.height = 23;
+
+    function SubType(name, age) {
+        // 使用call继承SuperType里面的属性和方法，不包含使用prototype添加的属性和方法
+        SuperType.call(this, name);
+        this.age = age;
+    }
+
+    //	//用prototype继承属性和方法，包含自定义的和使用prototype继承的
+    SubType.prototype = new SuperType();
+    SubType.prototype.sayAge = function () {
+        alert(this.age);
+    };
+
+
+    var instance1 = new SubType('Nicholas', 29);
+    instance1.colors.push('black');
+    instance1.sayName();
+    instance1.sayColor();
+    alert(instance1.colors);
+=======
+    // function SuperType(name) {
+    //     this.name = name;
+    //     this.colors = ['red', 'blue', 'green'];
+    //     this.sayColor = function () {
+    //         alert(this.colors);
+    //     }
+    // }
+    // console.log(SubType.prototype);
+    //
+    //	SuperType.prototype.sayName = function () {
+    //		alert(this.name);
+    //	};
+    //	SuperType.prototype.height = 23;
+    //
+    //	function SubType(name, age) {
+    //		// 使用call继承SuperType里面的属性和方法，不包含使用prototype添加的属性和方法
+    //		SuperType.call(this, name);
+    //		this.age = age;
+    //	}
+    //
+    //	//用prototype继承属性和方法，包含自定义的和使用prototype继承的
+    //	SubType.prototype = new SuperType();
+    //	SubType.prototype.sayAge = function () {
+    //		alert(this.age);
+    //	};
+    //
+    //
+    //	var instance1 = new SubType('Nicholas', 29);
+    //	//  instance1.colors.push('black');
+    //	//  instance1.sayName();
+    //	//  instance1.sayColor();
+    //	alert(instance1.colors);
+>>>>>>> d16cfe8d8c063e2818cdd20820f99ea9d9eb7b97
+
+    /**可以在不必预先定义构造函数的情况下实现继承，本质是对给定对象的浅复制。而复制得到的副本还可以得到进一步改造*/
+    //	function object(o) {
+    //		function F() {
+    //		}
+    //    F.prototype = o;
+    //		return new F();
+    //	}
+    //	var person = {
+    //		name: 'Nicholas',
+    //    friends: ['Shelby', 'Court', 'Van']
+    //  };
+    //	var anotherPerson = object(person);
+    //	anotherPerson.name = 'Greg';
+    //	anotherPerson.friends.push('Rob');
+    //
+    //	alert(anotherPerson.name);
+    //	alert(anotherPerson.friends);
+
+    /**寄生式继承
+     * 与原型式继承非常类似，也是基于某个对象创建一个对象，然后增强对象，最后返回对象。为了解决组合继承模式多次调用超类型构造函数而导致的低效率问题
+     * ，可以将这个模式与组合模式一起使用*/
+    //  function object(o) {
+    //    function F () {}
+    //    F.prototype = o;
+    //    return new F();
+    //  }
+    //  function createAnother(original) {
+    //    var clone = object(original);
+    //    clone.sayHi = function () {
+    //      alert('Hi');
+    //    };
+    //    return clone;
+    //  }
+    //  var person = {
+    //  	name: 'Nicholas',
+    //    friends: ['Shelby', 'Court', 'Van']
+    //  };
+    //  var anotherPerson = createAnother(person);
+    //  anotherPerson.sayHi();
+    //  alert(anotherPerson.friends);
+
+    /**寄生组合式继承
+     * 集寄生式继承和组合继承的优点与一身，是实现基本类型继承的最有效方式。
+     * 它只调用了一次SuperType构造函数，并且因此避免了在SubType.prototype上面创建不必要的多余的属性。与此同时，原型链还能保持不变。因此，
+     * 还能正常使用instanceof 和 isPrototypeOf()。开发人员普遍认为寄生组合式继承是引用类型最理想的继承范式。*/
+<<<<<<< HEAD
+    function extend(subType, superType) {
+        function F() {
+        };
+        F.prototype = superType.prototype;
+        var prototype = new F();
+        prototype.constructor = subType;
+        subType.prototype = prototype;
+    }
+
+    // 超类方法
+    function SuperType(name) {
+        this.name = name;
+        this.colors = ['red', 'blue', 'green'];
+    }
+
+    SuperType.prototype.sayName = function () {
+        return this.name;
+    };
+
+    //子类方法
+    function SubType(name, age) {
+        SuperType.call(this, name);
+        this.age = age;
+    }
+
+    //继承超类原型
+    extend(SubType, SuperType);
+
+    //子类方法
+    SubType.prototype.sayAge = function () {
+        return this.age;
+    };
+
+    var instance1 = new SubType('Shelby');
+    var instance2 = new SubType('Court', 28);
+    instance1.colors.push('black');
+    console.log(instance1.colors);
+    console.log(instance2.colors);
+
+    console.log(instance1 instanceof SubType);
+    console.log(instance2 instanceof SuperType);
+=======
+    // function extend(subType, superType) {
+    //     function F() {
+    //     };
+    //     F.prototype = superType.prototype;
+    //     var prototype = new F();
+    //     prototype.constructor = subType;
+    //     subType.prototype = prototype;
+    // }
+    //
+    // // 超类方法
+    // function SuperType(name) {
+    //     this.name = name;
+    //     this.colors = ['red', 'blue', 'green'];
+    // }
+    //
+    // SuperType.prototype.sayName = function () {
+    //     return this.name;
+    // };
+    //
+    // //子类方法
+    // function SubType(name, age) {
+    //     SuperType.call(this, name);
+    //     this.age = age;
+    // }
+    //
+    // //继承超类原型
+    // extend(SubType, SuperType);
+    //
+    // //子类方法
+    // SubType.prototype.sayAge = function () {
+    //     return this.age;
+    // };
+    //
+    // var instance1 = new SubType('Shelby');
+    // var instance2 = new SubType('Court', 28);
+    // instance1.colors.push('black');
+    // console.log(instance1.colors);
+    // console.log(instance2.colors);
+    //
+    // console.log(instance1 instanceof SubType);
+    // console.log(instance2 instanceof SuperType);
+>>>>>>> d16cfe8d8c063e2818cdd20820f99ea9d9eb7b97
+
+</script>
+</body>
+</html>

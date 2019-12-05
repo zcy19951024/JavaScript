@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="div1">
+    <p id="p1">我是第一个P</p>
+    <button id="button">sss</button>
+</div>
+<script>
+  //   window.onload = function () {
+  //     var pNode1 = document.createElement("p");
+  //     pNode1.textContent = "insertBefore插入的节点";
+  //
+  //     var pNode2 = document.createElement("p");
+  //     pNode2.textContent = "appendChild插入的节点";
+  //
+  //     document.getElementById("div1").appendChild(pNode2);
+  //     document.getElementById("div1").insertBefore(pNode1, document.getElementById("p1"));
+  //
+  // //    document.getElementById('p1').appendChild(pNode2)
+  //   }
+  // document.body.onclick = function (e) {
+  //   console.log(1)
+  // }
+  // document.getElementById("button").onclick = function (e) {
+  //   // e.stopImmediatePropagation()
+  //   // e.preventDefault()
+  //   console.log(2)
+  // }
+
+  const phase = ['正在处理', '捕获阶段', '目标阶段', '冒泡阶段']
+
+  function clickHanlder(e) {
+    console.log("事件阶段:" + phase[e.eventPhase] + "; target:" + e.target + "; currentTarget:" + e.currentTarget);
+  }
+
+  window.addEventListener("click", clickHanlder, true)
+  // window.addEventListener("click", clickHanlder, true)
+  // document.addEventListener('click', clickHanlder, false)
+  // document.addEventListener('click', clickHanlder, true)
+</script>
+</body>
+</html>

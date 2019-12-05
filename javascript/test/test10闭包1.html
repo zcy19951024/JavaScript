@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>闭包的几种写法和用途</title>
+</head>
+<body>
+<script>
+	let writeStr = (str) => {
+		document.write(JSON.stringify(str) + '<br>');
+	};
+	/**https://www.cnblogs.com/wyaocn/p/5807032.html*/
+
+	/**
+	 * 1、什么是闭包
+	 　　闭包，官方对闭包的解释是：一个拥有许多变量和绑定了这些变量的环境的表达式（通常是一个函数），因而这些变量也是该表达式的一部分。
+	 闭包的特点：
+	 　　1. 作为一个函数变量的一个引用，当函数返回时，其处于激活状态。
+	 　　2. 一个闭包就是当一个函数返回时，一个没有释放资源的栈区。
+	 　　简单的说，Javascript允许使用内部函数---即函数定义和函数表达式位于另一个函数的函数体内。而且，这些内部函数可以访问它们所在
+	 的外部函数中声明的所有局部变量、参数和声明的其他内部函数。当其中一个这样的内部函数在包含它们的外部函数之外被调用时，就会形成闭包。
+	 * */
+
+	/**2.闭包的写法
+	 * Javascript中一切都是对象，函数是对象的一种。下面看看闭包的几种写法：
+	 * 第一种写法：只是给函数添加一些属性
+	 * */
+	//  function Circle (r) {
+	//    this.r = r;
+	//  }
+	//  Circle.PI = 3.1415;
+	//  Circle.prototype.area = function () {
+	//    return Circle.PI * this.r * this.r;
+	//  }
+	//  var c = new Circle(1.0);
+	//  writeStr(c.area());
+
+	/**第二种写法：声明一个变量，将一个函数当作值赋值给变量。
+	 * */
+	//  var Circle = function() {
+	//	  var obj = new Object();
+	//	  obj.PI = 3.14159;
+	//
+	//	  obj.area = function( r ) {
+	//		  return this.PI * r * r;
+	//	  }
+	//	  return obj;
+	//  }
+	//	var c = new Circle();
+	//	writeStr(c.area( 1.0 ) );
+
+	/**第三种写法：这种写法就是new一个对象，然后给对象添加属性和方法
+	 * */
+	//	var Circle = new Object();
+	//	Circle.PI = 3.1415;
+	//	Circle.area = function (r) {
+	//    return this.PI * r * r;
+	//	}
+	//	writeStr(Circle.area(1.0));
+
+	/**第四中写法：这种使用最多，也作为方便，这里var obj = {}就是声明了一个空对象，其实就是在一个对象上定义属性和使用属性的方法，
+	 * 然后在外部调用这个方法*/
+	//	var Circle = {
+	//		PI: 3.1415,
+	//		area: function (r) {
+	//			return this.PI * r * r;
+	//		}
+	//	}
+	//	writeStr(Circle.area(1.0));
+
+	/**第五种写法：*/
+	//  var Circle = new Function('this.PI = 3.14159;this.area = function( r ) {return r*r*this.PI;}');
+	//  writeStr(new Circle().area(1.0));
+
+	/**上面代码中出现了Javascript中常用的prototype，顺便说一下这个
+	 * 声明一个变量，将匿名函数赋给它，因为在Javascript中每个函数都有一个Prototype属性，而对象是没有的。
+	 * 不使用prototype属性定义的对象方法，是静态的，只用用类名调用，此静态方法中无法使用this变量来调用对象的其他属性。
+	 * 使用prototype属性定义的对象和方法，是非静态的，只有在实例化之后才能使用，其方法内部可以用this来引用对象自身的其他属性。
+	 * */
+	//	var dom = function () {
+	//	};
+	//	dom.Show = function () {
+	//		writeStr('Show Message');
+	//	};
+	//	dom.prototype.Display = function () {
+	//		writeStr('Property Message');
+	//	};
+	//	//   dom.Display(); // 报错
+	//	dom.Show();
+	//	var d = new dom();
+	//	d.Display();
+	//	//  d.show(); // 报错
+
+	/**下面代码都会输出undefined，由于在Javascript在函数内部会形成一个作用域，把变量声明在这个作用域中，外部是无法访问的。
+	 * 要想访问就需要用new生成一个实例
+	 * */
+	//  var dom = function () {
+	//    var Name = "Default";
+	//    this.sex = "boy";
+	//    this.success = function () {
+	//      writeStr('Success');
+	//    }
+	//	}
+	//	writeStr(dom.Name); // undefined
+	//  writeStr(dom.sex);  // undefined
+
+	//	var html = {
+	//			Name: 'Object',
+	//			Success: function () {
+	//				this.say = function () {
+	//					writeStr('Hello,world!')
+	//				};
+	//				writeStr('Obj success');
+	//			}
+	//		};
+	//  /**变量html是一个对象，不是函数，所以没有Prototype属性，其方法也是共有方法，html不能被实例化，否则会报错。调用方法会直接输出*/
+	//  html.Success();
+
+  /**Javascript闭包的用途
+   * */
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>css3实现字体颜色轮换</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type="text/css">
+        .but{
+            border: 2px solid #f35626;
+            padding: 1.5rem;
+            color: #f35626;
+            -webkit-animation: hue 60s infinite linear;
+            background-color: transparent;
+            -webkit-appearance:none;
+            border-radius: 10px;
+        }
+        @-webkit-keyframes hue {
+            from {
+                -webkit-filter: hue-rotate(0deg);
+            }
+
+            to {
+                -webkit-filter: hue-rotate(-360deg);
+            }
+        }
+
+        .title{
+            color: #f35626;
+            /*font-size: 6rem;*/
+            background-image:-webkit-linear-gradient(92deg,#f35626,#feab3a);
+            -webkit-animation: hue 60s infinite linear;
+            -webkit-text-fill-color: transparent;
+            -webkit-background-clip:text;
+        }
+
+
+    </style>
+</head>
+<body>
+<h3 class="title">animate css</h3>
+<button type="button" class="but">animate</button>
+<script type="text/javascript">
+    /**
+     * ---------------------
+     作者：well2049
+     来源：CSDN
+     原文：https://blog.csdn.net/well2049/article/details/79635030
+     版权声明：本文为博主原创文章，转载请附上博文链接！
+     */
+    /
+</script>
+</body>
+</html>

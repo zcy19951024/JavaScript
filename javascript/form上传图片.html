@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>form上传图片</title>
+</head>
+<body>
+<form name="uploadForm" id="uploadForm" method="post" enctype="multipart/form-data"
+      action="/cars/api/v1/template/createTemplate" target="uploadFrame">
+  <p style="margin:10px 0;">上传图片: &nbsp;&nbsp;
+    <input type="file" name="imageFile" ID="fupPhoto"/>
+    <input type="text" name="brand" ID="brand"/>
+    <input type="submit" id="fileSubmit" name="Submit" value="上传"/>
+    <iframe name="uploadFrame" id="uploadFrame" style="display:none;"></iframe>
+  </p>
+</form>
+
+<img id="imgPhoto" src="" width="300">
+
+<script>
+	$("#fileSubmit").click(function () {
+		if ($.browser.msie) {
+			window.uploadForm.submit();
+		} else {
+			$("#uploadForm").submit();
+		}
+	});
+
+
+	function uploadFile (msg) {
+		if (msg != error) {
+			$("#imgPhoto").attr("src", msg);
+
+		} else {
+			alert("上传图片失败！");
+		}
+</script>
+</body>
+</html>

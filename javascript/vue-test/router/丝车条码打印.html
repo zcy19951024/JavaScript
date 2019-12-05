@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>丝车条码打印</title>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+    <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+    <script src="JsBarcode.all.min.js"></script>
+    <script src="qrcode.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/print.css">
+</head>
+<body>
+<div id="app">
+    <div class="silk-car-print" ref="printBox">
+        <ul>
+            <li v-for="item in printData">
+                <div class="title">{{item.name}}</div>
+                <div class="qrCode"><img src="barcode.png" style="width: 100px; height: 100px;"></div>
+                <div class="code-text">{{item.code}}</div>
+            </li>
+        </ul>
+    </div>
+</div>
+<script>
+
+    let app = new Vue({
+        el: '#app',
+        data () {
+            return {
+                printData: [
+                    { code: '3000F0001', name: 'F0001' },
+                    { code: '3000F0001', name: 'F0001' }
+                ],
+                print: {
+                    printType: 'barCode'
+                }
+            }
+        },
+        mounted () {
+            this.$nextTick(function () {
+                // let barcodeDom = this.$refs.printBox.querySelectorAll('.barcode')
+                // for (let i = 0; i < this.printData.length; i++) {
+                //     if (this.print.printType === 'barCode') {
+                //         jsBarcode(barcodeDom[i], this.printData[i].code, {height: 80})
+                //     } else {
+                //         let qrcode = new QRCode(barcodeDom[i], {text: this.printData[i].code, width: 280, height: 280})
+                //         console.log(qrcode)
+                //     }
+                // }
+                // this.$nextTick(function () {
+                //     setTimeout(() => {
+                //         $(this.$refs.printBox).print({globalStyles: false, stylesheet: 'static/css/print.css'})
+                //     }, 10) // 0ms也可以,不加延时二维码生成出错
+                // })
+            })
+        }
+    })
+</script>
+</body>
+</html>

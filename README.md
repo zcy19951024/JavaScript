@@ -1,2 +1,2 @@
-# JavaScript
-JavaScript工作笔记
+# JavascriptDataStructuresandAlgorithmscc
+JavascriptDataStructuresandAlgorithms

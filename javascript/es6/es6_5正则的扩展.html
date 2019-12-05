@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>正则表达式扩展</title>
+</head>
+<body>
+<script>
+  let br = () => { document.write('<br>'); return  true; }
+//正则表达式添加u修饰符，用来处理大于/uFFFF的unicode字符，就是3个字节的UTF-16编码
+  //\uD83D\uDC2A是一个4个字节的utf-16编码，代表一个字符，es-5不支持4个字节的utf-16编码，会将其识别为2个字符，所以
+  //下面第一行输出false，第二行输出true
+  br() && document.write(/^\uD83D/u.test('\uD83D\uDC2A'))
+  br() && document.write(/^\uD83D/.test('\uD83D\uDC2A'))
+</script>
+</body>
+</html>

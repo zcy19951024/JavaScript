@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>flex-圣杯布局</title>
+    <style>
+        html {
+            height: 100%;
+            color: #404040;
+            font: 400 1em/1.4 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+            text-rendering: optimizeLegibility;
+            text-align: justify;
+        }
+        body {
+            margin: 0;
+        }
+        *, :after, :before {
+            box-sizing: border-box;
+        }
+        p {
+            display: block;
+            margin-block-start: 1em;
+            margin-block-end: 1em;
+            margin-inline-start: 0px;
+            margin-inline-end: 0px;
+        }
+        .HolyGrail {
+            display: flex;
+            height: 100%;
+            /*主轴在垂直方向，起点在上演*/
+            flex-direction: column;
+        }
+        .HolyGrail-body {
+            display: flex;
+            flex: 1;
+        }
+        .HolyGrail-footer, .HolyGrail-header {
+            flex: none;
+        }
+        .HolyGrail-body {
+            display: flex;
+            flex: 1 0 auto;
+            flex-direction: column;
+            padding: var(--space);
+        }
+        .HolyGrail-content {
+            flex: 1;
+        }
+        .Header {
+            background-color: hsla(31, 15%, 50%, .1);
+        }
+        .HolyGrail-nav, .HolyGrail-ads {
+            /*12em si the width of the columns*/
+            flex: 0 0 12em;
+        }
+        .HolyGrail-nav {
+            order: -1;
+        }
+    </style>
+</head>
+<body class="HolyGrail">
+<header class="HolyGrail-header">
+    <div class="Header Header--cozy" role="banner">
+        <div class="Header-titles">
+        <h1 class="Header-title">
+            <a href="#">Solved <i>by</i> Flexbox</a>
+        </h1>
+        <h2 class="Header-subTitle">更干净,无奇技淫巧的 CSS</h2>
+        </div>
+        <div class="Header-actions"></div>
+    </div>
+</header>
+<main class="HolyGrail-body"></main>
+<footer class="HolyGrail-footer"></footer>
+</body>
+</html>

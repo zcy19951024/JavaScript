@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>判断数据类型</title>
+</head>
+<body>
+<script>
+    let writeStr = (str) => {
+        document.write(JSON.stringify(str) + '<br>');
+    };
+
+    /** 1. typeof函数
+     * 对于原始数据类型，使用typeof判断数据类型，但是有缺点，typeof(null)输出的是object，这个是javascript设计错误，自定义对象返回
+     * 是object，其实所有引用类型返回的都是object
+     * */
+    //    writeStr(typeof(null));
+    //    writeStr(typeof(1));
+    //    writeStr(typeof('1'));
+    //    writeStr(typeof(undefined));
+    //    writeStr(typeof(null));
+    //    writeStr(typeof({}));
+
+    /**2. instanceof
+     * 用instanceof来判断一个对象是否是某个对象的实例，对于引用类型用instanceof来判断，如下。
+     * 缺点是无法判断原始类型，下面定义的字符串str，str instance of String返回false*/
+    //    var obj = {};
+    //    writeStr(obj instanceof Object);
+    //    var arr = [];
+    //    writeStr(arr instanceof Array);
+    //    var now = new Date();
+    //    writeStr(now instanceof Date);
+    //    var func = function () {
+    //    }
+    //    writeStr(func instanceof Function);
+    //    var str = "string";
+    //    writeStr(str instanceof String);
+    //    class A {
+    //    }
+    //    var a = new A();
+    //    writeStr(a instanceof A);
+
+    /** javascript中还提供了一种通用的方法来判断原始的数据类型和引用数据类型Object.prototype.toString.call()，
+     * 这种方法提供一种通用的判断方法，虽然还是没有办法判断自定义对象类型，可以结合instanceof来进一步判断
+     * */
+    //    var valide = (function () {
+    //        // 是否是字符串
+    //        function isString (value) {
+    //            return Object.prototype.toString.call(value) == "[object String]";
+    //        }
+    //
+    //        // 是否是数字
+    //        function isNumber (value) {
+    //            return Object.prototype.toString.call(value) == "[object Number]";
+    //        }
+    //
+    //        // 是否是布尔值
+    //        function isBoolean (value) {
+    //            return Object.prototype.toString.call(value) == "[object Boolean]";
+    //        }
+    //
+    //        // 是否undefined
+    //        function isUndefined (value) {
+    //            return Object.prototype.toString.call(value) == "[object Undefined]";
+    //        }
+    //
+    //        // 是否是null
+    //        function isNull (value) {
+    //            return Object.prototype.toString.call(value) == "[object Null]";
+    //        }
+    //
+    //        // 是否数组
+    //        function isArray (value) {
+    //            return Object.prototype.toString.call(value) == "[object Array]";
+    //        }
+    //
+    //        // 是否是函数
+    //        function isFunction (value) {
+    //            return Object.prototype.toString.call(value) == "[object Function]";
+    //        }
+    //
+    //        // 是否是对象
+    //        function isObject (value) {
+    //            return Object.prototype.toString.call(value) == "[object Object]";
+    //        }
+    //
+    //        // 是否是正则表达式
+    //        function isRegExp (value) {
+    //            return Object.prototype.toString.call(value) == "[object RegExp]";
+    //        }
+    //
+    //        // 是否是日期对象
+    //        function isDate (value) {
+    //            return Object.prototype.toString.call(value) == "[object Date]";
+    //        }
+    //
+    //        return {
+    //            isString,
+    //            isNumber,
+    //            isBoolean,
+    //            isUndefined,
+    //            isNull,
+    //            isArray,
+    //            isFunction,
+    //            isObject,
+    //            isRegExp,
+    //            isDate
+    //        };
+    //    })();
+    //    writeStr(valide.isString('aaaa'))
+
+    /**4.constructor
+     * constructor属性返回创建此对象的数组函数的引用，就是返回对象的构造函数，虽然定义上和instanceof不同，但是效果是一样的，例子如下：
+     * */
+    //    function employee (name, job, born) {
+    //        this.name = name;
+    //        this.job = job;
+    //        this.born = born;
+    //    }
+    //
+    //    var bill = new employee("Bill Gates", "Engineer", 1985);
+    /** 下面语句输出
+     ƒ employee(name, job, born) {
+            this.name = name;
+            this.job = job;
+            this.born = born;
+        }
+     * */
+    //    console.log(bill.constructor);
+    /**下面语句输出true，证明employee的构造函数是employee*/
+    //    console.log(bill.constructor === employee);
+    // 下面语句返回true
+    //    writeStr(bill instanceof employee);
+    /**依次类推，判断各种类型的方法如下*/
+    //    writeStr([].constructor === Array);
+    //    writeStr({}.constructor === Object);
+    //    writeStr('string'.constructor === String);
+    //    writeStr(1.constructor === Number);
+    //    writeStr(true.constructor === Boolean);
+
+    /** 注意
+     * 使用instanceof和constructor判断的array必须是在当前页面判断的，比如，在一个父页面中有一个框架，框架中引用了一个子页面，子页面中
+     * 申明了一个array，并将其赋值给父页面一个变量，这时如果使用Array === object.constructor返回false。
+     * 原因：array属于引用类型，传递的是地址，每个页面原生对象所引用的地址是不一样的，在子页面中申明的array所对应的构造函数是子页面的array
+     * 对象，使用父页面Array来判断并不等于子页面Array，就是地址不一样。
+     * */
+
+</script>
+</body>
+</html>

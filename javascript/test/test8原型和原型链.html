@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>原型和原型链</title>
+</head>
+<body>
+<script>
+    /** https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Inheritance_and_the_prototype_chain
+     * */
+    function writeStr(str) {
+        document.write(JSON.stringify(str) + '<br>');
+    }
+
+    /**1. javascript并不提供一个class实现，ES6中提供class关键字，但是只是语法糖，javascript仍然是基于原型的。
+     * 当谈到继承的时候，javascript只有一种数据结构：对象。每个对象都有一个私有属性（称为Prototype），它持有一个连接到另一个称为其
+     * prototype对象的链接。该prototype对象又有一个自己的原型，层层向上，直到一个直到一个对象的原型为null。
+     * Object.getPrototypeOf(Object.prototype) === null; 这个语句返回的是true，根据定义null没有原型，并作为这个原型链中最后一个
+     * 环节。
+     * javascript中几乎所有的对象都是位于原型链顶端的object的实例
+     * */
+    // 下面语句定义了一个空对象
+    var obj = {};
+    // 下面语句输出对象obj，它是一个空对象，它的原型对象是Object
+    console.log(obj);
+    // 下面语句输出了对象obj的原型对象
+    console.log(obj.__proto__);
+    console.log(Object);
+    console.log(obj.__proto__.__proto__);
+    console.log(obj.__proto__.constructor);
+    console.log(obj.__proto__.constructor.prototype);
+    console.log(obj.prototype);
+    console.log(Object.prototype);
+    console.log(Object.__proto__);
+
+    function fun() {
+    }
+    console.log(fun.prototype);
+
+
+
+    /**2.基于原型链的继承
+     * javascript对象是动态的属性‘包’（指自己的属性）。javascript对象有一个指向一个原型对象的链。当试图访问一个对象的属性的时候，会搜索
+     * 这个对象的原型，以及该对象原型的原型，依次层层向上搜索，直至找到一个名字匹配的属性或者到达原型链的顶端。
+     * 遵循ECMAScript标准，someObject.[[Prototype]]符号指向someObject的原型，从ECMAScript6开始[[Prototype]]可以使用
+     * Object.getPrototypeOf()和Object.setPrototypeOf()访问器来访问。这个等同于非标准但许多浏览器实现的属性__proto__
+     *
+     * 但它不应该与函数（function）的func.prototype属性相混淆，func.prototype是使用new func()创建的对象实例的[[Prototype]]。
+     * Object.prototype属性表示Object的原型对象。
+     * */
+
+    /** 假设我们有一个对象o，它有自己的属性a, b，o 的原型 o.__proto__有属性 b 和 c， 最后, o.__proto__.__proto__ 是 null.
+     * o.a输出自己的属性a,值是1
+     * o.b输出自己的属性，值是2， o.__proto__上还有一个b属性，但是它不会被访问到，这种情况称为属性遮蔽
+     * o.c不是自身的属性，那看看o.__proto__上有没有，有，输出4
+     * o.d不是自身的属性，那看看o.__proto__上有没有，也没有，那看看o.__proto__.__proto__上有没有，这个是null，停止搜索，所以没有d属性，输出undefined
+     *
+     * 将属性设置为对象将创建自己的属性，获取和设置属性的唯一限制是内置getter和setter的属性
+     * */
+    // var o = {a: 1, b: 2};
+    // o.__proto__ = {b: 3, c: 4};
+    // writeStr(o.__proto__.__proto__.__proto__)
+    // writeStr(o.__proto__.__proto__);
+    // writeStr(o.a);
+    // writeStr(o.b);
+    // writeStr(o.c);
+    // writeStr(o.d);
+
+    /**2.继承方法
+     * javascript没有其他基于类的语言所定义的方法，在javascript里任何函数都可以添加到对象上作为对象的属性。函数的继承和其他语言的继承
+     * 没有差别，包括上面的属性覆盖，相当于其他语言的重写。
+     * 当继承的函数被调用时，this指向当前继承的对象，而不是继承的函数所在的原型对象
+     * */
+
+    // var o = {
+    //     a: 2,
+    //     m: function () {
+    //         return this.a + 1;
+    //     }
+    // };
+    // 当调用o.m()的时候，this指向了o
+    // writeStr(o.m());
+
+    // 创建一个对象p，p.__proto__是o，p是一个继承自o的对象
+    // var p = Object.create(o);
+    // 下面两句和上面的效果一样
+    //    var p = {};
+    //    p.__proto__ = o;
+
+    // 创建p自身的属性a
+    // p.a = 4;
+    // 调用p.m()函数时this指向了p，p继承o的m函数此时this.a，即p.a指向p自身的属性a，最后得到5
+    // writeStr(p.m());
+
+    /**------------------------------------------使用不同的方法来创建对象和生成原型链 start-----------------------------------------------*/
+
+    /**3.使用普通语法创建对象
+     * 下面代码中的对象o继承了Object.prototype上所有的属性，所以可以使用o.hasOwnProperty('a')来判断对象是否有a属性.
+     * Object.property为null，原型链如下
+     * o ---> Object.prototype ---> null
+     * */
+    // var o = {a: 1};
+    // writeStr(o.hasOwnProperty('a'));
+    // console.log(o);
+    // console.log(func.prototype);
+
+    /**数组都继承于Array.prototype，(indexOf, forEach等方法都是从它继承而来)
+     * 原型链如下：a ---> Array.prototype ---> Object.prototype ---> null
+     * */
+    // var a = ['yo', 'whadup', '3'];
+    // console.log(a);
+
+    /**函数都继承于Function.prototype，call，bind等方法都是从天继承来，原型链如下
+     * f ---> Function.prototype ---> Object.prototype ---> null*/
+    // function f() {
+    //     return 2;
+    // }
+    // console.log(f);
+
+    /**4.使用构造器
+     *javascript中，构造器是一个普通的函数，当使用new操作符来作用这个函数时，它就可以被称为构造方法.
+     * 下面代码中g是生成的对象，它的自有属性有vertices，edges，g被实例化的时候g.__proto__指向了Graph.prototype
+     * */
+    // function Graph() {
+    //     this.vertices = []
+    //     this.edges = []
+    // }
+    //
+    // Graph.prototype = {
+    //     addVertice: function (v) {
+    //         this.vertices.push(v);
+    //     }
+    // }
+    // var g = new Graph();
+    // console.log(g);
+
+    /**5.使用Object.create
+     * ECMAScript5中引用了一个新的方法Object.create，可以调用这个方法来创建新的对象，新的对象的原型就是Object.create方法传入的第一个参数
+     * */
+
+    // var a = {a: 1};
+    // a --> Object.prototype --> null
+    // var b = Object.create(a);
+    // b --> a --> Object.prototype --> null
+    // writeStr(b.a);
+
+    // var c = Object.create(b);
+    // c --> b --> a --> Object.prototype --> null
+    // writeStr(c.a);
+
+    // var d = Object.create(null);
+    // d --> null
+    // writeStr(d.a);
+
+    /**6.使用class关键字
+     * ES6使用了一套新的关键字来实现class，使用基于类的语言作为开发语言的开发人员会感到很熟悉，但是javascript的类仍然是基于原型。这些新的
+     * 关键字包括class，constructor，static， extend， super
+     * */
+    // class Polygon {
+    //     constructor(height, width) {
+    //         this.width = width;
+    //         this.height = height;
+    //     }
+    // }
+    //
+    // class Square extends Polygon {
+    //     constructor(sideLength) {
+    //         super(sideLength, sideLength);
+    //     }
+    //
+    //     get area() {
+    //         return this.height * this.width;
+    //     }
+    //
+    //     set sideLength(sideLength) {
+    //         this.height = sideLength;
+    //         this.width = sideLength;
+    //     }
+    // }
+    //
+    // var square = new Square(2);
+    // writeStr(square.area);
+
+    /**------------------------------------------使用不同的方法来创建对象和生成原型链 end-----------------------------------------------*/
+
+    /**7.在原型链上查找属性比较耗时，对性能有副作用。另外试图访问一个不存在的属性的时候会遍历整个原型链。遍历对象的属性时，原型链上每个
+     * 可枚举属性都会被枚举出来。要检查对象本身是否有某个属性而不是其原型链上，必须使用所有对象从Object.prototype上继承下来的hasOwnPrototype方法，如下：
+     * */
+    //    function Graph () {
+    //        this.vertices = []
+    //        this.edges = []
+    //    }
+    //    Graph.prototype = {
+    //        addVertice: function (v) {
+    //            this.vertices.push(v);
+    //        }
+    //    }
+    //    var g = new Graph();
+    //    writeStr(g.hasOwnProperty('vertices'));
+    //    writeStr(g.hasOwnProperty('addVertice'))
+    //    writeStr(g.__proto__.hasOwnProperty('addVertice'))
+
+    /**8.错误实践：扩展原生对象的原型
+     * 经常使用的一个错误实践是扩展Object.prototype或其他内置原型，这种扩展被称为猴子补丁，并且会破坏封装。尽管一些流行的框架例如Prototype.js
+     * 在使用这种技术，但是没有理由使用附加的非标准方法来混入内置原型。
+     * */
+
+    /**
+     * */
+</script>
+</body>
+</html>

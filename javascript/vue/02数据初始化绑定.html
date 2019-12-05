@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>数据初始化绑定</title>
+    <script src="static/vue.min.js"></script>
+</head>
+<body>
+<div id="app">
+    <a href="https://www.cnblogs.com/kidney/p/6052935.html?utm_source=gold_browser_extension">链接</a>
+    <input type="text" v-model="text">
+    {{ text }}
+</div>
+
+<script>
+    //编译方法，初始化绑定值
+  function compile(node, vm) {
+    var reg = /\{\{(.*)\}\}/;
+    // 节点类型为元素
+    if (node.nodeType === 1) {
+      var attr = node.attributes;
+      // 解析属性
+      for (var i = 0; i < attr.length; i++) {
+        if (attr[i].nodeName === 'v-model') {
+          var name = attr[i].nodeValue;
+          node.value = vm.data[name];
+          node.removeAttribute('v-model');
+        }
+      }
+    }
+
+    if (node.nodeType === 3) {
+      if (reg.test(node.nodeValue)) {
+        var name = RegExp.$1; // 获取匹配到的字符串
+        name = name.trim();
+        node.nodeValue = vm.data[name]; // 将data的值赋给该node
+      }
+    }
+  }
+
+    /**DocumentFragment文档片段，可以看作节点容器，它可以包含多个子节点，当将它插入到dom中时只有子节点插入到目标节点中。
+     * 使用documentfragment处理节点速度和性能要高于直接操作dom。vue编译的时候，就是将挂载目标的所有子节点劫持到documentfragment
+     * 中，经过处理后再将documentfragment整体返回到挂载目标中。
+     * */
+  function nodeToFragment(node, vm) {
+    var flag = document.createDocumentFragment();
+    var child;
+    while (child = node.firstChild) {
+      compile(child, vm);
+      flag.appendChild(child);
+    }
+    return flag;
+  }
+  
+  function Vue(options) {
+    this.data = options.data;
+    var id = options.el;
+    var dom = nodeToFragment(document.getElementById(id), this);
+    // 编译完成后，将dom返回到app中
+    document.getElementById(id).appendChild(dom);
+  }
+
+  var vm = new Vue({
+    el: 'app',
+    data: {
+      text: 'hello world'
+    }
+  })
+
+</script>
+</body>
+</html>

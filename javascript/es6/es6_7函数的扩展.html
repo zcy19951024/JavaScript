@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>函数的扩展</title>
+</head>
+<body>
+<script>
+    //es6之前不能为函数指定默认值，只能采用变通的方式
+    //  function log(x, y) {
+    //    y = y || 'World';
+    //    console.log(x, y)
+    //  }
+    //  log('Hello')
+    //  log('Hello', 'World')
+    //  log('Hello', '')
+    //这种方法有个缺点，如果y赋值了，但是对应的布尔值为false，则该赋值不起作用。
+    //可以如下改进
+    //  function log1(x, y) {
+    //    if(typeof y === 'undefined'){
+    //      y = 'World';
+    //    }
+    //    writeStr({x, y})
+    //  }
+    //  log1('Hello')
+    //  log1('Hello', 'World')
+    //  log1('Hello', '')
+
+    //es6可以立刻让人知道那些参数是可以省略的，不用检查函数或者文档，其次将来可以优化，要拿掉这个参数不会导致以前的代码无法运行
+    //参数变量是默认声明的，所以不能用let或者const再次声明
+
+    //如果参数默认值是变量，那么参数就不是传值的，而是每次都重新计算默认值表达式的值，也就是说参数默认值是惰性求值的。如下：参数p的默认值
+    //是x+1，每次调用函数foo都会重新计算x+1,而不是默认p等于100
+    //  let x = 99;
+    //  function foo(p=x+1) {
+    //    writeStr(p);
+    //  }
+    //  foo();
+    //  foo();
+
+    //参数默认值可以与解构赋值的默认值结合起来。函数形参使用对象的解构默认赋值，没有使用函数参数的默认值。只有函数foo的参数是一个对象的时候
+    //变量x和y才会通过解构赋值而生成，如果参数不是对象变量x和y不会生成，从而报错。
+    //  function foo({x, y=5}) {
+    //    console.log(x, y);
+    //  }
+    //
+    //  foo({});
+    //  foo({x:1});
+    //  foo({x:1, y:2});
+
+    //下面是另一个对象的解构赋值默认值的例子,如果调用的时候第二个参数是一个对象就可以为它的三个属性赋值
+    //  function fetch(url, {body = '', method = 'GET', headers = {}}) {
+    //      console.log(method);
+    //  }
+    //  fetch('www.sf.com', {});
+
+    //上面的写法不能省略第二个参数，如果结合参数的默认值可以省略第二个参数。
+    //    function fetch(url, {body = '', method = 'GET', headers = {}} = {}) {
+    //        console.log(method);
+    //    }
+    //    fetch('www.sf.com');
+    //区别是写法一函数参数的默认值是空对象，但是设置了对象解构赋值的默认值；
+    // 写法二函数参数的默认值是一个有具体属性的对象，但是没有设置对象解构赋值的默认值
+    //
+    //    function m1({x = 0, y = 0} = {}) {
+    //        console.log([x, y]);
+    //    }
+    //
+    //    function m2({x, y} = {x: 0, y: 0}) {
+    //        console.log([x, y]);
+    //    }
+    //    //函数没有参数的情况
+    //    m1();
+    //    m2();
+    //
+    //    // x和y都有值的情况
+    //    m1({x: 3, y:8});
+    //    m2({x:3, y:8});
+    //
+    //    //x有值，y无知的情况
+    //    m1({x:3});
+    //    m2({x:3});
+    //
+    //    //x和y都无值的情况
+    //    m1({x:3});
+    //    m2({x:3});
+    //    m1({z:3});
+    //    m2({z:3});
+
+
+    //    function f(x=1, y) {
+    //        console.log([x, y]);
+    //    }
+    //
+    //    f();
+    //    f(2);
+    //    f(undefined, 1);
+
+    //    function f1(x, y=5, z) {
+    //      console.log([x, y, z]);
+    //    }
+    //    f1();
+    //    f1(1);
+    //    f1(1, undefined, 2);
+
+    // 函数的length属性将返回没有指定默认值的参数个数,如果设置了默认值的参数不是尾参数，那么length的属性不再计入后面的参数了
+    //    let a = (function a(a) {}).length;
+    //    console.log(a);
+    //
+    //    let b = (function (a = 0, b, c) {}).length;
+    //    console.log(b);
+    //
+    //    let c = (function (a, b = 0, c) {}).length;
+    //    console.log(c);
+    //
+    //    let d = (function (a, b, c = 0) {}).length;
+    //    console.log(d);
+
+    // 函数foo的参数在圆括号里形成一个单独作用域，在这个作用域中声明变量x,然后声明变量y,y的默认值是一个匿名函数。
+    // 这个匿名函数内部的变量x指向圆括号作用域的第一个参数x。函数foo内部又声明一个内部变量x，该变量在花括号作用域中
+    // 执行函数y，该变量与第一个参数x不再同一个作用域中，所以不是同一个变量，因此内部变量x和外部变量x都没有改变，最后输出3.
+    //  var x = 1;
+    //  function foo(x, y=function () { x = 2;}) {
+    //    var x = 3;
+    //    y();
+    //    console.log(x);
+    //  }
+    //  foo();
+
+    // 如果将var x = 3的var去掉，函数内部变量x就指向第一个参数x，与匿名函数内部的x是一致的，最后输出的是2.
+    //      var x = 1;
+    //      function foo(x, y=function () { x = 2;}) {
+    //        x = 3;
+    //        y();
+    //        console.log(x);
+    //      }
+    //      foo();
+
+    //  function throwIfMissing() {
+    //    return new Error('Missing parameter');
+    //  }
+    //
+    //  function foo(mustProvided = throwIfMissing()) {
+    //    return mustProvided;
+    //  }
+    //
+    //  foo();
+
+    // rest参数，...args就是多个参数放在args数组中
+
+    // es6规定只要函数参数使用了默认值，解构赋值，扩展运算符，函数内部就不能显示设定为严格模式
+
+    //call的用法
+
+    // 下面代码的意思就是用add来替换sub，add.call(sub, 5, 3) === sub(5, 3)，所以最后输出的是8
+    // js中的函数其实是对象，函数名是对Function对象的引用
+    //    function add(j, k) {
+    //      writeStr(j + k);
+    //    }
+    //    function sub(j, k) {
+    //	    writeStr(j - k);
+    //    }
+    //    console.log(add.call(sub, 5, 3));
+
+    //这里的意思是把c1的方法放到c2上执行，c2是没有showName方法的，现在把c1的showName放在c2上执行，
+    //箭头函数可以消除这种改变，在箭头函数中this指向定义类所在的对象
+    //    function class1() {
+    //      this.name = 'class1';
+    //      this.showName = function () {
+    //        alert(this.name)
+    //      }
+    //    }
+    //    function class2() {
+    //	    this.name = 'class2';
+    //	    this.showName = () => {
+    //		    alert(this.name)
+    //	    }
+    //    }
+    //    function class3() {
+    //      this.name = 'class3';
+    //    }
+    //    var c1 = new class1();
+    //    var c2 = new class2();
+    //    var c3 = new class3();
+    //    c1.showName.call(c3);
+    //    c2.showName.call(c3);
+
+    // 类的封装
+    // function Book (id, bookname, price) {
+    //     this.id = id;
+    //     this.bookname = bookname
+    //     this.price = price
+    // }
+    // // var Book2 = function (id, bookname, price) {
+    // //     this.id = id;
+    // //     this.bookname = bookname
+    // //     this.price = price
+    // // }
+    //
+    // // 方式一
+    // Book.prototype.display = function () {
+    //
+    // }
+    // // 方式二
+    // Book.prototype = {
+    //     display: function () {
+    //
+    //     }
+    // }
+
+    var Book = function (id, name, price) {
+        // 私有属性
+        var num = 1;
+        // 私有方法
+        function checkId() {
+        };
+        // 特权方法
+        this.getName = function () {
+        };
+        this.getPrice = function () {
+        };
+        this.setName = function () {
+        };
+        this.setPrice = function () {
+        };
+        this.getNum = function () {
+            return num
+        };
+        // 对象公有属性
+        this.id = id;
+        // 对象公有方法
+        this.copy = function () {
+        };
+        // 构造器
+        this.setName(name);
+        this.setPrice(price);
+    }
+    // // 类静态公有属性（对象不能访问）
+    // Book.isChinese = true;
+    // // 类静态公有方法（对象不能访问）
+    // Book.resetTime = function () {
+    //     console.log('new Time');
+    // };
+    // Book.prototype = {
+    //     // 公有属性
+    //     isJSBook: false,
+    //     //公有方法
+    //     display: function () {
+    //     }
+    // };
+    var b = new Book(11, 'Javascript', 50);
+    console.log(b.getNum())
+    // console.log(b.num); // undefined
+    // console.log(b.isJSBook); // false
+    // console.log(b.id); // 11
+    // console.log(b.isChinese); // undefined
+    // console.log(Book.isChinese); // true
+    // Book.resetTime(); // new Time
+    // var b1 = Book(12, 'html', 40);
+    // console.log(b1);
+
+
+    // // 类式继承
+    // // 申明父类
+    // function SuperClass() {
+    //     this.superValue = true
+    // }
+    //为父类添加共有方法
+    // SuperClass.prototype.getSuperValue = function () {
+    //     return this.superValue;
+    // }
+
+    // 申明子类
+    // function SubClass() {
+    //     this.subValue = false;
+    // }
+    // console.log(SuperClass.prototype);
+    // // 继承父类
+    // SubClass.prototype= new SuperClass()
+    // // 为子类添加共有方法
+    // SubClass.prototype.getSubValue = function () {
+    //     return this.subValue;
+    // }
+    // console.log(SuperClass.prototype);
+    // let sup = new SuperClass();
+    // let sub = new SubClass();
+    // console.log(sup.getSuperValue());       //true
+    // console.log(sup.getSubValue());         //Uncaught TypeError: sup.getSubValue is not a function
+    // console.log(sub.getSubValue());         // false
+    // console.log(sub.getSuperValue());       // true
+    // console.log(sub instanceof SubClass);   // true
+    // console.log(sub instanceof SuperClass); // true
+    // console.log(sup instanceof SubClass);   // false
+    // console.log(sup instanceof SuperClass); // true
+    // console.log(SubClass instanceof SuperClass); // false
+    // console.log(SubClass.prototype instanceof SuperClass); // true
+    // console.log(SubClass.prototype instanceof SuperClass.prototype); // Uncaught TypeError: Right-hand side of 'instanceof' is not callable
+    // console.log(sub.prototype instanceof SuperClass); // false
+
+    // function SuperClass() {
+    //     this.books = ['javascript', 'html'];
+    // }
+    // function SubClass() {}
+    // SubClass.prototype = new SuperClass();
+    // var instance1 = new SubClass();
+    // var instance2 = new SubClass();
+    // console.log(instance1.books); //["javascript", "html"]
+    // instance2.books.push('java');
+    // console.log(instance1.books); //["javascript", "html", "java"]
+    // console.log(instance2.books); //["javascript", "html", "java"]
+    // console.log(SuperClass.books);//undefined
+    // var sup1 = new SuperClass();
+    // var sup2 = new SuperClass();
+    // sup2.books.push('css');
+    // console.log(sup1.books); // ["javascript", "html"]
+    // console.log(sup2.books); // ["javascript", "html", "css"]
+
+
+
+    // 构造函数继承
+    // 申明父类
+    // function SuperClass(id) {
+    //     // 引用类型共有属性
+    //     this.books = ['javascript', 'html', 'css'];
+    //     // 值型共有属性
+    //     this.id = id;
+    // }
+
+    // 父类申明原型方法
+    // SuperClass.prototype.showBooks = function () {
+    //     console.log(this.books);
+    // }
+
+    // 申明子类
+    // function subClass(id) {
+    //     // 继承父类
+    //     SuperClass.call(this, id);
+    // }
+    // 创建两个实例
+    // var instance1 = new subClass(10);
+    // var instance2 = new subClass(11);
+    // instance1.books.push('java');
+    //
+    // console.log(instance1.books); // ["javascript", "html", "css", "java"]
+    // console.log(instance1.id);    // 10
+    // console.log(instance2.books); // ["javascript", "html", "css"]
+    // console.log(instance2.id);    // 11
+    // instance1.showBooks();        // Uncaught TypeError: instance1.showBooks is not a function
+    // instance2.showBooks();        // Uncaught TypeError: instance1.showBooks is not a function
+    //
+    // // 申明父类实例
+    // var instance3 = new SuperClass(12);
+    // instance3.showBooks();      // ["javascript", "html", "css"]
+
+    //  组合继承
+    // 申明父类
+    // function SuperClasss(name) {
+        // 值类型共有属性
+        // this.name = name;
+        // 引用类型共有属性
+        // this.books = ['html', 'css', 'Javascript'];
+        // // 共有方法
+        // this.getName = function () {
+        //     console.log(`SuperClasss.this.getName: ${this.name}`)
+        // }
+    // }
+    // 父类原型共有方法
+    // SuperClasss.prototype.getName = function () {
+    //     console.log(`SuperClasss.prototype.getName：${this.name}`);
+    // }
+    // 申明子类
+    // function SubClass(name, time) {
+        // 构造函数式继承父类name属性
+        // SuperClasss.call(this, name);
+        // 子类的共有属性
+        // this.time = time;
+        // 子类共有方法
+        // this.getName = function () {
+        //     console.log(`SubClass.this.getName：${this.name}`)
+        // }
+    // }
+    // 类式继承，子类原型继承父类
+    // SubClass.prototype = new SuperClasss();
+    // 子类原型方法
+    // SubClass.prototype.getTime = function () {
+    //     console.log(this.time);
+    // }
+    // SubClass.prototype.getName = function () {
+    //     console.log(`SubClass.prototype.getName：${this.name}`)
+    // }
+    // var instance1 = new SubClass('js book', 2014);
+    // instance1.books.push('java');
+    // console.log(instance1.books); // ['html', 'css', 'Javascript', 'java']
+    // instance1.getName(); // 'js book'
+    // instance1.getTime(); // 2014
+
+    // var instance2 = new SubClass('css book', 2013);
+    // console.log(instance2.books); // ['html', 'css', 'Javascript']
+    // instance2.getName(); // 'css book'
+    // instance2.getTime(); // 2013
+
+    // 原型式继承
+    // function inheritObject(o) {
+    //     // 申明一个过渡函数对象
+    //     function F() {}
+    //     // 过渡对象的原型继承父对象
+    //     F.prototype = o;
+    //     // 返回过渡对象的一个实例，该实例的原型继承了父对象
+    //     return new F();
+    // }
+    // var book = {
+    //     name: 'js book',
+    //     alikeBook: ['css book', 'html book']
+    // }
+    // var newBook = inheritObject(book);
+    // newBook.name = 'ajax book';
+    // newBook.alikeBook.push('xml book');
+    //
+    // var otherBook = inheritObject(book)
+    // otherBook.name = 'flash book';
+    // otherBook.alikeBook.push('as book');
+    //
+    // console.log(newBook.name); // ajax book
+    // console.log(newBook.alikeBook); // ["css book", "html book", "xml book", "as book"]
+    // console.log(otherBook.name); // flash book
+    // console.log(otherBook.alikeBook); // ["css book", "html book", "xml book", "as book"]
+    // console.log(book.name); // js book
+    // console.log(book.alikeBook); // ["css book", "html book", "xml book", "as book"]
+
+    // // 寄生式继承
+    // function inheritObject(o) {
+    //     // 申明一个过渡函数对象
+    //     function F() {}
+    //     // 过渡对象的原型继承父对象
+    //     F.prototype = o;
+    //     // 返回过渡对象的一个实例，该实例的原型继承了父对象
+    //     return new F();
+    // }
+    // var book = {
+    //     name: 'js book',
+    //     alikeBook: ['css book', 'html book']
+    // }
+    // function createBook(obj) {
+    //     // 通过原型继承方式创建对象
+    //     var o = new inheritObject(obj);
+    //     // 拓展对象
+    //     o.getName = function () {
+    //         console.log(obj.name);
+    //     }
+    //     // 返回拓展后的新对象
+    //     return o;
+    // }
+    // var newBook = createBook(book);
+    // newBook.name = 'ajax book';
+    // newBook.alikeBook.push('xml book');
+    //
+    // var otherBook = createBook(book);
+    // otherBook.name = 'flash book';
+    // otherBook.alikeBook.push('as book');
+    //
+    // console.log(newBook.name); // ajax book
+    // newBook.getName(); // js book
+    // console.log(newBook.alikeBook); // ["css book", "html book", "xml book", "as book"]
+    //
+    // console.log(otherBook.name); // flash book
+    // console.log(otherBook.alikeBook); // ["css book", "html book", "xml book", "as book"]
+    // otherBook.getName(); // js book
+    //
+    // console.log(book.name); // js book
+    // console.log(book.alikeBook); // ["css book", "html book", "xml book", "as book"]
+
+    // /**
+    //  * 原型式继承
+    //  * @param o 父类
+    //  * */
+    // function inheritObject(o) {
+    //     // 申明一个过渡函数对象
+    //     function F() {}
+    //     // 过渡对象的原型继承父对象
+    //     F.prototype = o;
+    //     // 返回过渡对象的一个实例，该实例的原型继承了父对象
+    //     return new F();
+    // }
+    //
+    // /**
+    //  * 寄生式继承，继承原型
+    //  * @param subClass 子类
+    //  * @param superClass 父类
+    //  */
+    // function inheritPrototype(subClass, superClass) {
+    //     // 复制一份父类的原型副本保存在变量中
+    //     var p = inheritObject(superClass.prototype);
+    //     // 修正因为重写子类原型而导致子类的constructor属性被修改
+    //     p.constructor = subClass;
+    //     // 设置子类的原型
+    //     subClass.prototype = p;
+    // }
+    // // 定义父类
+    // function SuperClass(name) {
+    //     this.name = name;
+    //     this.colors = ['red', 'blue', 'green'];
+    // }
+    // // 定义父类原型方法
+    // SuperClass.prototype.getName = function () {
+    //     console.log(this.name);
+    // };
+    // // 定义子类
+    // function SubClass(name, time) {
+    //     // 构造函数式继承
+    //     SuperClass.call(this, name);
+    //     // 子类新增属性
+    //     this.time = time;
+    // }
+    // // 寄生式继承父类原型
+    // inheritPrototype(SubClass, SuperClass);
+    // // 子类新增原型方法
+    // SubClass.prototype.getTime = function () {
+    //     console.log(this.time);
+    // }
+    //
+    // var instance1 = new SubClass('js book', 2014);
+    // var instance2 = new SubClass('css book', 2013);
+    // instance1.colors.push('black');
+    // console.log(instance1.colors); //["red", "blue", "green", "black"]
+    // console.log(instance2.colors); //["red", "blue", "green"]
+    // instance2.getName(); //css book
+    // instance2.getTime(); //2013
+    // console.log(SubClass instanceof SuperClass); // false
+    // console.log(SubClass.prototype instanceof SuperClass); // true
+    // console.log(SubClass.prototype instanceof SuperClass.prototype); // Right-hand side of 'instanceof' is not callable
+    // console.log(instance2 instanceof SubClass); // true
+    // console.log(instance2 instanceof SuperClass); // true
+
+    //可以使用call实现多重继承，如下
+    //    function Class10() {
+    //      this.showSub = function (a, b) {
+    //        alert(a - b);
+    //      }
+    //    }
+    //    function Class11() {
+    //      this.showAdd = function (a, b) {
+    //        alert(a + b);
+    //      }
+    //    }
+    //    function Class12() {
+    //      Class10.call(this);
+    //      Class11.call(this);
+    //    }
+    //    var c12 = new Class12();
+    //    c12.showSub(5,3);
+    //    c12.showAdd(5,3);
+
+
+    //箭头函数可以让this指向固定化，这种特新有利于封装回调函数。this指向的固定化，并不是因为箭头函数内部有绑定this的机制，实际是因为箭头函数没有
+    //自己的this，导致内部this就是外层代码的this，这也是不能用this定义构造函数的原因。
+    // 下面代码
+    //  function foo() {
+    //    return () => {
+    //    	return () => {
+    //    		return () => {
+    //    			console.log(`id: ${this.id}`);
+    //        }
+    //      }
+    //    }
+    //  }
+    //
+    //  var f = foo.call({id: 1});
+    //  var t1 = f.call({id: 2})()(); // id: 1
+    //  var t2 = f().call({id: 3})(); // id: 1
+    //  var t3 = f()().call({id: 4}); // id: 1
+
+    //除了this，arguments,super,new.target在箭头函数中也是不存在的，指向外层函数的对应变量
+    //function foo() {
+    //    setTimeout(() => {
+    //    	console.log('args', arguments);
+    //    }, 1000);
+    //  }
+    //  foo(2,4,6,8);
+
+    //箭头函数没有自己的this,所以就不能使用call(),apply(),bind()这些方法来改变this指向
+    //  let a = (function () {
+    //    return [
+    //      (() => this.x).bind({x: 'inner'})()
+    //    ];
+    //  }).call({x: 'outer'});
+    //  console.log(a)
+
+    //嵌套的箭头函数
+    //  function insert(value) {
+    //    return {into: function (array) {
+    //      return {after: function (afterValue) {
+    //        array.splice(array.indexOf(afterValue) + 1, 0, value);
+    //        return array;
+    //      }}
+    //    }}
+    //  }
+    //  let arr = insert(2).into([1,3]).after(1);
+    //  console.log(arr);
+
+    //上面的代码可以使用嵌套箭头函数实现
+    //	let insert = (value) => ({into: (array) => ({after: (afterValue) => {
+    //		array.splice(array.indexOf(afterValue) + 1, 0, value);
+    //		return array;
+    //	}})});
+    //	let arr = insert(2).into([1,3]).after(1);
+    //	console.log(arr);
+
+    // 下面是一个部署管道机制，即签一个函数的输出是后面一个函数的输入
+    //  const pipeline = (...funcs) => val => funcs.reduce((a, b) => b(a), val);
+    //  const plus1 = a => a + 1;
+    //  const mult2 = a => a * 2;
+    //  const addThenMult = pipeline(plus1, mult2);
+    //  let result = addThenMult(5);
+    //  console.log(result);
+
+    //如果觉得上面的写法可读性差，还可以采用下面的写法
+    //  const plus1 = a => a + 1;
+    //  const mult2 = a => a * 2;
+    //  let result = mult2(plus1(5));
+    //  console.log(result);
+
+
+</script>
+</body>
+</html>

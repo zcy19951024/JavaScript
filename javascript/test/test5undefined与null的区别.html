@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>undefined与null的区别</title>
+</head>
+<body>
+<script>
+  let writeStr = (str) => { document.write(JSON.stringify(str) + '<br>') }
+
+  //undefined和null在if语句中都会转换成false，相等运算符会直接报告二者相等
+//  if(!undefined) {
+//    writeStr('undefined is false')
+//  }
+//  if(!null){
+//    writeStr('null is false')
+//  }
+
+  //相等运算符会报告null和undefined相等，严格相等运算符不会报告二者相等
+//  if(null==undefined){
+//    writeStr('null == undefined')
+//  }
+//  if(null===undefined){
+//    writeStr('null === undefined')
+//  }
+
+  //null表示无对象，被设计成转换成0，某些场合用它来销毁对象
+  //undefined表示一个无的原始值，转换成数值时是NaN
+//  document.write(Number(null))
+//  document.write(Number(undefined))
+
+  //null典型用法有作为函数的参数，标识该函数的参数不是对象，作为对象原型链的终点
+//  writeStr(Object.getPrototypeOf(Object.prototype))
+
+  //undefined表示缺少值，就是此处有一个值但是还没有定义
+  /** 1.变量被声明了，但是没有赋值，就等于undefined
+   *  2.调用函数，应该提供的参数没有提供，它就等于undefined
+   *  3.对象没有赋值的属性，就为undefined
+   *  4.函数没有返回值就返回undefined
+   * **/
+
+  let i;
+  writeStr(i)
+
+  function f(x) {
+    writeStr(x)
+  }
+  f();
+
+  let o = new Object();
+  writeStr(o.aaa);
+
+  let x = f()
+  writeStr(x);
+
+</script>
+</body>
+</html>

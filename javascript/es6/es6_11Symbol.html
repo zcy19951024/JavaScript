@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Symbol</title>
+</head>
+<body>
+<script>
+	/**1.概述
+	 * a.Symbol可以保证每一个属性的名字都是独一无二的，如下变量s就是一个独一无二的值
+	 * b..Symbol是一种原始的javascript数据类型，不是对象，不能使用new运算符，是除了null，undefined，Boolean，String，Number，Object之外的第7中数据类型
+	 * */
+	//let s = Symbol();
+	//console.log(typeof s);
+
+	/**c.Symbol函数可以接受一个字符串作为参数，标识对Symbol示例的描述，这样转化为字符串的时候比较容易区分
+	 * d.Symblo函数的参数只是对当前Symbol值的描述，因此相同参数的Symblo返回值是不同的*/
+	//let s1 = Symbol('foo');
+	//let s2 = Symbol('bar');
+	//console.log(s1.toString());
+	//console.log(s2.toString());
+	//console.log(Object.is(s1, s2));
+	//let s3 = Symbol();
+	//let s4 = Symbol();
+	//console.log(Object.is(s3, s4));
+
+	/**Symbol的值不能与其他类型的值进行运算，会报错;
+	 * Symblo的值可以显示的转换为字符串
+	 * Symbol的值可以转为Boolean值，但不是能转为数值*/
+	//    let sym = Symbol('My symbol');
+	//let result = sym + 'sss';
+	//    let result = String(sym);
+	//    console.log(sym);  //Symbol(My symbol)
+	//    console.log(sym.toString());
+	//    let result = Boolean(sym);
+	//    console.log(result);
+	//    var num = true;
+	//    console.log(Number(num));
+	//    var s = Symbol();
+	//    console.log(Boolean(s));
+
+	/**2.作为属性名的Symbol，注意Symbol值作为对象属性名字时，不能用点运算符，必须放在方括号内。
+	 * 点运算符后面总是字符串，不会读取Symbol作为标识所指代的那个值，导致属性名实际上是一个字符串，而不是一个Symbol值*/
+	//    var mySymbol = Symbol();
+	//    var a = {};
+	//    a[mySymbol] = 'hello';
+	//    var a = {
+	//        [mySymbol]: 'Hello'
+	//    };
+	//    var a = {};
+	//    Object.defineProperty(a, mySymbol, {value: 'hello'});
+	//    console.log(a[mySymbol]);
+
+	//    let s1 = Symbol();
+	//    let s2 = Symbol();
+	//    let obj = {
+	//        [s1]: function (arg) {
+	//            console.log(arg);
+	//        },
+	//        [s2](arg){
+	//            console.log(arg);
+	//        }
+	//    };
+	//    obj[s1](123);
+	//    obj[s2](456);
+
+	/**Symbol类型还可以定义一组常量，保证这组常量的值都是不相等的
+	 * Symblo值最大的好处就是可以其他任何的值不可能有相同的值*/
+	//    var log = {};
+	//    log.levels = {
+	//        DEBUG: Symbol('debug'),
+	//        INFO: Symbol('info'),
+	//        WARN: Symbol('warn')
+	//    };
+	//    console.log(log.levels.DEBUG);
+	//    const COLOR_RED = Symbol();
+	//    const COLOR_GREEN = Symbol();
+	//    function getComplement(color) {
+	//        switch (color){
+	//            case COLOR_RED:
+	//                return COLOR_RED;
+	//                break;
+	//            case COLOR_GREEN:
+	//                return COLOR_GREEN;
+	//                break;
+	//            default:
+	//                throw new Error('unknown color')
+	//        }
+	//    }
+
+	/**3.消除魔术字符串
+	 * 魔术字符串是在代码中多次出现，与代码形成强耦合的某一个具体的字符串或者数值。风格良好的代码应该消除魔术字符串。
+	 * 在下面代码中Triangle就是一个魔术字符串，它在代码中出现了2次*/
+	//    function getArea(shape, options) {
+	//        var area = 0;
+	//        switch (shape) {
+	//            case shapeType.triangle:
+	//                area = .5 * options.width * options.height;
+	//                break;
+	//            default:
+	//                break;
+	//        }
+	//        return area;
+	//    }
+
+	//    var result = getArea('Triangle', {width: 100, height: 100});
+	//    console.log(result);
+	/**常用的消除魔术字符串的方法就是使用变量，如下：*/
+	//    var shapeType = {
+	//        triangle: Symbol()
+	//    };
+	//    var result = getArea(shapeType.triangle, {width: 100, height: 100});
+	//    console.log(result);
+	/**观察上面代码可以看出，shapeType.triangle等于什么值不重要，只要它没有和shapeType的其他值冲突就可以了*/
+
+	/**4.属性名的遍历
+	 * Symbol作为属性名，该属性不会出现在for in for of循环中，也不会被Object.keys(),Object.getOwnPropertyNames(),JSON.stringify()
+	 * 返回，它也不是私有属性，有一个Object.getOwnPropertySymbols方法可以获取指定对象所有Symbol属性名，Object.getOwnPropertySymbols
+	 * 返回一个数组，成员是当前对象所有用作属性名的Symbol的值。
+	 * Object.getOwnPropertyNames得不到Symbols属性名
+	 * Reflect.ownKeys可以返回所有类型的键名，包含Symbol键名和Symbol键名*/
+	//    var obj = {};
+	//    var a = Symbol('a');
+	//    var b = Symbol('b');
+	//    var c = 'd';
+	//    obj[a] = 'Hello';
+	//    obj[b] = 'world';
+	//    obj['c'] = c;
+	//    var objectSymbols = Object.getOwnPropertySymbols(obj);
+	//    var objectProperty = Object.getOwnPropertyNames(obj);
+	//    var objectKeys = Reflect.ownKeys(obj);
+	//    console.log(objectSymbols);
+	//    console.log(objectProperty);
+	//    console.log(objectKeys);
+
+	/**5.Symbol.for()，Symbol.keyFor()
+	 * 有时候我们希望重新使用同一个Symbol的值，Symbol.for可以做到这个，它接受一个字符串作为参数，然后搜索有没有以这个参数生成的Symbol值
+	 * 如果有就返回这个Symbol值，否则就返回一个以这个字符串为名称的Symbol值。
+	 * 下面代码中s1和s2都是Symbol值，但是他们是同样的参数的Symbol.for方法生成的，所以实际上是同一个值。
+	 * Symbol()和Symbol.for()这两种方法都会生成新的Symbol，区别是后者会在全局环境中搜索，前者不会。Symbol.for()不会每次调用就返回一个
+	 * 新的Symbol值，而是先检查它给定的key是否存在，如果不存在就会新建一个值。如果你调用Symbol.for('cat')30次，每次都返回同一个Symbol值
+	 * 但是调用Symbol('cat')30次，会返回30个不同的Symbol值。
+	 * */
+	//    var s1 = Symbol.for('a');
+	//    var s2 = Symbol.for('a');
+	//    console.log(Object.is(s1, s2));
+
+	/**Symbol.keyfor() 方法返回一个已登记的Symbol类型值的key.
+	 * Symblo.for() 为Symbol值登记名字，是全局的，可以在不同的iframe或者Serverice worker中获取到同一个值*/
+	//    var s1 = Symbol.for('f00');
+	//    console.log(Symbol.keyFor(s1));
+	//    var s2 = Symbol('foo');
+	//    console.log(Symbol.keyFor(s2));
+
+	/**6.模块的Singleton模式
+	 * Singleton模式是指调用一个类，任何时候都返回同一个实例*/
+
+	/**7.内置的Symbol值
+	 * 除了定义自己使用的Symbol值之外，ES6还提供了11个内置的Symbol值，指向语言内部使用的方法
+	 * */
+	/**对象的Symbol.hasInstance属性，指向一个内部方法，当其他对象使用instanceof方法运算符，判断是否为该对象的实例时，会调用给这个方法。
+	 * 例如foo instanceof Foo在语言内部实际调用的是Foo[Symbol.hasInstance](foo)
+	 * 下面代码MyClass是一个类，new MyClass()返回一个实例，该实例的Symbol.hasInstance方法，会在进行instanceof运算时自动调用，判断
+	 * 左侧运算子是否为Array的实例。
+	 * */
+	//    class MyClass{
+	//        [Symbol.hasInstance](foo){
+	//            return foo instanceof Array;
+	//        }
+	//    }
+	//    var result = [1,2,3] instanceof new MyClass();
+	//    console.log(result);
+
+	//	class Even {
+	//		[Symbol.hasInstance](obj) {
+	//			return Number(obj) % 2 === 0;
+	//		}
+	//	}
+	//
+	//	var result1 = 1 instanceof new Even();
+	//	var result2 = 2 instanceof new Even();
+	//	console.log(result1);
+	//	console.log(result2);
+
+	/**Symbol.isConcatSpreadable
+	 * 对象的Symbol.isConcatSpreadable属性等于一个布尔值，表示该对象使用Array.prototype.concat()时是否可以展开。
+	 * 可以手动设置对象的Symbol.isConcatSpreadable属性
+	 * */
+	//  let arr1 = ['c', 'd'];
+	//	console.log(['a', 'b'].concat(arr1, 'e'));
+	//	console.log(arr1[Symbol.isConcatSpreadable]); // undefined
+	//	let arr2 = ['c', 'd'];
+	//	arr2[Symbol.isConcatSpreadable] = false;
+	//	console.log(arr2[Symbol.isConcatSpreadable]);
+	//	console.log(['a', 'b'].concat(arr2, 'e'));
+
+	/**类似数组的对象也可以展开，需要把它的Symblo.isConcatSpreadable属性设置为true*/
+	//  let obj = {length: 2, 0: 'c', 1: 'd'};
+	//	console.log(['a', 'b'].concat(obj, 'e')); // ['a', 'b', obj, 'e']
+	//
+	//	obj[Symbol.isConcatSpreadable] = true;
+	//	console.log(['a', 'b'].concat(obj, 'e')); // ['a', 'b', 'c', 'd', 'e']
+
+	/**对一个类来说，Symbol.isConcatSpreadable属性必须写成实例的属性
+	 * 下面代码中A1是可以展开的，A2不行*/
+	//	class A1 extends Array {
+	//		constructor(args) {
+	//			super(args);
+	//			this[Symbol.isConcatSpreadable] = true;
+	//		}
+	//	}
+	//
+	//	class A2 extends Array {
+	//		constructor(args) {
+	//			super(args);
+	//			this[Symbol.isConcatSpreadable] = false;
+	//		}
+	//	}
+	//	let a1 = new A1();
+	//	a1[0] = 3;
+	//	a1[1] = 4;
+	//	let a2 = new A2();
+	//	a2[0] = 5;
+	//	a2[1] = 6;
+	//	console.log([1,2].concat(a1).concat(a2));
+
+	/**Symbol.species属性指向当前对象的构造函数。创造实例的时候，默认会调用这个方法，即使用这个属性返回的函数作为构造函数，来创造新的实例。
+	 * 下面代码中子类MyArray继承了父类Array，创建MyArray实例对象的时候本来会调用它自己点构造函数，但是由于定义了Symbol.species属性，
+	 * 所以会使用这个属性返回函数，创建MyArray实例*/
+	//  class MyArray extends Array{
+	//  	static get [Symbol.species]() { return Array; }
+	//  }
+	//	class MyArray extends Array {
+	//		static get [Symbol.species]() {
+	//			return Array;
+	//		}
+	//	}
+	/**下面代码中由于构造函数被替换成了Array，所有mapped对象不是MyArray的实例*/
+	//	var a = new MyArray(1, 2, 3);
+	//	var mapped = a.map(x => x * x);
+	//	console.log(mapped);
+	//	console.log(mapped instanceof MyArray);
+	//	console.log(mapped instanceof Array);
+
+	/**Symbol.match
+	 * 对象的Symbol.match属性，指向一个函数，当执行str.match(myObject)时，如果该属性存在，会调用它，返回该方法的返回值*/
+	//  class MyMatcher{
+	//  	[Symbol.match](string){
+	//  		return 'hello world'.indexOf(string);
+	//    }
+	//  }
+	//  console.log('e'.match(new MyMatcher()));
+
+	/**Symbol.replace
+	 * 对象的Symbol.replace属性指向一个方法，当该对象被String.property.replace方法调用时，会返回该方法的返回值*/
+
+	/**Symbol.search
+	 * 对象的Symbol.search属性指向一个方法，当对象被String.property.search方法调用时，会返回该方法的返回值*/
+
+	/**Symbol.split
+	 * 对象的Symbol.split属性指向一个方法，当对象被String.property.split方法调用时，会返回该方法的返回值*/
+
+	/**Symbol.iterator
+	 * 对象的Symbol.iterator属性，指向对象的默认遍历器方法
+	 * 对象进行for of循环时，会调用Symbol.iterator方法，返回对象默认的遍历器
+	 * */
+	//  var myIterable = {};
+	//  myIterable[Symbol.iterator] = function *() {
+	//    yield 1;
+	//    yield 2;
+	//    yield 3;
+	//    yield 4;
+	//  };
+	//  console.log([...myIterable]);
+	/**对象进行for...of循环时，会调用Symbol.iterator方法，返回对象的默认遍历器*/
+	//	class Collection {
+	//		* [Symbol.iterator]() {
+	//			let i = 0;
+	//			while (this[i] !== undefined) {
+	//				yield this[i];
+	//				++i;
+	//			}
+	//		}
+	//	}
+	//
+	//	let myCollection = new Collection();
+	//	myCollection[0] = 1;
+	//	myCollection[1] = 2;
+	//	for (let value of myCollection) {
+	//		console.log(value)
+	//	}
+
+	/**Symbol.toPrimitive
+	 * 对象的Symbol.toPrimitive属性，指向一个方法，该对象被转为原始类型的值时，会调用这个方法，返回该对象对应的原始值类型
+	 * Symbol.toPrimitive被调用时，会接受一个字符串参数，标识当前运算的模式，一共有三种模式。
+	 * Number:该场合需要转成数值
+	 * String:该诚和需要转成字符串
+	 * Default:该场合可以转成数值，也可以转成字符串
+	 * */
+	//	let obj = {
+	//		[Symbol.toPrimitive](hint) {
+	//			switch (hint) {
+	//				case 'number':
+	//					return 123;
+	//				case 'string':
+	//					return 'str';
+	//				case 'default':
+	//					return 'default';
+	//				default:
+	//					throw new Error();
+	//			}
+	//		}
+	//	};
+	//	console.log(2 * obj);
+	//	console.log(3 + obj);
+	//	console.log(String(obj));
+
+	/**Symbol.toStringTag
+	 * 对象的Symbol.toStringTag属性，指向一个方法。在该对象上调用Object.property.toString方法时，如果这个属性存在，它的返回值会出现在toString
+	 * 方法返回的字符串中，标识对象的类型。也就是说，它的这个属性可以用来定制[object object]或[object Array]中object后面那个字符串*/
+	//  console.log({[Symbol.toStringTag]: 'Foo'}.toString());
+	//  class Collection {
+	//  	get [Symbol.toStringTag]() {
+	//  		return 'xxx';
+	//    }
+	//  }
+	//  var x = new Collection();
+	//  console.log(Object.prototype.toString.call(x));
+
+	/**Symbol.unscopables
+	 * 对象Symbol.unscopables属性，指向一个对象。该对象指定了使用with关键字的时候，安歇属性会被with环境排除*/
+	//  console.log(Array.prototype[Symbol.unscopables]);
+
+	//  class MyClass{
+	//  	foo(){return 1;}
+	//  }
+	//  var foo = function () {
+	//    return 2;
+	//  };
+	//  with(MyClass.prototype){
+	//  	console.log(foo());
+	//  }
+
+	/**上面代码通过指定Symbol.undscopables属性，使得with语法块不会在当前作用域寻找foo属性，即foo指向外层作用域的变量*/
+//	class MyClass {
+//		foo() {
+//			return 1;
+//		}
+//
+//		get[Symbol.unscopables]() {
+//			return {foo: true};
+//		}
+//	}
+//
+//	var foo = function () {
+//		return 2;
+//	}
+//	with (MyClass.prototype) {
+//		console.log(foo());
+//	}
+
+
+</script>
+</body>
+</html>

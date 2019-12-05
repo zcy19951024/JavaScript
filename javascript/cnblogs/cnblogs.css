@@ -1,0 +1,7 @@
+.postBody h1, .postBody h2, .postBody h3, .postBody h4, .postBody h5, .postBody h6 { font-size: 14px !important; color: #ff6600 !important; }
+.subtitle { color: #399ab2 !important; }
+#blogTitle > .subtitle { color: white !important; }
+#mainContent { margin-right: 300px; color: #24292e; }
+#sidebar_scroller { background-color: #FFFFFF; padding: 16px 20px 30px 20px; right: 12px !important; position: fixed !important; overflow-x: hidden; overflow-y: auto;}
+#sidebar_scroller::-webkit-scrollbar { width: 1px; }
+div.blogStats { right: 330px !important; }

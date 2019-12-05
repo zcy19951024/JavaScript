@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>开始</title>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+</head>
+<body>
+<div id="app">
+    <h1>Hello App!</h1>
+    <p>
+        <!--使用router-link组件导航-->
+        <!--通过传入to属性指定链接-->
+        <!--<router-link>默认被渲染成一个超链接-->
+        <router-link to="/foo">Go to Foo</router-link>
+        <router-link to="/bar">Go to Bar</router-link>
+    </p>
+    <!--路由出口 by ningdong-->
+    <!--路由匹配到的组件将渲染在这里-->
+    <router-view></router-view>
+</div>
+<script>
+    // 定义路由组件
+  const Foo = {template: '<div>foo</div>'}
+  const Bar = {template: '<div>bar</div>'}
+
+  const routes = [
+    {path: '/foo', component: Foo},
+    {path: '/bar', component: Bar}
+  ]
+
+    const router = new VueRouter({
+      routes
+    })
+
+    const app = new Vue({
+      router,
+      el: '#app'
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>js拖拽(1)</title>
+</head>
+<body>
+<div class="box">
+  <div id="box">
+    <div id="pic"></div>
+  </div>
+</div>
+<script>
+	window.onload = function () {
+
+		drag("pic", "box");
+
+		function drag(obj, parentNode) {
+
+			var obj = document.getElementById(obj);
+			if (arguments.length == 1) {
+				var parentNode = window.self;
+				var pWidth = parentNode.innerWidth, pHeight = parentNode.innerHeight;
+			} else {
+				var parentNode = document.getElementById(parentNode);
+				var pWidth = parentNode.offsetWidth, pHeight = parentNode.offsetHeight;
+			}
+			// 鼠标按下
+			obj.onmousedown = function (ev) {
+				var ev = ev || event;
+				// 鼠标按下点相对移动dom的位置
+				var disX = ev.clientX - this.offsetLeft;
+				var disY = ev.clientY - this.offsetTop;
+				// dom的宽度（width+border+padding）
+				var oWidth = obj.offsetWidth;
+				var oHeight = obj.offsetHeight;
+				//非标准设置全局捕获IE
+				if (obj.setCapture) {
+					obj.setCapture()
+				}
+				// 鼠标移动
+				document.onmousemove = function (ev) {
+					var ev = ev || event;
+					// 鼠标位置减相对dom的位置得到新的offset
+					var L = ev.clientX - disX;
+					var T = ev.clientY - disY;
+					//左侧
+					if (L <= 0) {
+						L = 0;
+					} else if (L > pWidth - oWidth) {//右侧
+						L = pWidth - oWidth;
+					}
+
+					//上面
+					if (T <= 0) {
+						T = 0;
+					} else if (T >= pHeight - oHeight) {//下面
+						T = pHeight - oHeight;
+					}
+
+					obj.style.left = L + 'px';
+					obj.style.top = T + 'px';
+				}
+				document.onmouseup = function (ev) {
+					var ev = ev || event;
+					document.onmousemove = document.onmouseup = null;
+					//非标准释放全局捕获
+					if (obj.releaseCapture) {
+						obj.releaseCapture()
+					}
+				}
+				return false; //标准浏览器阻止浏览器默认行为
+			}
+
+		}
+	}
+</script>
+<style>
+  .box {
+    width: 600px;
+    height: 400px;
+    margin: 50px auto;
+    position: relative;
+    overflow: hidden;
+  }
+
+  #box {
+    width: 1000px;
+    height: 800px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin: -400px 0 0 -500px;
+  }
+
+  #pic {
+    width: 800px;
+    height: 600px;
+    background: url(../images/pic1.jpg) no-repeat;
+    position: absolute;
+    left: 100px;
+    top: 100px;
+  }
+
+  #pic:hover {
+    cursor: move;
+  }
+</style>
+</body>
+</html>

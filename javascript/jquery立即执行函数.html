@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>jquery立即执行函数</title>
+  <script src="jquery.min.js"></script>
+</head>
+<body>
+<script>
+    $(document).ready(function () {
+      console.log("ready");
+    });
+    window.onload = function () {
+      console.log("onload");
+    };
+    $(function(){
+      console.log("简化版ready");
+    });
+
+
+
+</script>
+</body>
+</html>

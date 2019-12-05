@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>第二章面向对象编程</title>
+</head>
+<body>
+<script>
+  let write = (val) => {
+    document.write(JSON.stringify(val) + '<br>');
+  };
+  /** 5.1 object类型
+   * 1.使用new Object创建
+   * 2.使用对象字面量表示发{}，不会调用Object构造函数
+   * 通过点访问对象属性，也可以使用方括号访问，优点是可以通过变量来访问属性，避免空格，关键字，保留字等导致的错误
+   *
+   * 5.2 Array类型
+   * 1.使用Array，创建包含new Array(),new Array(20),new Array('red', 'blue'),Array(20),Array('red', 'blue')
+   * 2.使用数组字面变量var colors = [];
+   * 3.可以修改数组的length，设置后可能会把相应的值改成undefined
+   * */
+  var arr = Array('red', 'blue', 'green');
+  // write(arr);
+  // console.log(arr);
+  // var arr1 = [, , ,];
+  // console.log(arr1); // (3)[empty X 3]
+  // console.log(arr1[0]); // undefined
+  // write(arr1); // [null,null,null]
+  // write(arr1[0]); //undefined
+  //  arr.length = 2;
+  //  console.log(arr[2]); // undefined
+  //  arr.length = 5;
+  //  console.log(arr[3]);
+
+  /**5.2.1 检测数组
+   * 1.Array.isArray()
+   * 2.if(value instance of Array)在多个框架下会出现不同结果
+   *
+   * 5.2.2 转换方法
+   *
+   * */
+  //   console.log(arr.toString()); //red,blue,green
+  //   var arr1 = ['red', , 'green'];
+  //   console.log(arr1.toString()) //red,,green
+
+  /**5.2.3 栈方法
+   * 后进先出，在数组末尾添加或删除元素
+   * push('black')： 末尾添加black
+   * pop(): 末尾删除一个元素
+   * */
+  //  arr.push('black');
+  //  console.log(arr); //(4) ["red", "blue", "green", "black"]
+  //  arr.pop();
+  //  console.log(arr); //(3) ["red", "blue", "green"]
+
+  /**5.2.4 队列方法
+   * 先进先出
+   * shift(): 开头删除一个元素
+   * push('black'): 末尾添加一个元素
+   *
+   * 反向队列方法
+   * unshift('black'): 开头添加一个元素
+   * pop(): 末尾删除一个元素
+   * */
+  arr.shift();
+  console.log(arr);//(2) ["blue", "green"]
+  arr.push('black');
+  console.log(arr);
+
+  /**5.2.5重新排序方法
+   * sort()方法默认是字符串排序，可以接受一个参数实现想要的效果
+   * */
+  var arr2 = [3, 2, 5, 10, 6];
+  arr2.sort();
+  console.log(arr2); // (5) [10, 2, 3, 5, 6]
+  // 这种排序方法简单明了
+  arr2.sort((value1, value2) => {
+    return value1 - value2;
+  });
+  console.log(arr2); // [2, 3, 5, 6, 10]
+
+  /**5.2.6操作方法*/
+
+
+</script>
+</body>
+</html>

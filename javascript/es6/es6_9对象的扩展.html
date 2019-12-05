@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>对象的扩展</title>
+</head>
+<body>
+<script>
+    let write = (str) => {
+        document.write(JSON.stringify(str) + '<br>');
+    };
+    /**es6中允许直接写入变量和函数，作为对象的属性和方法。在对象中直接写入变量，变量的名字作为属性名字，变量的值作为这个属性的值*/
+    //  var a = 1;
+    //  var b = 2;
+    //  var c = {a, b};
+    //  console.log(c);
+    //  function f(x,y) {
+    //    return {x,y};
+    //	}
+    //	var result = f(2,3);
+    //  console.log(result);
+
+    /**除了属性可以简写，方法可以简写*/
+    //  var birth = '2001/01/01';
+    //  var person = {Same-value equality
+    //  	name: '张三',
+    //    birth,
+    //    hello(){ console.log(`我的名字是${this.name} 我的生日是：${this.birth}`); }
+    //  }
+    //  person.hello();
+
+    /**es6允许使用字面量定义对象，用表达式作为对象的属性名，即把表达式放在方括号内*/
+    //  let propKey = 'foo';
+    //  let obj = {
+    //  	[propKey]: true,
+    //    ['a'+'bc']: 123
+    //  }
+    //  console.log(obj);
+    //  var lastWord = 'last word';
+    //  var a = {
+    //  	'first name': 'hello',
+    //    [lastWord]: 'world'
+    //  }
+    //  console.log(a);
+    /**表达式还可以用于定义方法名*/
+    //  let obj = {
+    //  	['h'+'ello']() {
+    //  		return 'hi';
+    //    }
+    //  };
+    //  console.log(obj.hello());
+
+    /**Object.is:es5比较两个值是否相等，使用相等运算符==和严格相等运算符===。前者会自动转换数据类型，后者NaN不等于自身，以及+0等于-0；
+     * es6提供一个Object.is方法用来比较解决这些问题*/
+    //	  console.log("Object.is(1, '1') ：" + Object.is(1, '1'));
+    //	  console.log("Object.is(NaN,NaN)：" + Object.is(NaN,NaN));
+    //	  console.log("Object.is(-0,+0)  ：" + Object.is(-0,+0));
+    //	  console.log(`1=='1'            ：${1=='1'}`);
+    //	  console.log(`NaN==NaN          ：${NaN==NaN}`);
+    //	  console.log(`+0==-0            ：${+0==-0}`);
+    //	  console.log(`1==='1'           ：${1==='1'}`);
+    //	  console.log(`NaN===NaN         ：${NaN===NaN}`);
+    //	  console.log(`+0===-0           ：${+0===-0}`);
+    // let a = {a: 'a', b: 'b'};
+    // let b = {a: 'a', b: 'b'};
+    // console.log(Object.is(a, b));
+
+    /**Object.assign用于对象的合并，将源对象的所有可枚举属性复制到目标对象中*/
+    //	var target = {a: 1};
+    //	var source1 = {b: 2};
+    //	var source2 = {c: 3};
+    //	Object.assign(target, source1, source2);
+    //	console.log(target);
+
+    //	var obj = {a: 1};
+    //	Object.assign(obj);
+    //	console.log(obj);
+
+    //	var v1 = 'abc';
+    //	var v2 = true;
+    //	var v3 = 10;
+    //	var obj = Object.assign({}, v1, v2, v3);
+    //	console.log(obj);
+
+    /**(1)为对象添加属性*/
+    //  class Point{
+    //  	custructor(x, y){
+    //  		object.assign(this, x, y);
+    //    }
+    //  }
+    /**(2)为对象添加方法*/
+    //  Object.assign(Point.prototype, {
+    //  	someMethod(arg1, args){
+    //
+    //    },
+    //    anotherMethod() {
+    //
+    //    }
+    //  });
+    /**等同于下面方法*/
+    //  Point.prototype.somMethod = function (arg1, arg2) {
+    //
+    //  };
+    //  Point.prototype.anotherMethod = function (arg1, arg2) {
+    //
+    //  };
+    /**(3)克隆对象，下面代码将原始对象拷贝到一个空对象中，这种方法只能克隆原始对象自身的值，不能克隆它继承的值。*/
+    //  function clone(origin) {
+    //    return object.assign({}, origin)
+    //  }
+    /**下面方法可以克隆到它继承的值*/
+    //  function clone(origin) {
+    //    let originProto = Object.getPrototypeOf(origin);
+    //    return Object.assign(Object.create(originProto), origin);
+    //  }
+    /**(4)合并多个对象，将多个对象合并到某个对象*/
+    //  const merge = (target, ...source) => Object.assign({}, ...source);
+    /**如果希望合并后返回一个新的对象，可以改写上面的函数，对一个空对象合并*/
+    //  const merge = (...source) => Object.assign({}, ...source);
+    /**(5)为属性指定默认值
+     * DEFAULTS对象是默认值， options参数是用户提供的参数，Object.assign方法将DEFAULTS和options合并成一个新对象，如果二者有同名属性，
+     * options的属性值会覆盖DEFAULTS的属性值，由于存在浅拷贝的问题，DEFAULTS对象和options对象所有属性的值，最好都是简单类型，不要指向另一个
+     * 对象，否则DEFAULTS对象的该属性很可能不起作用。
+     * */
+    //  const DEFAULTS = {
+    //  	logLevel: 0,
+    //    outputFormat: 'html'
+    //  };
+    //	const DEFAULTS = {
+    //		url: {
+    //			host: 'example.com',
+    //			port: 7070
+    //		}
+    //	};
+    //  function processContent(options) {
+    //    return Object.assign({}, DEFAULTS, options);
+    //  }
+    //  var result = processContent({url: {port: 9090}});
+    //  console.log(result);
+
+    /**6.属性的可枚举性
+     * 对象的每一个属性都有一个描述对象，用来控制该属性的行为Object.getOwnPropertyDescriptor方法可以获取该属性的描述对象
+     * 描述对象的enumerable属性成为“可枚举性” ， 如果该属性为false，就标识某些操作会忽略当前属性，如下三个操作会忽略enumerable为false的属性
+     * for...in循环：之便利对象自身的和继承的可枚举的属性
+     * Object.keys: 返回对象自身的所有可枚举的属性的键名
+     * JSON.stringify：只串行化对象自身的可枚举的属性
+     * Object.assign:只拷贝对象自身的可枚举属性，忽略enumerable为false的属性
+     * */
+    //  let obj = {foo: 123};
+    //  var property = Object.getOwnPropertyDescriptor(obj, 'foo');
+    //  console.log(property);
+    //  console.log(Object.getOwnPropertyDescriptor(Object.prototype, 'toString').enumerable);
+    //  console.log(Object.getOwnPropertyDescriptor([], 'length').enumerable);
+
+    /**7.属性的遍历
+     * 一共有5中方法可以遍历对象的属性：
+     * （1）for...in循环遍历对象自身的和继承的可枚举属性（不含 Symbol 属性）
+     * （2）Object.keys返回一个数组，包括对象自身的（不含继承的）所有可枚举属性（不含 Symbol 属性）
+     * （3）Object.getOwnPropertyNames返回一个数组，包含对象自身的所有属性（不含 Symbol 属性，但是包括不可枚举属性）
+     * （4）Object.getOwnPropertySymbols返回一个数组，包含对象自身的所有 Symbol 属性
+     * （5）Reflect.ownKeys返回一个数组，包含对象自身的所有属性，不管属性名是 Symbol 或字符串，也不管是否可枚举。
+     * */
+
+    /**8.__proto属性__
+     * __proto__属性用来读取或设置当前对象的prototype对象
+     * 该属性没有写入ES6正文，而是写入了附录，原因是__proto__是一个内部属性，不是一个正式的对外的api。由于浏览器广泛支持才被加入了ES6。标准
+     * 明确规定只有浏览器必须部署这个属性，其他运行环境不一定需要部署，而且新的代码最好认为这个属性是不存在的。因此不论是从语义的角度还是兼容性的
+     * 角度，都不要使用这个属性，而是使用下面的Object.setPrototypeOf()（写操作），object.getPrototypeOf()（读操作），object.create()
+     * （生成操作）语法代替。
+     * */
+    /**Object.setPrototypeOf方法的作用和__proto__相同，用来设置一个对象的prototype对象，返回参数对象本身，它是ES6推荐的设置原型对象的方法
+     * 下面代码会将proto对象设置为obj对象的原型，所以从obj对象可以读取proto对象的属性。
+     * */
+    //	 let proto = {};
+    //	 let obj = {x:10};
+    //	 Object.setPrototypeOf(obj, proto);
+    //	 proto.y = 20;
+    //	 proto.z = 40;
+    //	 console.log(`obj.x:${obj.x} obj.y:${obj.y} obj.z:${obj.z}`);
+
+    /**如果第一个参数不是对象，会自动转为对象。但是遇有返回的还是第一个参数，所以这个操作不会产生任何效果。
+     * */
+    //	 console.log(Object.setPrototypeOf(1, {}));
+    //	 console.log(Object.setPrototypeOf('foo', {}));
+    //	 console.log(Object.setPrototypeOf(true, {}));
+
+    /**Object.setPrototypeOf(obj)
+     * 用于读取一个对象的原型对象
+     * */
+    //	function Rectangle () {
+    //	}
+
+    //	var rec = new Rectangle();
+    //	console.log(Object.getPrototypeOf(rec))
+    //	Object.setPrototypeOf(rec, Object.prototype);
+    //	console.log(Object.getPrototypeOf(rec));
+
+    //	var obj = { name: 'zhangsan' };
+    //	console.log(Object.getPrototypeOf(obj));
+    //  console.log(Object.getPrototypeOf('foo'));
+
+    /**9.Object.keys(),Object.values(),Object.entries()* */
+    /**Object.keys()
+     * ES5引入了Object.keys方法，返回一个数组，成员是参数对象自身的（不包含继承的）所有可遍历（enumerable）属性的键名
+     * */
+    //	var obj = {foo: 'bar', baz: 42};
+    //	console.log(Object.keys(obj));
+    //	let {keys, values, entries} = Object;
+    //	let obj = {a: 1, b: 2, c: 3};
+    //	for (let key of keys(obj)) {
+    //		console.log(key);
+    //	}
+    //
+    //	for (let value of values(obj)) {
+    //		console.log(value);
+    //	}
+    //
+    //	for (let [key, value] of entries(obj)) {
+    //		console.log([key, value]);
+    //	}
+
+    /**ES2017引入了Object.keys配套的Object.values和Object.entries，作为遍历一个对象的补充手段，供for...of循环使用*/
+    //	let param = Object.assign({}, {a:'a', b:'b'}, {c: 'c'})
+    //  console.log(param)
+
+    //  let {name, age} = {name:'zhag', age: 11, sex: 'man'};
+    //  let stu = {name, age};
+    //	console.log(stu);
+
+    //	function randomString(len) {
+    //		len = len || 4;
+    //		var $chars = 'ABCDEFGHJKMNPQRSTWXYZ';    /****默认去掉了容易混淆的字符oOLl,9gq,Vv,Uu,I1****/
+    //		var maxPos = $chars.length;
+    //		var pwd = '';
+    //		for (i = 0; i < len; i++) {
+    //			pwd += $chars.charAt(Math.floor(Math.random() * maxPos));
+    //		}
+    //		return pwd;
+    //	}
+    //	document.write(randomString(4));
+
+    /**Object.values方法返回一个数组，成员是参数对象自身的所有可遍历属性的键值,属性值是数值的属性，按照数值从小到大的顺序排列*/
+    //    let obj = {foo: 'bar', baz: 42};
+    //    console.log(Object.values(obj));
+    //    let obj = {100: 'a', 2: 'b', 7: 'c'};
+    //    console.log(Object.values(obj));
+
+    /**下面代码中，Object.create方法的第二个参数添加的对象属性（属性p），如果不显示的声明，默认是不可遍历的，因为p的属性描述对象的额numberable
+     * 默认是false，Object.values不会返回这个属性*/
+    //    let obj = Object.create({}, {p: {value: 42}});
+    //    console.log(Object.values(obj));
+
+    /**Object.values还会跳过属性名为Symbol值的属性*/
+    //    console.log(Object.values({ [Symbol()]: 123, foo: 'abc' }));
+
+    /**Object.entries方法返回一个数组，成员是参数对象自身的所有可遍历的enumerable属性的键值对数组*/
+    //    let obj = {foo: 'bar', baz: 42};
+    //    console.log(Object.entries(obj));
+
+    /**Object.entries的基本用法是遍历对象的属性*/
+    //    let obj = {one: 1, tow: 2};
+    //    for (let [k, v] of Object.entries(obj)) {
+    //        console.log(`${k}:${v}`);
+    //    }
+
+    /**Object.entries方法的另一个用处是，将对象转换为真正的map*/
+    //    var obj = { foo: 'bar', baz: 42 };
+    //    var map = new Map(Object.entries(obj));
+    //    console.log(map);
+
+    /**10. 对象扩展运算符
+     * (1)对象的解构赋值用于从一个对象取值，相当于所有可遍历的，但尚未被读取的属性分配到指定的对象上。所有的键和他们的值，都会拷贝到新的对象
+     * 上。下面代码中，变量z是解构赋值所在的对象。它获得等号右边所有尚未读取的键，将他们连同值一起拷贝过来。
+     * 解构赋值要求等号右边是一个对象，如果等号右边是null或者undefined，就会报错。
+     * 结构赋值必须是最后一个参数，否则会报错。
+     * 解构赋值是浅拷贝，即如果一个键的值是符合类型的值（数组，对象，函数）那么结构赋值拷贝的就是这个值的引用，而不是这个值的副本。
+     * 解构赋值不会拷贝继承至原型对象的属性。
+     * */
+           // let { x, y } = { x: 1, y: 2, a: 3, b: 4 };
+           // console.log(z);
+//    let o1 = { a: 1 };
+        //    let o2 = {b:2};
+        //    o2.__proto__ = o1;
+        //    let {...o3} = o2;
+        //
+        //    console.log(o3)
+
+    // let data = {"data":{"DTY":[{"abnormalAmount":0,"amount":17,"batch":"B56040","defectTypeSum":{"毛丝":16,"无尾":0,"紧点":0,"绊丝":30,"油污":52,"碰伤":0,"分层":84,"凸肩":0,"断头":0,"僵丝":0,"环形油污":0,"碰毛":0,"纸管碰伤":47},"endTime":1539151067000,"goodAmount":0,"productName":"DTY","spec":"666dtex/192f","startTime":1536921962000},{"abnormalAmount":0,"amount":17,"batch":"B56040","defectTypeSum":{"毛丝":0,"无尾":0,"紧点":0,"绊丝":0,"油污":0,"碰伤":0,"分层":0,"凸肩":0,"断头":0,"僵丝":0,"环形油污":0,"碰毛":0,"纸管碰伤":0},"endTime":1539151067000,"goodAmount":0,"lineCode":"HL0GC000A0001","lineName":"恒力工厂A车间1线","productName":"DTY","startTime":1536921962000},{"abnormalAmount":0,"amount":9,"batch":"B56040","defectTypeSum":{"毛丝":16,"无尾":0,"紧点":0,"绊丝":30,"油污":52,"碰伤":0,"分层":84,"凸肩":0,"断头":0,"僵丝":0,"环形油污":0,"碰毛":0,"纸管碰伤":47},"endTime":1539137705000,"goodAmount":0,"lineCode":"line1","lineName":"测试线别1","productName":"DTY","spec":"666dtex/192f","startTime":1536921962000},{"abnormalAmount":0,"amount":19,"batch":"F33029","defectTypeSum":{"毛丝":12,"无尾":0,"紧点":0,"绊丝":37,"油污":43,"碰伤":0,"分层":67,"凸肩":0,"断头":0,"僵丝":0,"环形油污":0,"碰毛":0,"纸管碰伤":19},"endTime":1539151017000,"goodAmount":0,"productName":"DTY","spec":"333dtex/96f","startTime":1536921449000},{"abnormalAmount":0,"amount":19,"batch":"F33029","defectTypeSum":{"毛丝":0,"无尾":0,"紧点":0,"绊丝":0,"油污":0,"碰伤":0,"分层":0,"凸肩":0,"断头":0,"僵丝":0,"环形油污":0,"碰毛":0,"纸管碰伤":0},"endTime":1539151017000,"goodAmount":0,"lineCode":"HL0GC000A0001","lineName":"恒力工厂A车间1线","productName":"DTY","startTime":1536921449000},{"abnormalAmount":0,"amount":8,"batch":"F33029","defectTypeSum":{"毛丝":12,"无尾":0,"紧点":0,"绊丝":37,"油污":43,"碰伤":0,"分层":67,"凸肩":0,"断头":0,"僵丝":0,"环形油污":0,"碰毛":0,"纸管碰伤":19},"endTime":1536924478000,"goodAmount":0,"lineCode":"line1","lineName":"测试线别1","productName":"DTY","spec":"333dtex/96f","startTime":1536921449000},{"abnormalAmount":0,"amount":16,"batch":"SB56040","defectTypeSum":{"毛丝":913,"无尾":0,"紧点":0,"绊丝":999,"油污":286,"碰伤":0,"分层":208,"凸肩":0,"断头":0,"僵丝":719,"环形油污":0,"碰毛":0,"纸管碰伤":284},"endTime":1536921082000,"goodAmount":0,"productName":"DTY","spec":"666dtex/192f","startTime":1535713567000},{"abnormalAmount":0,"amount":16,"batch":"SB56040","defectTypeSum":{"毛丝":913,"无尾":0,"紧点":0,"绊丝":997,"油污":286,"碰伤":0,"分层":206,"凸肩":0,"断头":0,"僵丝":717,"环形油污":0,"碰毛":0,"纸管碰伤":284},"endTime":1536921082000,"goodAmount":0,"lineCode":"HL0GC000A0001","lineName":"恒力工厂A车间1线","productName":"DTY","spec":"666dtex/192f","startTime":1535713567000},{"abnormalAmount":0,"amount":16,"batch":"SB56040","defectTypeSum":{"毛丝":0,"无尾":0,"紧点":0,"绊丝":2,"油污":0,"碰伤":0,"分层":2,"凸肩":0,"断头":0,"僵丝":2,"环形油污":0,"碰毛":0,"纸管碰伤":0},"endTime":1536921082000,"goodAmount":0,"lineCode":"line1","lineName":"测试线别1","productName":"DTY","spec":"666dtex/192f","startTime":1535713567000}],"FDY":[{"abnormalAmount":0,"amount":16,"batch":"F025503","defectTypeSum":{"毛丝":0,"无尾":0,"绊丝":2657,"油污":1328,"成型":0,"叠型":0,"勒痕":0,"纸管":0,"夹丝":0,"颜色":0},"endTime":1537875132000,"goodAmount":0,"productName":"FDY","spec":"60dtex/24f","startTime":1537421939000},{"abnormalAmount":0,"amount":16,"batch":"F025503","defectTypeSum":{"毛丝":0,"无尾":0,"绊丝":0,"油污":0,"成型":0,"叠型":0,"勒痕":0,"纸管":0,"夹丝":0,"颜色":0},"endTime":1537875132000,"goodAmount":0,"lineCode":"HL0GC000A0001","lineName":"恒力工厂A车间1线","productName":"FDY","startTime":1537421939000},{"abnormalAmount":0,"amount":16,"batch":"F025503","defectTypeSum":{"毛丝":0,"无尾":0,"绊丝":2657,"油污":1328,"成型":0,"叠型":0,"勒痕":0,"纸管":0,"夹丝":0,"颜色":0},"endTime":1537875132000,"goodAmount":0,"lineCode":"line1","lineName":"测试线别1","productName":"FDY","spec":"60dtex/24f","startTime":1537421939000}],"POY":[{"abnormalAmount":0,"amount":5,"batch":"FB170701","defectTypeSum":{"毛丝":0,"无尾":0,"绊丝":0,"油污":0,"成型":0,"叠型":0,"勒痕":0,"纸管":0,"夹丝":0,"颜色":0},"endTime":1539856728000,"goodAmount":0,"lineCode":"HL0GC000A0001","lineName":"恒力工厂A车间1线","productName":"POY","startTime":1539796733000},{"abnormalAmount":0,"amount":5,"batch":"FB170702","defectTypeSum":{"毛丝":0,"无尾":0,"绊丝":0,"油污":0,"成型":0,"叠型":0,"勒痕":0,"纸管":0,"夹丝":0,"颜色":0},"endTime":1539856808000,"goodAmount":0,"lineCode":"HL0GC000A0001","lineName":"恒力工厂A车间1线","productName":"POY","startTime":1539796748000},{"abnormalAmount":0,"amount":12,"batch":"YF0115001B","defectTypeSum":{"毛丝":0,"无尾":0,"绊丝":0,"油污":0,"成型":0,"叠型":0,"勒痕":0,"纸管":0,"夹丝":0,"颜色":0},"endTime":1539237604000,"goodAmount":0,"productName":"POY","startTime":1538033715000},{"abnormalAmount":0,"amount":15,"batch":"YF0115001B","defectTypeSum":{"毛丝":0,"无尾":0,"绊丝":0,"油污":0,"成型":0,"叠型":0,"勒痕":0,"纸管":0,"夹丝":0,"颜色":0},"endTime":1539570762000,"goodAmount":0,"lineCode":"HL0GC000A0001","lineName":"恒力工厂A车间1线","productName":"POY","startTime":1538033715000}],"${productType}":[{"abnormalAmount":0,"amount":17,"batch":"B56040","defectTypeSum":{},"endTime":1539151067000,"goodAmount":0,"lineCode":"23423","productName":"${productType}","startTime":1536921962000},{"abnormalAmount":0,"amount":16,"batch":"F025503","defectTypeSum":{},"endTime":1537875132000,"goodAmount":0,"lineCode":"23423","productName":"${productType}","startTime":1537421939000},{"abnormalAmount":0,"amount":19,"batch":"F33029","defectTypeSum":{},"endTime":1539151017000,"goodAmount":0,"lineCode":"23423","productName":"${productType}","startTime":1536921449000},{"abnormalAmount":0,"amount":13,"batch":"FB170701","defectTypeSum":{},"endTime":1540437590000,"goodAmount":0,"lineCode":"23423","productName":"${productType}","startTime":1540433850000},{"abnormalAmount":0,"amount":14,"batch":"FB170702","defectTypeSum":{},"endTime":1540437700000,"goodAmount":0,"lineCode":"23423","productName":"${productType}","startTime":1540433800000},{"abnormalAmount":0,"amount":16,"batch":"SB56040","defectTypeSum":{},"endTime":1536921082000,"goodAmount":0,"lineCode":"23423","productName":"${productType}","startTime":1535713567000},{"abnormalAmount":0,"amount":12,"batch":"YF0115001B","defectTypeSum":{},"endTime":1539237604000,"goodAmount":0,"lineCode":"23423","productName":"${productType}","startTime":1538033715000}]},"meta":{"code":100000,"message":"请求成功"}}
+    //
+    // let result = data.data
+    // console.log(result)
+    // for (key in Object.keys(result)) {
+    //     console.log(key)
+    // }
+
+
+    /**
+     * 判断数据类型的函数
+     */
+    // 数值
+    // console.log(typeof 37) // number
+    // console.log(typeof 3.14) // number
+    // console.log(typeof(42)) // number
+    // console.log(typeof Math.LN2) // number
+    // console.log(typeof Infinity) // number
+    // console.log(typeof NaN) // number 尽管它是Not-A-Number的缩写
+    // console.log(Number(1)) //number Number(1)构造函数会把参数解析成字面量
+    // console.log(typeof 42n) //bigint
+    // 字符串
+    // console.log(typeof '') //string
+    // console.log(typeof 'boo') // string
+    // console.log(typeof `template literal`) // string
+    // console.log(typeof '1') //string 内容为数字的字符串仍然是字符串
+    // console.log(typeof(typeof 1)) //string，typeof总是返回一个字符串
+    // console.log(typeof String(1)) //string String将任意值转换成字符串
+    // // 布尔值
+    // console.log(typeof true) // boolean
+    // console.log(typeof false) // boolean
+    // console.log(typeof Boolean(1)) // boolean Boolean会基于参数是真值还是虚值进行转换
+    // console.log(typeof !!(1)) // boolean 两次调用!!操作想短语Boolean()
+    // // Undefined
+    // console.log(typeof undefined) // undefined
+    // console.log(typeof declaredButUndefinedVariabl) // 未赋值的变量返回undefined
+    // console.log(typeof undeclaredVariable ) // 未定义的变量返回undefined
+    // // 对象
+    // console.log(typeof {a: 1}) //object
+    // console.log(typeof new Date()) //object
+    // console.log(typeof /s/) // 正则表达式返回object
+    // // 下面的例子令人迷惑，非常危险，没有用处，应避免使用，new操作符返回的实例都是对象
+    // console.log(typeof new Boolean(true)) // object
+    // console.log(typeof new Number(1)) // object
+    // console.log(typeof new String('abc')) // object
+    // // 函数
+    // console.log(typeof function () {}) // function
+    // console.log(typeof class C { }) // function
+    // console.log(typeof Math.sin) // function
+
+    // var str = new String('String');
+    // var num = new Number(100)
+    // console.log(typeof str) // object
+    // console.log(typeof num) // object
+    // var func = new Function()
+    // console.log(typeof func) // function
+
+    // var iData = 99
+    // console.log(typeof iData + ' Wisen') // number Wisen
+    // console.log(typeof (iData + 'Wisen')) // string
+
+    // console.log(typeof undeclaredVariable) // 'undefined'
+    //
+    // console.log(typeof newLetVariable) // ReferenceError
+    // console.log(typeof newConstVariable) // ReferenceError
+    // console.log(typeof newClass) // ReferenceError
+    //
+    // let newLetVariable
+    // const newConstVariable = 'hello'
+    // class newClass{}
+
+    // 定义构造函数
+    // function C() {
+    // }
+    // function D() {
+    // }
+    // var o = new C()
+    // console.log(o instanceof C) //true,因为Object.getPrototypeOf(0) === C.prototype
+    // console.log(o instanceof D) //false，D.prototype不在o的原型链上
+    // console.log(o instanceof Object) //true 同上
+    //
+    // C.prototype = {}
+    // var o2 = new C()
+    // console.log(o2 instanceof C) // true
+    // console.log(o instanceof C) // false C.prototype指向了一个空对象，这个空对象不在o的原型链上
+    // D.prototype = new C() // 继承
+    // var o3 = new D()
+    // console.log(o3 instanceof D) // true
+    // console.log(o3 instanceof C) // true C.prototype现在在o3的原型链上
+
+
+    // var simpleStr = "This is a simple string";
+    // var myString  = new String();
+    // var newStr    = new String("String created with constructor");
+    // var myDate    = new Date();
+    // var myObj     = {};
+    // var myNonObj  = Object.create(null);
+    //
+    // console.log(simpleStr instanceof String); // 返回 false,虽然String.prototype在simpleStr的原型链上，但是后者是字面量，不是对象
+    // console.log(myString  instanceof String); // 返回 true
+    // console.log(newStr    instanceof String); // 返回 true
+    // console.log(myString  instanceof Object); // 返回 true
+    //
+    // console.log(myObj instanceof Object);    // 返回 true, 尽管原型没有定义
+    // console.log(({})  instanceof Object);    // 返回 true, 同上
+    // console.log(myNonObj instanceof Object); // 返回 false, 一种创建非 Object 实例的对象的方法
+    //
+    // console.log(myString instanceof Date); //返回 false
+    //
+    // console.log( myDate instanceof Date);     // 返回 true
+    // console.log(myDate instanceof Object);   // 返回 true
+    // console.log(myDate instanceof String);   // 返回 false
+
+    // var o = new Object();
+    // console.log(o.toString()); // returns [object Object]
+
+
+    // function Dog(name,breed,color,sex) {
+    //     this.name = name;
+    //     this.breed = breed;
+    //     this.color = color;
+    //     this.sex = sex;
+    // }
+    // Dog.prototype.toString = function dogToString() {
+    //     return "Dog " + this.name + " is a " + this.sex + " " + this.color + " " + this.breed
+    // }
+    //
+    // var theDog = new Dog("Gabby", "Lab", "chocolate", "female");
+    // console.log(theDog.toString()) //Dog Gabby is a female chocolate Lab
+
+    // null undefined
+    // console.log(Object.prototype.toString.call(null)) //[object Null] 很给力
+    // console.log(Object.prototype.toString.call(undefined)) //[object Undefined] 很给力
+
+    // // Number
+    // console.log(Object.prototype.toString.call(Infinity)) //[object Number]
+    // console.log(Object.prototype.toString.call(Number.MAX_SAFE_INTEGER)) //[object Number]
+    // console.log(Object.prototype.toString.call(NaN)) //[object Number]，NaN一般是数字运算得到的结果，返回Number还算可以接受
+    // console.log(Object.prototype.toString.call(1)) //[object Number]
+    // var n = 100
+    // console.log(Object.prototype.toString.call(n)) //[object Number]
+    // console.log(Object.prototype.toString.call(0)) // [object Number]
+    // console.log(Object.prototype.toString.call(Number(1))) //[object Number] 很给力
+    // console.log(Object.prototype.toString.call(new Number(1))) //[object Number] 很给力
+    // console.log(Object.prototype.toString.call('1')) //[object String]
+    // console.log(Object.prototype.toString.call(new String('2'))) // [object String]
+    //
+    // // Boolean
+    // console.log(Object.prototype.toString.call(true)) // [object Boolean]
+    // console.log(Object.prototype.toString.call(new Boolean(1))) //[object Boolean]
+    //
+    // // Array
+    // console.log(Object.prototype.toString.call(new Array(1))) // [object Array]
+    // console.log(Object.prototype.toString.call([])) // [object Array]
+    //
+    // // Object
+    // console.log(Object.prototype.toString.call(new Object())) // [object Object]
+    // function foo() {}
+    // let a = new foo()
+    // console.log(Object.prototype.toString.call(a)) // [object Object]
+    //
+    // // Function
+    // console.log(Object.prototype.toString.call(Math.floor)) //[object Function]
+    // console.log(Object.prototype.toString.call(foo)) //[object Function]
+    //
+    // // Symbol
+    // console.log(Object.prototype.toString.call(Symbol('222'))) //[object Symbol]
+    //
+    // // RegExp
+    // console.log(Object.prototype.toString.call(/sss/)) //[object RegExp]
+
+
+    // let Type = (function () {
+    //     let type = {};
+    //     let typeArr = ['String', 'Object', 'Number', 'Array', 'Undefined', 'Function', 'Null', 'Symbol', 'Boolean', 'RegExp'];
+    //     for (let i = 0; i < typeArr.length; i++) {
+    //         (function (name) {
+    //             type['is' + name] = function (obj) {
+    //                 return Object.prototype.toString.call(obj) === '[object ' + name + ']'
+    //             }
+    //         })(typeArr[i])
+    //     }
+    //     return type
+    // })()
+    // let s = true
+    // console.log(Type.isBoolean(s)) // true
+    // console.log(Type.isRegExp(/22/)) // true
+
+
+    // console.log(5 == '5') // true
+    // console.log(NaN == NaN) // false
+    // console.log(+0 == -0) // true
+    // console.log({} == {}) // false
+    //
+    // console.log(5 === '5') // false
+    // console.log(NaN === NaN) // false
+    // console.log(+0 === -0) // true
+    // console.log({} === {}) // false
+
+    // console.log(Object.is(5, '5')) // false
+    // console.log(Object.is(NaN, NaN)) // true
+    // console.log(Object.is(+0, -0)) // false
+    // console.log(Object.is({}, {})) // false，
+    // let a = {}
+    // let b = {}
+    // let c = b
+    // console.log(a === b) // false
+    // console.log(b === c) // true
+    // console.log(Object.is(b, c)) // true
+
+
+    // let obj = { c: '3', b: '1', a: '2' }
+    // for (const objKey of obj) {
+    //     console.log(objKey)
+    // }
+
+    /**
+     * delete 删除对象中的属性
+     */
+    // let student = {name: '张三', age: 14, sex: 'man'}
+    // delete student['sex']
+    // console.log(student) // {name: '张三', age: 14}
+
+</script>
+</body>
+</html>

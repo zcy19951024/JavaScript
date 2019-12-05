@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>数组的扩展</title>
+</head>
+<body>
+<div>
+  <p>p1</p>
+  <p>p2</p>
+  <p>p3</p>
+  <p>p4</p>
+  <p>p5</p>
+</div>
+
+
+<script>
+  let br = () => { document.write('<br>'); return  true; }
+  let writeStr = (str) => { document.write(JSON.stringify(str) + '<br>') }
+
+  //Array.from将对象转换为真正的数组
+//  let arrayLike = {
+//    0: 'a',
+//    1: 'b',
+//    2: 'c',
+//    length: 3
+//  }
+//  var arr1 = [].slice.call(arrayLike)
+//  br() && document.write(JSON.stringify(arr1))
+//  let arr2 = Array.from(arrayLike)
+//  br() && document.write(JSON.stringify(arr2))
+
+  //querySelectorAll方法返回的是一个类似数组对象，只有将这个对象转换为真正的数组才能使用forEach方法
+//  let ps = document.querySelectorAll('p');
+//  Array.from(ps).forEach(function (p) {
+//    console.log(p)
+//  })
+  //只要部署了Iterator接口的数据结构，Array.from都能将其转换为数组，如果本身是一个数组，Array.from会返回一个一模一样的新数组
+//  br() && document.write(Array.from('hello'))
+
+  //扩展运算符是三个点，将一个数组转换成逗号分割的序列
+//  console.log(...[1,2,3])
+//  console.log(1,[2, 3, 4], 5)
+  //下面的代码中array.push(...items)和add(...numbers)都是函数的调用，他们都使用了扩展运算符，该运算符将一个数组变成了参数序列
+//  function push(array, ...items) {
+//    array.push(...items)
+//  }
+//
+//  function add(x,y) {
+//    return x+y;
+//  }
+//  var numbers = [4,38];
+//  console.log(add(...numbers))
+
+  // ... 扩展运算符会将某些数据结构转换为数组，扩展运算符背后调用的是遍历接口Symbol.iterator，如果一个对象没有部署这个接口，就无法转换。
+  // 所谓类似数组的对象，本质特征只有一个，就是有length属性，因此任何有length属性的对象都可以通过Array.from方法转换成数组
+//  br() && console.log([...document.querySelectorAll('p')])
+//  br() && document.write(JSON.stringify(Array.from({length: 3})));
+
+  //对于没有部署该方法的浏览器，可以使用Array.prototype.slice方法代替
+//  const toArray = (() => Array.from ? Array.from : obj => [].slice.call(obj))();
+//  br() && console.log(toArray(document.querySelectorAll('p')))
+
+  //Array.from还可以接受第二个参数，类似于数组的map方法，来对每个元素进行处理，并将处理后的值放入返回的数组中
+//  let arr1 = Array.from([1,2,3], (x) =>  { return x * x })
+//  let arr2 = Array.from([1,2,3], (x) =>  x * x)
+//  console.info(arr2)
+//    let ps = document.querySelectorAll('p');
+//  let names1 = Array.prototype.map.call(ps, s => s.textContent)
+//  console.info(names1)
+//  let names2 = Array.from(ps, s => s.textContent)
+//  console.info(names2)
+
+  //下面的方法将数组中布尔值为false的成员转换成0
+//  let arr3 = Array.from([1,null,2,,3], (n)=> n||0)
+//  br() && document.write(arr3)
+
+  //Array.from可以将各种值转为真正的数组，并且还提供map功能，只要有一个数据结构就可以对他的值进行处理，然后转换成规范的数组解构
+//  let arr4 = Array.from({length: 2}, () => 'jack')
+//  br() && document.write(JSON.stringify(arr4))
+
+  //Array.of方法可以将一组数值转换为数组
+//  let arr5 = Array.of(1,3,6);
+//  br() && writeStr(arr5)
+
+  //Array.of方法可以用下面代码模拟 by ning
+//  function ArrayOf() {
+//    return [].slice.call(arguments)
+//  }
+//  let arr6 = ArrayOf(2,3,4,5)
+//  writeStr(arr6)
+
+//  copyWithin方法可以在数组内部将指定位置的成员赋值到其他位置并覆盖，然后返回当前数组
+//  let arr7 = [1,2,3,4,5]
+//  arr7 = arr7.copyWithin(0, 3)
+//  writeStr(arr7)
+
+  //将3号位复制到0号位
+//  arr7 = [1,2,3,4,5].copyWithin(0, 3, 4)
+//  writeStr(arr7)
+//  arr7 = [1, 2, 3, 4, 5].copyWithin(0, -2, -1)
+//  writeStr(arr7)
+
+  //数组实例的find方法，找到第一个符合条件的成员
+//  let arr8 = [1,2,3,4,-1].find((n) => { return n<0})
+//  writeStr(arr8)
+
+//  let arr9 = [1,3,4,5].find((value, index, arr) => { writeStr(arr) })
+//  writeStr(arr9)
+
+  //fill方法使用给定值填充一个数组
+//  let arr10 = ['a','b','c'].fill(7);
+//  arr10 = Array(4).fill(7);
+//  writeStr(arr10)
+
+  //es6提供三个新的方法遍历数组entries，keys，values他们都返回一个遍历器对象
+
+//  for(let index of ['a', 'b'].keys()){
+//    writeStr(index)
+//  }
+
+  //es6提供三个新的方法对数组进行遍历，entries(), keys(), values()，他们都返回一个遍历器对象
+//  for (let [key, value] of ['a', 'b'].entries()) {
+//    writeStr({key, value});
+//  }
+
+  // 如果不用for ... of循环可以手动调用遍历器对象的next方法
+//  let letter = ['a', 'b', 'c'];
+//  let entries = letter.entries();
+//  writeStr(entries.next().value)
+//  writeStr(entries.next().value)
+//  writeStr(entries.next().value)
+
+  //数组的includes方法返回一个布尔值，标识单个数组是否包含给定的值，和字符串的includes方法类似
+  //该方法的第二个参数是搜索的其实位置
+//  writeStr([1, 2, 3].includes(2))
+//  writeStr([1, 2, 3].includes(4))
+//  writeStr([1, 2, NaN].includes(NaN))
+
+  //indexOf方法也可以判断数组是否包含给定的值，它的含义是找到参数值的第一个出现的位置，所以要去比较是否不等于-1,表达起来不够直观，
+  //它内部使用严格相当运算符 === 会导致NaN的误判
+//  writeStr(NaN === NaN)
+//  writeStr([NaN].indexOf(NaN))
+//  writeStr([NaN].includes(NaN))
+
+  //如果不支持includes可以这样
+//  const contains = (() =>
+//    Array.prototype.includes
+//      ? (arr, value) => arr.includes(value)
+//      : (arr, value) => arr.some(el => el === value)
+//  )();
+//  writeStr(contains(['foo', 'bar'], 'baz'))
+
+  //数组空位是指数组在某一个位置上没有任何值，Array构造函数返回的数组都是空位
+//  writeStr(Array(3))
+
+  //空位不是undefined，一个位置的值等于undefined，依然是有值的，空位是没有任何值，使用in运算符可以说明
+//  let result = 0 in [undefined,undefined,undefined];
+//  result = 0 in [,,,];
+
+  //es5中对空位的处理都会跳过空位
+  //forEach,filter,every,some会跳过空位
+  //maphui 跳过空位但会保留这个值
+  //join和toString会将空位视为undefined，undefined和null会被处理成空字符串
+//  [,'a'].forEach((x, i) => writeStr(i))
+//  writeStr(['a','b'].filter(x => true))
+//  writeStr([,'a'].every(x => x === 'a'))
+//  writeStr([,'a'].some(x => x !== 'a'))
+//  writeStr([,'a'].map(x => 1))
+//  writeStr([,'a',undefined,null].join('#'))
+//  writeStr([,'a',undefined,null].toString())
+
+  //Array.from会将数组空位转为undefined，不会忽略空位
+//  writeStr(Array.from(['a',,'b']))
+
+  //扩展运算符...也会将空位转为undefined
+//  writeStr([...['a',,'b']])
+
+</script>
+</body>
+</html>

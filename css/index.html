@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>css布局</title>
+  <style>
+    .main { min-width: 900px; }
+    .simple { width: 500px; margin: 20px auto; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; }
+    .fancy { width: 500px; margin: 20px auto; padding: 50px; border: solid blue 10px; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; }
+    .static { position: static; }
+    .relative1 { position: relative; }
+    .relative2 { position: relative;  top: -20px;  left: 20px;  background-color: aqua;  width: 500px;  }
+    .fix {  position: fixed;  bottom: 0;  right: 0;  width: 200px;  border: 1px solid aqua;  }
+    .relative {  position: relative;  width: 600px;  height: 200px;  }
+    .absolute {  position: absolute;  top: 20px;  right: 0;  width: 300px;  height: 200px;  }
+    .box {  float: left;  width: 100px;  height: 200px;  margin: 1em;  }
+    .after-box{  clear: left;  }
+    .relative3{  width: 500px;  overflow: auto;  border: 1px solid #0d0eff;  zoom: 1;  }
+    .relative3>img{  float: right;  }
+    .content{max-width: 600px; margin: 1em auto;}
+    .elem{border: solid #6AC5AC 3px; position: relative;}
+    .isum{color: #734161; background-color: #eee;}
+    .three-column{padding: 1em; column-count: 3; column-gap: 1em;}
+  </style>
+</head>
+<body>
+<div class="main">
+  <div class="simple">我们现在一样大小了！</div>
+  <div class="fancy">万岁！</div>
+  <div class="static">static 是默认值。任意 position: static; 的元素不会被特殊的定位。一个 static 元素表示它不会被“positioned”，一个 position
+    属性被设置为其他值的元素表示它会被“positioned”。
+  </div>
+  <div class="relative1">relative 表现的和 static 一样，除非你添加了一些额外的属性。</div>
+  <div class="relative2">在一个相对定位（position属性的值为relative）的元素上设置 top 、 right 、 bottom 和 left
+    属性会使其偏离其正常位置。其他的元素的位置则不会受该元素的影响发生位置改变来弥补它偏离后剩下的空隙。
+  </div>
+  <div class="fix">Hello！暂时不要太关注我哦。</div>
+  <div class="relative">这个元素是相对定位的。如果它是 position: static; ，那么它的绝对定位子元素会跳过它直接相对于body元素定位。
+    <div class="absolute">这个元素是绝对定位的。它相对于它的父元素定位。</div>
+  </div>
+  <div class="box"><p>我感觉好像我在漂浮！</p></div>
+  <section class="after-box">
+    在这个例子中，section元素实际上是在div之后的（译注：DOM结构上）。然而div元素是浮动到左边的，于是section中的文字就围绕了div，并且section元素包围了整个元素。如果我们想让 section
+    显示在浮动元素之后呢？
+    使用 clear 我们就可以将这个段落移动到浮动元素 div 下面。你需要用 left 值才能清除元素的向左浮动。你还可以用 right 或 both 来清除向右浮动或同时清除向左向右浮动。
+  </section>
+  <div class="relative3">
+    <img src="img/ilta.png"/>
+    <p>不......这个图片比包含它的元素还高， 而且它是浮动的，于是它就溢出到了容器外面！</p>
+  </div>
+  <div class="content">
+    <section class="elem three-column isum">
+      <div>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus imperdiet, nulla et dictum interdum, nisi lorem egestas odio, vitae scelerisque enim ligula venenatis dolor. Maecenas nisl est, ultrices nec congue eget, auctor vitae massa. Fusce luctus vestibulum augue ut aliquet. Mauris ante ligula, facilisis sed ornare eu, lobortis in odio. Praesent convallis urna a lacus interdum ut hendrerit risus congue. Nunc sagittis dictum nisi, sed ullamcorper ipsum dignissim ac. In at libero sed nunc venenatis imperdiet sed ornare turpis. Donec vitae dui eget tellus gravida venenatis. Integer fringilla congue eros non fermentum. Sed dapibus pulvinar nibh tempor porta. Cras ac leo purus. Mauris quis diam velit.
+      </div>
+    </section>
+  </div>
+</div>
+</body>
+</html>

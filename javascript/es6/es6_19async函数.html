@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>async函数</title>
+</head>
+<body>
+<script>
+    let write = (str) => {
+        document.write(JSON.stringify(str) + '<br>');
+    };
+
+    /**
+     * 1.含义
+     * ES2017标准引入了async函数，使得异步操作显得更加方便。
+     * async函数不是新事物，它只是Generator的语法糖
+     * */
+    //    var fs = require('fs');
+    //    var readFile = function (fileName) {
+    //        return new Promise(function (resolve, reject) {
+    //            fs.readFile(fileName, function (error, data) {
+    //                if (error) return reject(error);
+    //                resolve(data);
+    //            })
+    //        })
+    //    }
+    //    var gen = function* () {
+    //        var f1 = yield readFile('/etc/fstab');
+    //        var f2 = yield readFile('/etc/shells');
+    //        console.log(f1.toString());
+    //        console.log(f2.toString());
+    //    }
+
+    /**
+     * 如果协程async函数，就是下面这样。比较发现，async函数是将Generator函数的星号（*）替
+     * 换成async，将yield替换成await而已
+     */
+    //    var asyncReadFile = async function () {
+    //        var f1 = await readFile('/etc/fstab');
+    //        var f2 = await readFile('/etc/shells');
+    //        console.log(f1.toString());
+    //        console.log(f2.toString());
+    //    }
+
+    /**async函数对Generator函数的该井，体现在下面四点。
+     * （1）内置执行器
+     * Generator函数的执行必须靠执行器，所以蔡有了co模块，而async函数自带执行器。也就是说，async
+     * 函数的执行，与普通函数一模一样，只要一行。
+     * */
+    //    asyncReadFile();
+    /**上面的代码调用了asyncReadFile函数，然后它就会自动执行，输出最后结果，这完全不像Generator函数，
+     * 需要调用next方法，或者co模块，才能真正执行，得到最后结果。
+     *
+     * （2）更好的语义
+     * async和await，比起星号和yield，语义更清楚了。async表示函数里有异步操作，await表示紧跟在后面的表达式
+     * 需要等待结果。
+     *
+     * （3）更广的适用性
+     * co模块约定，yield命令后面只能是Thunk函数或者Promise对象，而async函数的await命令后面，可以是Promise对象和原生类型的值（数字，
+     * 字符串和布尔值，这时等同于同步操作）
+     *
+     * （4）返回值是Promise
+     * async函数返回的值是Promise对象，这比Generator函数的返回值是一个Iterator遍历器对象方便，可以用then执行下一步操作。
+     *
+     * async函数完全可以看做是多个异步操作，包装成的一个Promise对象，而await命令就是内部then命令的语法糖
+     *
+     * 2.基本用法
+     * async函数返回一个Promise对象，可以使用then方法添加回调函数。当函数执行的时候一旦遇到await就会先返回，等到异步操作完成，接着再执行
+     * 函数体后面的语句。下面是一个例子。
+     * 获取股票报价函数，函数前面是async关键字，标明函数内部有异步操作。调用该函数，会立即返回一个Promise对象。
+     * */
+    //    async function getStockPriceByName (name) {
+    //        var symbol = await getStockSymbol(name);
+    //        var stockPrice = await getStockPrice(symbol);
+    //        return stockPrice;
+    //    }
+    //    getStockPriceByName('goog').then(function (result) {
+    //        console.log(result);
+    //    });
+
+    /**下面是另外一个例子，指定多少秒后输出一个值,50毫秒之后输出hello world*/
+    //    function timeout (ms) {
+    //        return new Promise((resolve) => {
+    //            setTimeout(resolve, ms);
+    //        })
+    //    }
+    //    async function asyncPrint (value, ms) {
+    //        await timeout(ms);
+    //        write(value)
+    //    }
+    //    asyncPrint('hello world', 50);
+
+    /**由于async函数返回的是Promise对象，可以作为await命令的参数。所以上面的例子可以写成下面这样。*/
+    //    async function timeout (ms) {
+    //        await new Promise((resolve) => {
+    //            setTimeout(resolve, ms);
+    //        });
+    //    }
+    //
+    //    async function asyncPrint (value, ms) {
+    //        await timeout(ms);
+    //        console.log(value);
+    //    }
+    //
+    //    asyncPrint('hello world', 50);
+
+    /**async函数有多种使用形式*/
+    // 函数声明
+    // async function foo () { }
+
+    // 函数表达式
+    // const foo = async function () { }
+    //
+    // 对象的方法
+    // let obj = { async foo() };
+    // obj.foo().then();
+
+    // class的方法
+    // async function getTitle (url) {
+    //     let response = await fetch(url);
+    //     let html = await response.text();
+    //     return html.match(/<title>([\s\S]+)<\/title>/i)[1];
+    // }
+    // getTitle('https://tc39.github.io/ecma262/').then(console.log);
+
+    // async function f () {
+    //     return await 123;
+    // }
+    // f().then(v => console.log(v))
+    // class Sleep {
+    //     constructor (timeout) {
+    //         this.timeout = timeout
+    //     }
+    //
+    //     then (resolve, reject) {
+    //         const startTime = Date.now()
+    //         setTimeout(
+    //             () => resolve(Date.now() - startTime),
+    //             this.timeout
+    //         )
+    //     }
+    // }
+    //
+    // (async () => {
+    //     const actualTime = await  new Sleep(1000)
+    //     console.log(actualTime)
+    // })();
+
+    // async function f () {
+    //     await Promise.reject('出错了')
+    // }
+    // f().then(v => console.log(v)).catch(e => console.log(e))
+
+    // async function f() {
+    //     await Promise.reject('出错了');
+    //     await Promise.resolve('hello world'); // 不会执行
+    // }
+    // async function f () {
+    //     try {
+    //         await Promise.reject('出错了');
+    //     } catch (e) {
+    //     }
+    //     return await Promise.resolve('hello world');
+    // }
+    //
+    // f().then(v => console.log(v))
+
+    // async function f () {
+    //     await Promise.reject('出错了')
+    //         .catch(e => console.log(e));
+    //     return await Promise.resolve('hello world');
+    // }
+    //
+    // f().then(v => console.log(v))
+
+    // async function f () {
+    //     await new Promise(function (resolve, reject) {
+    //         throw new Error('出错了')
+    //     })
+    // }
+    // f().then(v => console.log(v)).catch(e => console.log(e))
+
+    // async function f () {
+    //     try {
+    //         await new Promise(function (resolve, reject) {
+    //             throw new Error('出错了')
+    //         })
+    //     } catch (e) {
+    //     }
+    //     return await ('hello world')
+    // }
+    // f().then(value => console.log(value)).catch(e => console.log(e))
+
+    // async function main () {
+    //     try {
+    //         const val1 = await firstStep();
+    //         const val2 = await secondStep(val1);
+    //         const val3 = await thirdStep(val1, val2);
+    //         console.log('final: ', val3);
+    //     } catch (e) {
+    //         console.log(e)
+    //     }
+    // }
+
+    // let foo = await getFoo();
+    // let bar = await getBar();
+    //
+    // // 写法一
+    // let [foo, bar] = await Promise.all([getFoo(), getBar()]);
+    //
+    // // 写法二
+    // let fooPromise = getFoo();
+    // let barPromise = getBar();
+    // let foo = await fooPromise;
+    // let bar = await barPromise;
+
+    // function spawn (genF) {
+    //     return new Promise(function (resolve, reject) {
+    //         const gen = genF()
+    //
+    //         function step (nextF) {
+    //             let next;
+    //             try {
+    //                 newxt = nextF()
+    //             } catch (e) {
+    //                 return reject(e)
+    //             }
+    //             if (next.done) {
+    //                 return resolve(next.value)
+    //             }
+    //             Promise.resolve(next.value).then(function (v) {
+    //                 step(function () {
+    //                     return gen.next(v)
+    //                 })
+    //             }, function (e) {
+    //                 step(function () {
+    //                     return gen.throw(e)
+    //                 })
+    //             })
+    //         }
+    //
+    //         step(function () {
+    //             return gen.next(undefined)
+    //         })
+    //     })
+    // }
+
+    // function chainAnimationsPromise (elem, animations) {
+    //
+    //     // 变量ret用来保存上一个动画的返回值
+    //     let ret = null
+    //
+    //     // 新建一个空的Promise
+    //     let p = Promise.resolve()
+    //
+    //     // 使用then方法，添加所有动画
+    //     for (let anim of animations) {
+    //         p = p.then(function (val) {
+    //             ret = val
+    //             return anim(elem)
+    //         })
+    //     }
+    //
+    //     // 返回一个部署了错误捕捉机制的Promise
+    //     return p.catch(function (e) {
+    //         // 忽略错误，继续执行
+    //     }).then(function () {
+    //         return ret
+    //     })
+    // }
+
+    // function chainAnimationsGenerator (elem, animations) {
+    //     return spawn(function *() {
+    //         let ret = null
+    //         try {
+    //             for (let anim of animations) {
+    //                 ret = yield anim(elem)
+    //             }
+    //         } catch (e) {
+    //             //
+    //         }
+    //         return ret
+    //     })
+    // }
+
+    // async function chianAnimationsAsync(elem, animations) {
+    //     let ret = null
+    //     try {
+    //         for (let anim of animations) {
+    //             ret = await anim(elem)
+    //         }
+    //     } catch (e) {
+    //         // 忽略错误，继续执行
+    //     }
+    //     return ret
+    // }
+
+    // function logInOrder (urls) {
+    //     // 远程读取所有的URL
+    //     const textPromises = urls.map(url => {
+    //         return fetch(url).then(response => response.text())
+    //     })
+    //
+    //     // 按次序输出
+    //     textPromises.reduce((chain, textPromise) => {
+    //         return chain.then(() => textPromise).then(text => console.log(text))
+    //     }, Promise.resolve())
+    // }
+
+    // async function logInOrder (urls) {
+    //     for (let url of urls) {
+    //         const response = await fetch(url)
+    //         console.log(await  response.text())
+    //     }
+    // }
+
+    // async function loadInOrder (urls) {
+    //     // 并发读取远程URL
+    //     const textPromises = urls.map(async url => {
+    //         const response = await fetch(url)
+    //         return response.text()
+    //     })
+    //     // 按次序输出
+    //     for (const textPromise of textPromises) {
+    //         console.log(await textPromise)
+    //     }
+    // }
+
+    // (async function () {
+    //     for await (const x of ['a', 'b']) {
+    //         console.log(x);
+    //     }
+    // })();
+
+    // async function* gen() {
+    //     yield 'hello';
+    // }
+    // const genObj = gen();
+    // genObj.next().then(x => console.log(x));
+
+    // function fetchRandom() {
+    //     const url = 'https://www.random.org/decimal-fractions/'
+    //         + '?num=1&dec=10&col=1&format=plain&rnd=new';
+    //     return fetch(url);
+    // }
+    //
+    // async function* asyncGenerator() {
+    //     console.log('Start');
+    //     const result = await fetchRandom(); // (A)
+    //     yield 'Result: ' + await result.text(); // (B)
+    //     console.log('Done');
+    // }
+    //
+    // const ag = asyncGenerator();
+    // ag.next().then(({value, done}) => {
+    //     console.log(value);
+    // })
+
+    // async function* asyncGenerator() {
+    //     throw new Error('Problem!');
+    // }
+    //
+    // asyncGenerator().next().catch(err => console.log(err));
+
+    // 异步执行器
+    // async function takeAsync(asyncIterable, count = Infinity) {
+    //     const result = [];
+    //     const iterator = asyncIterable[Symbol.asyncIterator]();
+    //     while (result.length < count) {
+    //         const {value, done} = await iterator.next();
+    //         if (done) break;
+    //         result.push(value);
+    //     }
+    //     return result;
+    // }
+
+    // 使用异步执行器
+    // async function f() {
+    //     async function* gen() {
+    //         yield 'a';
+    //         yield 'b';
+    //         yield 'c';
+    //     }
+    //
+    //     return await takeAsync(gen());
+    // }
+    //
+    // f().then(function (result) {
+    //     console.log(result); // ['a', 'b', 'c']
+    // })
+
+
+    // async function* gen1() {
+    //     yield 'a';
+    //     yield 'b';
+    //     return 2;
+    // }
+
+    // async function* gen2() {
+    //     // result 最终会等于 2
+    //     const result = yield* gen1();
+    // }
+    // (async function () {
+    //     for await (const x of gen2()) {
+    //         console.log(x);
+    //     }
+    // })();
+
+    /**
+     * async函数里面可以没有await
+     */
+    async function f() {
+      console.log('1')
+    }
+    f()
+</script>
+</body>
+</html>

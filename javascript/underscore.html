@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>underscore</title>
+  <script src="underscore.js"></script>
+</head>
+<body>
+<script>
+  let writeStr = (str) => { document.write(JSON.stringify(str) + '<br>') }
+//  let abnormalPrototype = [
+//    '收货环节',
+//    '检验环节',
+//    '入库环节',
+//    '备料环节',
+//    '派料环节',
+//    '接收环节',
+//    '生产过程环节',
+//    '无样品环节',
+//    '无成本环节',
+//    '信息配套环节',
+//    '关键物料环节',
+//    '设备作业执行环节'
+//  ]
+//  let array = _.map([1, 2, 3, 5], (item) => { return abnormalPrototype[item] })
+//
+//  let obj = {
+//    "BILLNO": "20160720000040",
+//    "FROMPERSONID": "system",
+//    "FROMPERSONNAME": "system",
+//    "ABNORMALPROTOTYPE": 6,
+//    "ABNORMALTYPEID": "PP3",
+//    "ABNORMALTYPENAME": "标准异常",
+//    "ABNORMALID": "PA001",
+//    "ABNORMALNAME": "节拍延时",
+//    "ABNORMALDESC": " 【站点:T009】 【批号:H525834】【组号:1-1】出现 【异常:延时-229秒】",
+//    "STARTTIME": 20160720162021,
+//    "PLANENDTIME": 0,
+//    "ENDTIME": 0,
+//    "PERSONID": "017335",
+//    "PERSONNAME": "付国",
+//    "DEPTID": "",
+//    "DEPTNAME": "",
+//    "DEALWITHPERSONID": "",
+//    "DEALWITHPERSONNAME": "",
+//    "SOLUTION": "",
+//    "DEALWITHSTATE": 0,
+//    "AFFECTTIME": 0.0,
+//    "AFFECTPERSONNUM": 0
+//  }
+//  let data = _.pick(obj, (value, key, object) => { return ['BILLNO', 'FROMPERSONID'].findIndex(key) > -1 })
+//  writeStr(document.writeln(JSON.stringify(data)))
+
+  let arr = _.find([1, 3, 5], function(num){ return num % 2 == 0; })
+  console.info(arr)
+</script>
+</body>
+</html>

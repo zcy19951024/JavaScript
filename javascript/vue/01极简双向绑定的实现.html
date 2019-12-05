@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>极简双向绑定实现</title>
+</head>
+<body>
+<<<<<<< HEAD
+<div>
+    <a href="https://www.cnblogs.com/kidney/p/6052935.html?utm_source=gold_browser_extension">链接</a>
+    <!--<input type="text" id="a">-->
+    <!--<span id="b"></span>-->
+    <div id="app">
+        <input type="text" v-model="text">
+        {{text}}
+    </div>
+</div>
+
+<script>
+    /**vue.js最核心的功能有两个：响应式的数据绑定系统，组件系统
+     * 一, 访问器属性
+     * 访问器属性是对象中的一种特殊属性，它不能直在对象中设置，必须通过defineProperty()方法定义。
+     * */
+    // var obj = {}
+    // Object.defineProperty(obj, 'hello', {
+    //     get: function () {
+    //         console.log('get方法被调用')
+    //     },
+    //     set: function (v) {
+    //         console.log("set方法被调用了，参数是" + v)
+    //     }
+    // })
+    // obj.hello; // get方法被调用
+    // obj.hello = 'abc'; // set方法被调用了，参数是abc
+    // 可以像普通属性一样读取访问器属性，访问器属性的值比较特殊，读取或者设置访问器属性的值，其实是调用内部get，set函数
+    // 为属性赋值，就是调用set函数，赋值其实是传参。
+    // get,set方法内部的this都指向obj，这意味着get和set函数可以操作对象内部的值，另外，访问器属性会覆盖同名的普通属性，因为访问器
+    // 属性会被有限访问，与其同名的普通属性会被忽略。
+
+    /**二. 极简双向绑定的实现
+     * 这个例子实现的效果：随文本输入文字的变化，span中会同步显示相同的文字内容；在js或者控制台修改obj.hello的值，师徒会相应的更新。
+     * 这样就实现了model=>view以及view=>model的双向绑定
+     * */
+    // var obj = {};
+    // Object.defineProperty(obj, 'hello', {
+    //     set: function (newVal) {
+    //       document.getElementById('a').value = newVal;
+    //       document.getElementById('b').innerHTML = newVal;
+    //     }
+    // })
+    // document.addEventListener('keyup', function (e) {
+    //   obj.hello = e.target.value;
+    // });
+
+    /**三,分解任务
+     * 上面例子仅仅是为了说明原理。我们最终是要实现
+     *
+     * 将该任务分成几个子任务
+     * 1.输入框及文本节点与data对象中数据的绑定
+     * 2.输入框内容变化时，data对象中的数据同步变化，即view=>model的变化
+     * 3.data中的数据变化时，文本节点的内容同步变化，即mode=>view的变化
+     * 要实现任务一，需要对DOM进行编译，这里有一个知识点DocumentFragment
+     * */
+
+    /**四.DocumentFragment
+     * DocumentFragment（文档片段）可以看作节点容器，她可以包含多个子节点，当问哦们将它插入到DOM中时，
+     * 只有它的子节点会插入到目标节点，所以可以把它看作一组节点的容器。使用DocumentFragment处理节点，速度和性能优于直接
+     * 操作DOM。Vue进行编译时，就是将挂在目标的所有子节点劫持到DocumentFragment中，经过处理之后，再将DocumentFragment
+     * 整体返回插入挂在目标。
+     * */
+    // var dom = nodeToFragment(document.getElementById("app"));
+    // console.log(dom);
+    // function nodeToFragment (node, vm) {
+    //     var flag = document.createDocumentFragment();
+    //     var child;
+    //     while (child = node.firstChild) {
+    //         flag.appendChild(child); // 劫持node的所有节点
+    //     }
+    //     return flag;
+    // }
+    // document.getElementById("app").appendChild(dom);
+    //
+    // /**五.数据初始化绑定*/
+    function compile (node, vm) {
+        var reg = /\{\{(.*)\}\}/;
+        // 节点类型为元素
+        if (node.nodeType === 1) {
+            var attr = node.attributes;
+            // 解析属性
+            for (var i = 0; i < attr.length; i++) {
+                if (attr[i].nodeName === 'v-model') {
+                    var name = attr[i].nodeValue; // 获取v-model绑定的属性名
+                    node.value = vm.data[name]; // 将data的值赋给该node
+                    node.removeAttribute('v-model');
+                }
+            }
+        }
+        // 节点类型为text
+        if (node.nodeType === 3) {
+            if (reg.test(node.nodeValue)) {
+                var name = RegExp.$1; // 获取匹配到的字符串
+                name = name.trim()
+                node.nodeValue = vm.data[name]; // 将该data的值付给该node
+            }
+        }
+<<<<<<< HEAD
+
+        // 构造函数
+        function Vue(options) {
+            this.data = options.data;
+            var id = options.el;
+            var dom = nodeToFragment(document.getElementById(id), this);
+            // 编译完成后把dom返回到app中
+            document.getElementById(id).appendChild(dom);
+=======
+    }
+
+    function nodeToFragment (node, vm) {
+        var flag = document.createDocumentFragment();
+        var child;
+        while (child = node.firstChild) {
+            compile(child, vm);
+            // 将子节点劫持到文档片段中
+            flag.appendChild(child);
+>>>>>>> e1adbf81daf65f1b8e0015613b1bfe6a427b9803
+        }
+        return flag;
+    }
+
+    // 构造函数
+    function Vue (options) {
+        this.data = options.data;
+        var id = options.el;
+        var dom = nodeToFragment(document.getElementById(id), this);
+        // 编译完成后把dom返回到app中
+        document.getElementById(id).appendChild(dom);
+    }
+
+    var vm = new Vue({
+        el: 'app',
+        data: {
+            text: 'hello world'
+        }
+    });
+
+<<<<<<< HEAD
+        /***六，响应式的数据绑定
+         * 接着看任务二的实现思路：当我们再输入框中输入数据的时候，首先触发input事件，（或者keyop,change
+         * 事件），再相应的事件处理程序中，我们获取输入框中的value并赋值给vm实例的text属性。我们会利用defineProperty将data中text设置
+         * 为vm的访问器属性，因此给vm.text赋值，就会触发set方法，再set方法中主要做两件事第一时更新属性的值，第二时更新文本节点中的值。
+         *
+         * */
+    </script>
+</div>
+
+</script>
+</body>
+</html>

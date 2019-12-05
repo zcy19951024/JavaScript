@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>print</title>
+    <link rel="stylesheet" href="./print-product-marks.css"/>
+    <script src="vue.min.js"></script>
+    <script src="jquery.min.js"></script>
+    <script src="jQuery.print.js"></script>
+</head>
+<body>
+<div id="app" class="package-print" ref="printBox">
+    <ul>
+        <li v-for="item in printData">
+            <div class="top-box">
+                <div class="left-box">
+                    <div class="line">{{item.kindName}}</div>
+                    <div class="line">{{item.batchNo}}</div>
+                    <div class="line">{{item.gradeName | gradeNameFormat(item.shipmentType)}}</div>
+                    <div class="line">{{item.boxNetWeight}}Kg</div>
+                    <div class="line">{{item.productDate | timeFormat('YYYY.MM.DD')}}</div>
+                </div>
+                <div class="right-box">
+                    <div class="line2">
+                        <div class="qrcode" ref="qrcode"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="buttom-box">
+                <div class="line3">{{item.code}}</div>
+            </div>
+        </li>
+    </ul>
+</div>
+<script>
+var app = new Vue({
+  el: '#app',
+  data: {
+      printData: [
+          {
+              kindName: ''
+          }
+      ]
+  },
+  watch: {
+  },
+  methods: {
+    print () {
+      let strHtml = ''
+      for (let i = 0; i < this.printCount; i++) {
+        strHtml += '<li>无光</li>'
+      }
+      $('#printBox>ul').html(strHtml);
+      $('#printBox').print();
+    }
+  }
+})
+</script>
+</body>
+</html>

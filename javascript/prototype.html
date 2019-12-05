@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>javascript原型链</title>
+</head>
+<body>
+<script>
+
+    /** http://www.cnblogs.com/yangjinjin/archive/2013/02/01/2889563.html
+     * https://blog.csdn.net/i10630226/article/details/49304031
+     * */
+    /** 一。普通对象和函数对象
+     * JavaScript中万物皆对象，但是对象也是有区别的，分为普通对象和函数对象。
+     * 下面代码中o1, o2, o3是普通对象，f1，f2，f是函数对象，通过“function”关键字创建的是函数对象，其他的是普通对象。
+     * */
+    function f1() {}
+
+    var f2 = function () {}
+    var f3 = new Function('str', 'console.log(str)');
+    f3('ssss');
+
+    var o1 = {};
+    var o2 = new Object();
+    var o3 = new f1();
+    console.log(typeof  Object);
+    console.log(typeof  Function);
+    console.log(typeof  o1);
+    console.log(o1);
+    console.log(typeof  o2);
+    console.log(o2);
+    console.log(typeof  o3);
+    console.log(o3);
+    console.log(typeof  f1);
+    console.log(f1);
+    console.log(typeof  f2);
+    console.log(f2);
+    console.log(typeof  f3);
+    console.log(f3);
+
+    /**二。原型对象
+     * JavaScript中，每当定义一个对象（函数）的时候，对象中都会包含一些预定义的属性。其中函数对象有prototype，__proto__属性，
+     * 普通对象没有prototype，有__proto__。
+     */
+    // var fun = function () {};
+    // write(`fun.prototype:${fun.prototype}`); // 输出[object Object]
+    // write(`fun.__proto__:${fun.__proto__}`); // function () { [native code] }
+    // var obj = {};
+    // write(`obj.prototype:${obj.prototype}`); // 输出null
+    // write(`obj.__proto__: ${obj.__proto__}`); // 输出[object Object]
+    /*
+     * 原型对象其实就是普通对象（Function.property除外，它是函数对象，它很特殊，没有property属性）
+     * */
+    // function f1 () {};
+    // write(`f1.prototype:${f1.prototype}`); // object
+    // write(`typeof f1.prototype: ${typeof  f1.prototype}`); // object
+    // write(`type of Function.prototype: ${typeof Function.prototype}`); // 这个太特殊是prototype
+    // write(`type of Object.prototype: ${typeof  Object.prototype}`); // object
+    // write(`type of Function.prototype.prototype: ${Function.prototype.prototype}`); // undefined
+
+    /**f1.prototype输出f1，f1.prototype就是f1的一个实例对象。就是在f1创建的时候，创建了一个它的实例对象并赋值给它的prototype，
+     * 基本过程如下：*/
+    // var temp = new f1(); // 创建实例对象
+    // f1.prototype = temp; // 赋值给f1.prototype
+    /**所以Function.prototype为什么是函数对象的问题就可以解释清楚了，new Function()产生的对象都是函数对象，所以temp1是函数对象。*/
+    // var temp1 = new Function();
+    // Function.prototype = temp1;
+
+    /**原型对象的主要作用是用来继承，如下，这个例子可以看出通过给person.prototype设置一个函数对象的属性getName，person的实例zhangsna
+     * 就继承了这个属性getName。*/
+    // var person = function (name) {
+    //     this.name = name;
+    // }
+    // person.prototype.getName = function () {
+    //     return this.name;
+    // }
+    // var zhangsan = new person('zhangsan');
+    // write(zhangsan.getName()); // 输出zhangsan
+
+    /**三 原型链
+     * js在创建对象（无论是普通对象还是函数对象），都有一个叫做__proto__的内置属性，用于指向它的函数对象的原型对象prototype，如下
+     * */
+    // write(`zhangsan.__proto__ === person.prototype: ${zhangsan.__proto__ === person.prototype}`); // true
+    /**同样person.prototype对象也有proto属性，它只想创建它的函数对象Object的prototype*/
+    // write(`person.prototype.__proto__ === Object.prototype: ${person.prototype.__proto__ === Object.prototype}`);
+    /**Object.prototype对象也有__proto__属性，但它比较特殊，为null*/
+    // write(`Object.prototype.__proto__: ${Object.prototype.__proto__}`);
+    /**我们把这个有__proto__穿起来直到Object.prototype.__proto__为null的链叫做原型链。
+     * zhangsan的内置对象__proto__指向创建zhangsan的函数对象person的prototype；
+     * person.prototype的内置对象__proto__指向创建person对象Object的prototype；
+     * Object.prototype的内置对象__proto__指向创建Object对象的原型对象null；
+     * */
+
+    /**四，内存结构图
+     * 越说越麻烦
+     * */
+    /**Object是函数对象，是铜鼓new Function() 创建，所以Object.__proto__指向Function.prototype*/
+    // write(`Object.__proto__ === Function.prototype: ${Object.__proto__ === Function.prototype}`);
+
+    /**Function也是对象函数，也是通过new Function()创建，所以Function.proto指向Function.prototype*/
+    // write(`Function.__proto__ === Function.prototype: ${Function.__proto__ === Function.prototype}`);
+
+    /**Function。prototype是个函数对象，理论上它的__proto__是指向Function.prototype就是它自己，自己指向自己。
+     * JavaScript强调万物皆对象，函数对象也是对象，但是Object.prototype.__proto__===null保证了原型链能正常结束*/
+    // write(`Function.prototype.__proto__===Object.prototype: ${Function.prototype.__proto__ === Object.prototype}`);
+    // write(`Object.prototype.__proto__:${Object.prototype.__proto__}`);
+
+    /**五 constructor
+     * 原型对象prototype中都有个预定义的constructor属性，用来引用它的函数对象。这是一种循环引用。
+     * */
+    // write(`person.prototype.constructor===person:${person.prototype.constructor===person}`)
+    // write(`Function.prototype.constructor===Function:${Function.prototype.constructor===Function}`);
+    // write(`Object.prototype.constructor===Object:${Object.prototype.constructor===Object}`);
+
+    /**有两点需要注意的地方
+     * （1）Object.constructor===Function true， Object是Funciton函数构造出来的
+     *  (2)查找一个对象的constructor，就是在改对象的原型链上寻找碰到的第一个constructor属性所指的对象
+     * */
+
+    /**6.总结
+     * （1）原型和原型链是JavaScript实现集成的一种模型
+     * （2）原型链的形成是靠内置对象__proto__而非prototype
+     * 执行dog.price的时候，发现没有这个属性，虽然prototype指向的animal有这个属性，但它没有去沿着这条链寻找。
+     * 同样执行tidy.price的时候，也没哟这个属性，但是tidy.__proto__指向了animal，它会沿着这个链去寻找，animal中有price属性，所以tidy.price
+     * 输出2000.由此得出原型链的形成是靠proto，而不是prototype。
+     * 如果在这样指定dog.__proto__=animal，那dog.price=2000
+     * */
+    /** 我们打一个比喻解释：
+     * */
+    // var animal = function () { };
+    // var dog = function () { };
+    // animal.price = 2000;
+    // dog.prototype = animal;
+    // var tidy = new dog();
+    // write(`dog.price=${dog.price}`);   // undefined
+    // write(`tidy.price=${tidy.price}`); // 2000
+</script>
+</body>
+</html>

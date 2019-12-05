@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>flex-格栅布局</title>
+    <style>
+        html {
+            height: 100%;
+            color: #404040;
+            font: 400 1em/1.4 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+            text-rendering: optimizeLegibility;
+            text-align: justify;
+        }
+        *, :after, :before {
+            box-sizing: border-box;
+        }
+        p {
+            display: block;
+            margin-block-start: 1em;
+            margin-block-end: 1em;
+            margin-inline-start: 0px;
+            margin-inline-end: 0px;
+        }
+        .site {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .Container {
+            max-width: 50em;
+            margin: 0 auto;
+        }
+
+        .Grid {
+            display: flex;
+            /*项目在轴线上换行*/
+            flex-wrap: wrap;
+            list-style: none;
+            padding: 0;
+        }
+
+        .Grid--gutters>.Grid-cell {
+            display: flex;
+        }
+
+        .Grid-cell {
+            /*flex是flex-grow，flex-shrink，flex-basic的简写flex: 1, 1, auto*/
+            flex: 1;
+        }
+
+        .Grid--gutters {
+            margin: -1em 0 1em -1em;
+        }
+
+        .Grid--gutters > .Grid-cell {
+            padding: 1em 0 0 1em;
+        }
+
+        .Demo {
+            width: 100%;
+            padding: .8em 1em 0;
+            background: hsla(31, 15%, 50%, .1);
+            border-radius: 3px;
+        }
+        .Demo:after {
+            content: '\00a0';
+            display: block;
+            margin-top: 1em;
+            height: 0;
+            visibility: hidden;
+        }
+        .u-textCenter {
+            text-align: center !important;
+        }
+        .u-1of2 {
+            width: 50% !important;
+        }
+        .u-1of3 {
+            width: 33.33%;
+        }
+        .u-1of3, .u-2of3 {
+            flex: none !important;
+        }
+        .u-1of4, .u-3of4 {
+            flex: none;
+        }
+        .u-1of4 {
+            width: 25% !important;
+        }
+        /* Base classes for all media */
+        .Grid--fit > .Grid-cell {
+            /*flex是flex-grow，flex-shrink，flex-basic的简写flex: 1, 1, auto*/
+            flex: 1;
+        }
+        .Grid--full > .Grid-cell {
+            flex: 0 0 100%;
+        }
+        .Grid--1of2 > .Grid-cell {
+            flex: 0 0 50%
+        }
+        .Grid--1of3 > .Grid-cell {
+            flex: 0 0 33.3333%
+        }
+        .Grid--1of4 > .Grid-cell {
+            flex: 0 0 25%
+        }
+        /* Small to medium screens */
+        @media (min-width: 24em) {
+            .small-Grid--fit > .Grid-cell {
+                /*flex是flex-grow，flex-shrink，flex-basic的简写flex: 1, 1, auto*/
+                flex: 1;
+            }
+            .small-Grid--full > .Grid-cell {
+                /*flex是flex-grow，flex-shrink，flex-basic的简写flex: 0, 0, 100%*/
+                flex: 0 0 100%;
+            }
+            .small-Grid--1of2 > .Grid-cell {
+                /*flex是flex-grow，flex-shrink，flex-basic的简写flex: 0, 0, 50%*/
+                flex: 0 0 50%
+            }
+            .small-Grid--1of3 > .Grid-cell {
+                /*flex是flex-grow，flex-shrink，flex-basic的简写flex: 0, 0, 33.3333%*/
+                flex: 0 0 33.3333%
+            }
+            .small-Grid--1of4 > .Grid-cell {
+                /*flex是flex-grow，flex-shrink，flex-basic的简写flex: 0, 0, 25%*/
+                flex: 0 0 25%
+            }
+        }
+        /* Large screens */
+        @media (min-width: 48em) {
+            .large-Grid--fit >.Grid-cell {
+                /*flex是flex-grow，flex-shrink，flex-basic的简写flex: 1, 1, auto*/
+                flex: 1;
+            }
+            .large-Grid--full > .Grid-cell {
+                /*flex是flex-grow，flex-shrink，flex-basic的简写flex: 1, 1, 100%*/
+                flex: 0 0 100%;
+            }
+            .large-Grid--1of2 > .Grid-cell {
+                /*flex是flex-grow，flex-shrink，flex-basic的简写flex: 0, 0, 50%*/
+                flex: 0 0 50%;
+            }
+            .large-Grid--1of3 > .Grid-cell {
+                /*flex是flex-grow，flex-shrink，flex-basic的简写flex: 0, 0, 33.3333%*/
+                flex: 0 0 33.3333%;
+            }
+            .large-Grid--1of4 > .Grid-cell {
+                /*flex是flex-grow，flex-shrink，flex-basic的简写flex: 0, 0, 25%*/
+                flex: 0 0 25%;
+            }
+        }
+        .Grid--top {
+            align-items: flex-start;
+        }
+        .Grid--bottom {
+            align-items: flex-end;
+        }
+        .Grid--center {
+            align-items: center;
+        }
+        .Grid-cell--top {
+            /*align-self属性允许单个项目有与其他项目不一样的对齐方式，可覆盖align-items属性*/
+            align-self: flex-start;
+        }
+        .Grid-cell--center {
+            /*align-self属性允许单个项目有与其他项目不一样的对齐方式，可覆盖align-items属性*/
+            align-self: center;
+        }
+        .Grid-cell--bottom {
+            /*align-self属性允许单个项目有与其他项目不一样的对齐方式，可覆盖align-items属性*/
+            align-self: flex-end;
+        }
+    </style>
+</head>
+<body class="site">
+<div class="Container">
+    <p>在flex之前，大部分格栅系统都使用两种布局方式：浮动（float）和内联块（inline-block）。但是他们的初衷都不是用于布局。使用浮动（float）
+        需要清除浮动，也牵连出一堆的布局问题。清除浮动有时会额外添加一个元素，并且，使用清除浮动通常会同时使用before和after两个伪元素。</p>
+    <h3>基础栅格系统</h3>
+    <p>格栅没有指定特定的宽度，他们自然地评分每一行的空间，并撑满每一行，并且高度默认都是相等的。</p>
+    <div class="Grid Grid--gutters u-textCenter">
+        <div class="Grid-cell">
+            <div class="Demo">1/2</div>
+        </div>
+        <div class="Grid-cell">
+            <div class="Demo">1/2</div>
+        </div>
+    </div>
+    <div class="Grid Grid--gutters u-textCenter">
+        <div class="Grid-cell">
+            <div class="Demo">1/3</div>
+        </div>
+        <div class="Grid-cell">
+            <div class="Demo">1/3</div>
+        </div>
+        <div class="Grid-cell">
+            <div class="Demo">1/3</div>
+        </div>
+    </div>
+    <div class="Grid Grid--gutters u-textCenter">
+        <div class="Grid-cell">
+            <div class="Demo">1/4</div>
+        </div>
+        <div class="Grid-cell">
+            <div class="Demo">1/4</div>
+        </div>
+        <div class="Grid-cell">
+            <div class="Demo">1/4</div>
+        </div>
+        <div class="Grid-cell">
+            <div class="Demo">1/4</div>
+        </div>
+    </div>
+    <div class="Grid Grid--gutters Grid--flexCells">
+        <div class="Grid-cell">
+            <div class="Demo">高度撑满，即使内容没有填满空间。</div>
+        </div>
+        <div class="Grid-cell">
+            <div class="Demo">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum mollis velit non gravida venenatis. Praesent consequat lectus purus, ut scelerisque velit condimentum eu. Maecenas sagittis ante ut turpis varius interdum. Quisque tellus ipsum, eleifend non ipsum id, suscipit ultricies neque.</div>
+        </div>
+    </div>
+    <h3>独立的尺寸</h3>
+    <p>当需求不再是等宽格栅的时候，可以添加尺寸属性到特定的格栅中。没有尺寸属性的格栅简单的评分剩下的可用空间。</p>
+    <p>下面加了“auto”标签的格栅没有指定任何尺寸属性。</p>
+    <div class="Grid Grid--gutters u-textCenter">
+        <div class="Grid-cell u-1of2">
+            <div class="Demo">1/2</div>
+        </div>
+        <div class="Grid-cell">
+            <div class="Demo">auto</div>
+        </div>
+        <div class="Grid-cell">
+            <div class="Demo">auto</div>
+        </div>
+    </div>
+    <div class="Grid Grid--gutters u-textCenter">
+        <div class="Grid-cell">
+            <div class="Demo">auto</div>
+        </div>
+        <div class="Grid-cell u-1of3">
+            <div class="Demo">1/3</div>
+        </div>
+    </div>
+    <div class="Grid Grid--gutters u-textCenter">
+        <div class="Grid-cell u-1of4">
+            <div class="Demo">1/4</div>
+        </div>
+        <div class="Grid-cell">
+            <div class="Demo">auto</div>
+        </div>
+        <div class="Grid-cell u-1of3">
+            <div class="Demo">1/3</div>
+        </div>
+    </div>
+    <h3>响应式</h3>
+    <p>响应式格栅系统通过天机阿媒体查询到格栅元素或者格栅容器来实现。当媒体满足查询条件的时候，格栅系统能自动调整。</p>
+    <p>下面的这些格栅应在低于48em时撑满一行，调整浏览器可以查看。</p>
+    <div class="Grid Grid--gutters Grid--full large-Grid--fit u-textCenter">
+        <div class="Grid-cell">
+            <div class="Demo">Full / Halves</div>
+        </div>
+        <div class="Grid-cell">
+            <div class="Demo">Full / Halves</div>
+        </div>
+    </div>
+    <div class="Grid Grid--gutters Grid--full large-Grid--fit u-textCenter">
+        <div class="Grid-cell">
+            <div class="Demo">Full / Thirds</div>
+        </div>
+        <div class="Grid-cell">
+            <div class="Demo">Full / Thirds</div>
+        </div>
+        <div class="Grid-cell">
+            <div class="Demo">Full / Thirds</div>
+        </div>
+    </div>
+    <h3>格栅嵌套</h3>
+    <p>格栅可以无限嵌套于另一个格栅中</p>
+    <div class="Grid Grid--gutters Grid--flexCells u-textCenter">
+        <div class="Grid-cell">
+            <div class="Demo">
+                <div class="Grid Grid--gutters u-textCenter">
+                    <div class="Grid-cell u-1of3">
+                        <div class="Demo">1/3</div>
+                    </div>
+                    <div class="Grid-cell">
+                        <div class="Demo">
+                            <div class="Grid Grid--gutters u-textCenter">
+                                <div class="Grid-cell">
+                                    <div class="Demo">1/2</div>
+                                </div>
+                                <div class="Grid-cell">
+                                    <div class="Demo">1/2</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="Grid-cell u-1of3">
+            <div class="Demo">1/3</div>
+        </div>
+    </div>
+    <h2>对齐特性</h2>
+    <h3>置顶对齐格栅</h3>
+    <div class="Grid Grid--gutters Grid--top">
+        <div class="Grid-cell">
+            <div class="Demo">我应该置顶对齐。</div>
+        </div>
+        <div class="Grid-cell u-1of2">
+            <div class="Demo">Pellentesque sagittis vel erat ac laoreet. Phasellus ac aliquet enim, eu aliquet sem.
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed pulvinar porta leo, eu ultricies nunc
+                sollicitudin vitae. Curabitur pulvinar dolor lectus, quis porta turpis ullamcorper nec. Quisque eget
+                varius turpis, quis iaculis nibh.
+            </div>
+        </div>
+        <div class="Grid-cell">
+            <div class="Demo">我应该置顶对齐。</div>
+        </div>
+    </div>
+    <h3>置底对齐格栅</h3>
+    <div class="Grid Grid--gutters Grid--bottom">
+        <div class="Grid-cell">
+            <div class="Demo">我应该置底对齐栅格。</div>
+        </div>
+        <div class="Grid-cell">
+            <div class="Demo">Curabitur pulvinar dolor lectus, quis porta turpis ullamcorper nec. Quisque eget varius
+                turpis, quis iaculis nibh. Ut interdum ligula id metus hendrerit cursus. Integer eu leo felis. Aenean
+                commodo ultrices nunc, sit amet blandit elit gravida in.
+            </div>
+        </div>
+        <div class="Grid-cell">
+            <div class="Demo">我应该置底对齐栅格。</div>
+        </div>
+    </div>
+    <h3>垂直居中格栅</h3>
+    <div class="Grid Grid--gutters Grid--center">
+        <div class="Grid-cell">
+            <div class="Demo">我应该相对于我右边的格子垂直居中。</div>
+        </div>
+        <div class="Grid-cell">
+            <div class="Demo">Curabitur pulvinar dolor lectus, quis porta turpis ullamcorper nec. Quisque eget varius
+                turpis, quis iaculis nibh. Ut interdum ligula id metus hendrerit cursus. Integer eu leo felis. Aenean
+                commodo ultrices nunc, sit amet blandit elit gravida in. Sed est ligula, ornare ac nisi adipiscing,
+                iaculis facilisis tellus. Nullam vel facilisis libero. Duis semper lobortis elit, vitae dictum erat.
+            </div>
+        </div>
+    </div>
+    <h3>混合垂直对齐</h3>
+    <div class="Grid Grid--gutters">
+        <div class="Grid-cell Grid-cell--top">
+            <div class="Demo">我应该置顶对齐。</div>
+        </div>
+        <div class="Grid-cell">
+            <div class="Demo">Curabitur pulvinar dolor lectus, quis porta turpis ullamcorper nec. Quisque eget varius
+                turpis, quis iaculis nibh. Ut interdum ligula id metus hendrerit cursus. Integer eu leo felis. Aenean
+                commodo ultrices nunc, sit amet blandit elit gravida in. Sed est ligula, ornare ac nisi adipiscing,
+                iaculis facilisis tellus.
+            </div>
+        </div>
+        <div class="Grid-cell Grid-cell--center">
+            <div class="Demo">我应该垂直居中。</div>
+        </div>
+        <div class="Grid-cell Grid-cell--bottom">
+            <div class="Demo">我应该置底对齐。</div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

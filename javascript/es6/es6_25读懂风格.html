@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>读懂风格</title>
+</head>
+<body>
+<script>
+    let write = (str) => {
+        document.write(JSON.stringify(str) + '<br>');
+    };
+    /* 5.数组的空位
+      * */
+    const a1 = [undefined, undefined, undefined];
+    const a2 = [, , ,];
+    write(a1.length);
+    write(a2.length);
+    write(a1[0]);
+    write(a2[0]);
+    write(a1[0] === a2[0]);
+    write(0 in a1);
+    write(0 in a2);
+    write(a1.hasOwnProperty(0));
+    write(a2.hasOwnProperty(0));
+    write(Object.keys(a1));
+    write(Object.keys(a2));
+    write(a1.map(n => 1));
+    write(a2.map(n => 1));
+
+    /* 上面四中运算符a1和a2的运算结果都不一样。in ，hasOwnProperty
+    * ,Object.keys，说明a2取不到属性名，最后一种运算map，说明数组a2没有发生遍历
+    * 数组的成员可以省略，只要逗号之前没有任何表达式，数组的length属性就会加1，并且相应增加其后成员的位置索引。
+    * 被省略的成员不会被定义。如果被省略的成员是素组最后一个成员，则不会导致数组length属性增加
+    *
+    * 数组的空位会反映在length属性上，也就是说空位有自己的位置，但是这个位置的值是未定义，即这个值是不存在的。
+    * 如果一定要读取，结果是undefined，它在JavaScript中表示不存在。
+    *
+    * 这就解释了为什么in，hasOwnProperty，Object.keys都娶不到空位的属性名。因为这个属性名根本就不存在
+    * */
+    let a3 = [1, 2, , ,];
+    write(a3.length);
+
+    /*6. 数组的map方法**/
+
+</script>
+</body>
+</html>

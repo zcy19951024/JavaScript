@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Object.defineProperty</title>
+</head>
+<body>
+<script>
+    /**1.概念
+     * Object.defineProperty()方法会直接在一个对象上定义一个属性，或者修改一个对象现有的属性并返回这个对象。该方法允许精准添加，修改对象
+     * 的属性，通过赋值添加的普通属性会创建在属性枚举期间显示的属性，例如for ... in， Object.keys。这些值可以被改变，也可以被删除。默认情况下
+     * Object.defineProperty()方法添加的属性是不可修改的。
+     *
+     * 语法：Object.defineProperty(obj, prop, descriptor)
+     *
+     * obj：要定义的属性的对象
+     * prop：要定义或者修改的属性名称
+     * descriptor：将被修改的或定义的属性描述符
+     *
+     * 返回值：被传递给函数的对象。
+     *
+     *
+     * 2.属性描述符
+     * 对象里的属性描述符descriptor主要有两种：数据描述符和存取描述符。数据描述符是一个具有值的属性，这个值可以是可写的，也可能是不可写的。访问描述符
+     * 是由getter和setter函数描述的属性。数据描述符和存取描述符不能同时存在。
+     *
+     * 数据描述符和存取描述符均具有以下可选键值：
+     * configurable： 当且仅当configurable为true的时候，该属性描述符才能被改变，同时该属性也能从它的对象上被删除。默认是false。
+     * enumerable：当且仅当enumberable为true的时候，该对象才能出现在对象的枚举属性中，(属性为true才能使用for...in，Object.keys，JSON.stringify)。默认为false。
+     *
+     * 数据描述符同时具有以下可选键值：
+     * value：该属性的值，可以是任何有效的javascript类型，数值，对象，函数等。默认为undefined。
+     * writable：当且仅当writable为true的时候，该属性才能被赋值运算符改变。默认为false。
+     *
+     * 存取描述符同时具有以下可选键值：
+     * get：一个给属性提供getter的方法，如果没有getter则为undefined。该方法返回值被用作属性值。默认为undefined。
+     * set：一个给属性提供setter的方法，如果没有setter则为undefined。该方法接受唯一参数，并将该参数的新值分配给该属性。默认为undefined。
+     *
+     * 这些选项不一定是自身属性，如果是继承来的也要考虑。为了确认保留这些默认值，可以在执行Object.defineProperty()之前冻结对象的原型，
+     * 或者将属性的__prop__设置为null，如下实例代码：
+     */
+    //  // 使用__prop__定义
+    // var obj = {}
+    // var descriptor = Object.create(null);
+    // // 默认没有enumberable，configurable，writable
+    // descriptor.value = 'static';
+    // Object.defineProperty(obj, 'key', descriptor);
+    // console.log(obj);
+
+
+    // // 显示定义
+    // var obj = {}
+    // Object.defineProperty(obj, 'key', {
+    //     enumerable: false,
+    //     configurable: false,
+    //     writable: false,
+    //     value: "statics"
+    // });
+    // console.log(obj);
+
+    // 循环使用统一对象
+    // function withValue (value) {
+    //     var d = withValue.d || (
+    //         withValue.d = {
+    //             enumerable: false,
+    //             writable: false,
+    //             configurable: false,
+    //             value: null
+    //         }
+    //     );
+    //     d.value = value;
+    //     return d;
+    // }
+    //
+    // var obj = {}
+    // Object.defineProperty(obj, 'key', withValue('static'));
+    // console.log(obj);
+
+    /**3.创建属性
+     * 如果对象中不存在指定的属性，Object.defineProperty()就创建这个属性。当描述符中省略某些字段的时候，这些字段将使用他们的默认值。
+     * 拥有Boolean类型的值的字段的默认值是false。 value ， get ， set字段的默认值为undefined。一个没有get/set/value/writeable定义
+     * 的属性被称为“通用的”，并被“键入”为一个数据描述符。
+     *
+     * */
+
+    // 在对象中添加一个属性与数据描述符的实例, 对象o拥有了属性a，值为37
+    // var obj = {};
+    // Object.defineProperty(obj, "a", {
+    //     value: 37,
+    //     writable: false,
+    //     enumerable: false,
+    //     configurable: true
+    // });
+    // console.log(obj);
+    // 在对象中添加一个属性与存取描述符,对象o拥有了属性b，值为38
+    var bValue;
+    Object.defineProperty(obj, 'b', {
+        get: function () {
+            return bValue;
+        },
+        set: function (newValue) {
+            bValue = newValue;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    // o.b的值现在总是与bValue相同，除非重新定义o.b
+    bValue = 200;
+    console.log(obj.b);
+    //
+    // // 数据描述符和存取描述符不能混合使用，否则会报错
+    // var obj = {};
+    // Object.defineProperty(obj, 'confict', {
+    //     value: '0x9f91102',
+    //     get: function () {
+    //         return 0xdeadbeef;
+    //     }
+    // });
+    // 报错：Uncaught TypeError: Invalid property descriptor. Cannot both specify accessors and a value or writable attribute, #<Object>
+
+    /**4.修改属性
+     * 如果属性已经存在，Object.defineProperty会尝试根据描述符中的值及当前的配置来修改这个属性。如果之前的描述符将其configurable属性设置为false
+     * ，则该属性被认为是不可配置的，并且没有属性可以改变（除了单项改变writable为false）。当属性不可配置时，不能在数据和访问器属性类型之间切换。
+     *
+     * 试图改变不可配置属性的值时会抛出错误，除非当前值和新值相同。
+     * */
+
+    // 创建一个新对象
+    // var o = {};
+    // Object.defineProperty(o, 'a', {
+    //     value: 37,
+    //     configurable: false,
+    //     writable: false
+    // });
+    // console.log(o.a); // 输出37
+    // o.a = 38;
+    // console.log(o.a); // writable属性为false，o.a的值仍然是37，如果是严格模式，这里会抛错："a" is read-only
+    //
+    //    (function() {
+    //        'use strict';
+    //        var o = {};
+    //        Object.defineProperty(o, 'b', {
+    //            value: 2,
+    //            writable: false
+    //        });
+    //        // 严格模式下会报错，属性b的值仍然是2
+    //        o.b = 3; // throws TypeError: "b" is read-only
+    //        return o.b; // returns 2 without the line above
+    //    }());
+
+    /**5.Enumerable属性
+     * enumberable属性定义了对象的属性是否可以在for...in中循环，Object.keys中被枚举
+     * */
+    // var o = {};
+    // Object.defineProperty(o, 'a', {value: 1, enumerable: true});
+    // Object.defineProperty(o, 'b', {value: 2, enumerable: false});
+    // // 没有设置 enumberable属性默认值是false
+    // Object.defineProperty(o, 'c', {value: 3});
+    // // 如果使用直接赋值的方式创建对象属性，则这个属性的enumerable为true
+    // o.d = 4;
+    // console.log(Object.keys(o)); // 输出["a", "d"]
+    // console.log(o.propertyIsEnumerable('a')); // 输出true
+    // console.log(o.propertyIsEnumerable('b')); // 输出false
+    // console.log(o.propertyIsEnumerable('c')); // 输出false
+    // console.log(o.propertyIsEnumerable('d')); // 输出true
+
+    /**6.Configurable属性
+     * Configurable属性表示对象的属性是否可以被删除，以及除writable特性之外的其他特性是否可以被修改，但是如果和之前定义的特性值是一致的
+     * 情况下不会报错，这样做也没有意义。
+     * */
+    // var o = {};
+    // Object.defineProperty(o, 'a', {
+    //     get: function () {
+    //         return 1;
+    //     },
+    //     configurable: false
+    // });
+    // console.log(o.a); // 输出1
+    //
+    // Object.defineProperty(o, 'a', {configurable: true}); // Uncaught TypeError: Cannot redefine property: a
+    // Object.defineProperty(o, "a", {enumerable: true}); // Uncaught TypeError: Cannot redefine property: a
+    // Object.defineProperty(o, "a", {
+    //     set: function () {
+    //     }
+    // }); // Uncaught TypeError: Cannot redefine property: a
+    // Object.defineProperty(o, "a", {
+    //     get: function () {
+    //     }
+    // }); // Uncaught TypeError: Cannot redefine property: a
+    // delete o.a;
+    // console.log(o.a); // 对染delete语句没有报错，但是没有真正删除a属性，输出1
+
+    /**使用点运算符和Object.defineProperty()为对象的属性赋值时，数据描述符中的属性默认值是不同的
+     */
+    // var o = {};
+    // o.a = 1;
+    // // 上面使用点语法定义属性，等同于下面代码，注意writable，configurable，enumerable的默认属性为false，但是这里是true
+    // Object.defineProperty(o, "a", {
+    //     value: 1,
+    //     writable: true,
+    //     configurable: true,
+    //     enumerable: true
+    // });
+    //
+    // Object.defineProperty(o, "a", {value: 1});
+    // // 上面使用Object.defineProperty()定义属性，等同于下面代码
+    // Object.defineProperty(o, "a", {
+    //     value: 1,
+    //     writable: false,
+    //     configurable: false,
+    //     enumerable: false
+    // });
+
+
+    /**7.一般的Setter和Getter
+     * 下面例子展示如何实现一个自存档对象，当设置temperature属性的时候，archiver条目会自动获取日志条目
+     * */
+   // function Archiver () {
+   //     var temperature = null;
+   //     var archiver = [];
+   //     Object.defineProperty(this, 'temperature', {
+   //         get: function () {
+   //             console.log('get!');
+   //             return temperature;
+   //         },
+   //         set: function (value) {
+   //             temperature = value;
+   //             archiver.push({val: temperature});
+   //         }
+   //     });
+   //     this.getArchive = function () {
+   //         return archiver;
+   //     }
+   // }
+   //
+   //  var arc = new Archiver();
+   //  console.log(arc.temperature); // 输出get，但是arc.temperature是null
+   //  arc.temperature = 11; // 触发archiver.push({val: temperature})
+   //  console.log(arc.temperature); // 虽然writable为false，但是返回的是对象内的私有属性11
+   //  arc.temperature = 13; // 触发archiver.push({val: temperature})
+   //  console.log(arc.temperature); // 虽然writable为false，但是返回的是对象内的私有属性13
+   //  console.log(arc.getArchive()); // 输出[{val: 11}, {val: 13}]
+
+    /**再看一个例子
+     * */
+   // var pattern = {
+   //     get: function () {
+   //         return 'I alway return this string,whatever you have assigned';
+   //     },
+   //     set: function () {
+   //         console.log('给属性myname赋值')
+   //         this.myname = 'this is my name string';
+   //     }
+   // }
+   // function TestDefineSetAndGet () {
+   //     Object.defineProperty(this, 'myproperty', pattern);
+   // }
+   // var instance = new TestDefineSetAndGet();
+   // instance.myproperty = 'test'; // 输出 “给属性myname赋值”
+   // console.log(instance.myproperty); // 输出 “I alway return this string,whatever you have assigned”
+   // console.log(instance.myname); // 输出 “this is my name string”
+
+    // function myClass () {
+    // }
+    // var value;
+    // Object.defineProperty(myClass.prototype, 'x', {
+    //     get () {
+    //         return value
+    //     },
+    //     set (x) {
+    //         value = x;
+    //     }
+    // });
+    // var a = new myClass();
+    // var b = new myClass();
+    // a.x = 1;
+    // console.log(a.x); // 1
+    // console.log(b.x); // 1
+
+    // function myClass () {
+    // }
+    // Object.defineProperty(myClass.prototype, 'x', {
+    //     get () {
+    //         return this.stored_x;
+    //     },
+    //     set (x) {
+    //         this.stored_x = x;
+    //     }
+    // });
+    // var a = new myClass();
+    // var b = new myClass();
+    // a.x = 1;
+    // console.log(a.x); // 1
+    // console.log(b.x); // undefined
+
+    // function myClass () {
+    // }
+    // myClass.prototype.x = 1;
+    // Object.defineProperty(myClass.prototype, 'y', {
+    //     writable: false,
+    //     value: 1
+    // });
+    // var a = new myClass();
+    // a.x = 2;
+    // console.log(a.x); // 1
+    // console.log(myClass.prototype.x); // 1
+    // a.y = 2;
+    // console.log(a.y); // 1
+    // console.log(myClass.prototype.y); // 1
+
+    /**8.兼容性问题
+     * 数组的length属性可以重定义，但是会受到一般的重定义限制。length初始特性为no-Configurable，non-enumerable以及writable。
+     * 对于一个内容不变的数组，改变其length属性的值或者使它变成non-writable是可能的。但是改变其可配置性，可枚举性，或者是当它是non-writable
+     * 时尝试改变它的值或者是可写性都是不允许的，同时也不是所有浏览器都允许Array.length重定义。
+     *
+     * 有些chrome版本中Object.defineProperty()在某些情况下会忽略不同于当前length属性的length值。有些情况下改变可写性并不起作用，也不抛出异常。
+     * 同时，比如Array.property.push的一些数组操作方法也不会考虑不可读的length属性。
+     *
+     * 某些版本的Safari中，Object.defineProperty()在某些情况下会忽略不同数组当前length属性的length值。尝试改变可写性的操作会正常执行而不会抛出错误，
+     * 但事实上并没有改变属性的可写性。
+     *
+     * 只在Internet Explorer 9及以后的版本和Firefox23以后的版本中，才能完整地支持数组length
+     * 属性的重新定义。目前不要依赖于重新定义数组length属性能够起作用，或在特定情形下起作用。
+     * 即使能股依赖它，也没有理由这样做。
+     *
+     * */
+
+    /**10. Internet Explorer8具体案例
+     * Internet Exporer 8实习那了Object.defineProerty()方法，但是只能在DOM对象上使用。
+     * 尝试在原生对象上使用Object.defineProperty()会报错。
+     * 属性特性必须设置一些特定的值。对于数据属性描述符，configurable，enumerable和writable特性
+     * 必须全部设置为true，对于访问属性描述符，configurable必须设置为true,enumerable必须设置为false
+     * 任何师徒提供其他值将导致一个错误抛出。
+     * 重新配置一个属性首先要删除该属性，如果属性没有删除，就如同重新配之前的尝试。
+     * */
+</script>
+</body>
+</html>

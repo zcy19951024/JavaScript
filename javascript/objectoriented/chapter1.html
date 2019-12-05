@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>第一章灵活的语言</title>
+</head>
+<body>
+<script>
+    /* 将方法checkName，checkEmail，checkPassword作为对象CheckObject的方法，可以使用对象方法来调用 */
+    //    var CheckObject = function () {
+    //    }
+    //    CheckObject.checkName = function () {
+    //        console.log('CheckObject.checkName')
+    //    }
+    //    CheckObject.checkEmail = function () {
+    //        console.log('CheckObject.checkEmail')
+    //    }
+    //    CheckObject.checkPassword = function () {
+    //        console.log('CheckObject.checkPassword')
+    //    }
+    //
+    //    // 输出CheckObject.checkName
+    //    CheckObject.checkName();
+    //    // 报错，Uncaught TypeError: o.checkName is not a function，新创建的对象不能不能继承这些方法
+    //    var o = new CheckObject();
+    //    o.checkName();
+
+    /* 将方法放在一个函数对象中，每次调用这个函数的时候返回一个对象，执行方法的时候是返回的新对象，这样每个人在使用的时候就互不影响。
+     * 但是这不是一个真正的创建对象的方式，创建的o对象和CheckObject没有任何关系。 */
+    //    var CheckObject = function () {
+    //        return {
+    //            checkName: function () {
+    //                console.log('CheckObject.checkName')
+    //            },
+    //            checkEmail: function () {
+    //                console.log('CheckObject.checkEmail')
+    //            },
+    //            checkPassword: function () {
+    //                console.log('CheckObject.checkPassword')
+    //            }
+    //        }
+    //    }
+    //    var o = new CheckObject();
+    //    o.checkName();
+
+    /* 这样就可以看做是一个类了。把所有的方法都放在函数内部，并且通过this定义，所以每一次通过new关键字创建对象的时候，新创建的对象的时候都
+     * 会有自己的一套方法。
+      * 这样做是很奢侈的，会造成很多的消耗。*/
+    //    var CheckObject = function () {
+    //        this.checkName = function () {
+    //            console.log('CheckObject.checkName')
+    //        }
+    //        this.checkEmail = function () {
+    //            console.log('CheckObject.checkEmail')
+    //        }
+    //        this.checkPassword = function () {
+    //            console.log('CheckObject.checkPassword')
+    //        }
+    //    }
+    //    var o = new CheckObject();
+    //    o.checkName();
+
+    /* 通过这种方法创建的对象，所有的对象实例方法都是一个，因为它们都需要依赖property原型依次查找，而找到的方法都是同一个，他们都绑定在
+     * CheckObject对象类的原型上。 */
+    //    var CheckObject = function () {}
+    //    CheckObject.prototype.checkName = function () {
+    //        console.log('CheckObject.checkName')
+    //    }
+    //    CheckObject.prototype.checkEmail = function () {
+    //        console.log('CheckObject.checkEmail')
+    //    }
+    //    CheckObject.prototype.checkPassword = function () {
+    //        console.log('CheckObject.checkPassword')
+    //    }
+    //    var o = new CheckObject();
+    //    o.checkName();
+
+    /* 上面的类的定义方式要写很多次的prototype，我们可以简写如下。但是这个和上面的方式不能混着用，否则在后面为原型对象的原型对象赋值新对象的
+     * 时候，会覆盖掉之前对property对象赋值的方法。 */
+    //    var CheckObject = function () {}
+    //    CheckObject.prototype = {
+    //        checkName: function () {
+    //            console.log('CheckObject.checkName')
+    //        },
+    //        checkEmail: function () {
+    //            console.log('CheckObject.checkEmail1')
+    //        },
+    //        checkPassword: function () {
+    //            console.log('CheckObject.checkPassword')
+    //        }
+    //    }
+    //    CheckObject.prototype.checkEmail = function () {
+    //        console.log('CheckObject.checkEmail2')
+    //    }
+    //    var o = new CheckObject();
+    //    // 输出CheckObject.checkName
+    //    o.checkName();
+    //    // 输出CheckObject.checkEmail2，因为后面的checkEmail方法会覆盖前面的checkEmail方法。
+    //    o.checkEmail();
+
+    /*上面的方法是分别调用的，什么意思呢，如果我们有一个逻辑即要验证用户名，邮件，又要验证密码，写法如下
+    * var o = new CheckObject();
+    * o.checkName();
+    * o.checkEmail();
+    * o.checkPassword();
+    * 这样的话o.要写三次了，这个是可以避免的，办法是在每一个函数末尾处返回当前的对象，在javascript中this就是指向当前对象，所以可以将它返回。
+    * 如下：
+    * */
+    //    var CheckOjbject = function () {};
+    //    CheckOjbject.prototype = {
+    //        checkName: function () {
+    //            console.log('CheckObject.checkName');
+    //            return this;
+    //        },
+    //        checkEmail: function () {
+    //            console.log('CheckObject.checkEmail');
+    //            return this;
+    //        },
+    //        checkPassword: function () {
+    //            console.log('CheckObject.checkPassword');
+    //            return this;
+    //        }
+    //    }
+    //    /*依次输出：
+    //    * CheckObject.checkName
+    //    * CheckObject.checkEmail
+    //    * CheckObject.checkPassword*/
+    //    var o = new CheckOjbject();
+    //    o.checkName().checkEmail().checkPassword();
+
+    /* prototype.js是一个javascript框架，它对原生对象做了很多的拓展，比如可以对Funciton对象添加一个检查邮箱的方法，如下 */
+    //    Function.prototype.checkEmail = function () {
+    //        console.log('CheckObject.checkEmail');
+    //    }
+    //    // 这样使用这个方法的时候就比较方便了，可以使用函数形式，如下：
+    //    var f = function () {
+    //    };
+    //    f.checkEmail();
+    //    // 可以使用类的形式，如下：
+    //    var o = new Function();
+    //    o.checkEmail();
+
+    //    // 但是不建议这样做，这样做污染了原生对象Function，别人的函数也会被你创建的函数所污染，造成不必要的开销，但是可以抽象出一个统一添加方
+    //    // 法的功能方法。如下：
+    //    Function.prototype.addMethod = function (name, fn) {
+    //        this[name] = fn
+    //        // 当然也可以返回当前对象
+    //        return this;
+    //    }
+    //    // 然后用下面的方式声明对象
+    //    var methods = function () {}
+    //    // 或者
+    //    // var methods = new Function ();
+    //    methods.addMethod('checkName', function () {
+    //        console.log('CheckObject.checkName');
+    //        return this;
+    //    }).addMethod('checkEmail', function () {
+    //        console.log('CheckObject.checkEmail');
+    //        return this;
+    //    })
+    //    methods.checkName().checkEmail();
+
+    //    // 上面使用的的是函数式调用方式，我们也可以使用类式调用方式，代码如下：
+    //    Function.prototype.addMethod = function (name, fn) {
+    //        this.prototype[name] = fn;
+    //        // 当然也可以返回当前对象
+    //        return this;
+    //    };
+    //    var Methods = function () {};
+    //    //    或者
+    ////    var Methods = new Function ();
+    //    Methods.addMethod("checkName", function () {
+    //        console.log('CheckObject.checkName');
+    //        return this;
+    //    })
+    //    Methods.addMethod("checkEmail", function () {
+    //        console.log('CheckObject.checkEmail');
+    //        return this;
+    //    })
+    //    var m = new Methods();
+    //    m.checkName().checkEmail();
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>css实现div的高度填满剩余空间</title>
+  <style>
+    html,
+    body { height: 100%; padding: 0; margin: 0; }
+    .outer { height: 100%; padding: 100px 0 0; box-sizing: border-box ; position: relative; }
+    .A { height: 100px; background: #BBE8F2; position: absolute; top: 0 ; left: 0 ; width: 100%; }
+    .B { height: 100%; background: #D9C666; }
+  </style>
+</head>
+<body>
+<div class="outer">
+  <div class="A"></div>
+  <div class="B"></div>
+</div>
+</body>
+</html>

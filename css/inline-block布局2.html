@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>inlin-box布局2</title>
+  <style>
+    *{ box-sizing: border-box; }
+    .elem { border: solid #6AC5AC 3px; position: relative; }
+    .container { position: relative; border: solid #6AC5AC 3px; }
+    .elem-red{border: solid #D64078 3px;}
+    nav.elem { display: inline-block; vertical-align: top; width: 25%; }
+    .column{ display: inline-block; vertical-align: top; width: 75%; }
+    .elem-green { solid #FDC72F 3px; }
+    .ipsum { color: #734161; background-color: #eee; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <nav class="elem elem-red">
+    <ul>
+      <li><a>Home</a></li>
+      <li><a>Taco Menu</a></li>
+      <li><a>Draft List</a></li>
+      <li><a>Hours</a></li>
+      <li><a>Directions</a></li>
+      <li><a>Contact</a></li>
+    </ul>
+  </nav><div class="elem elem-red column">
+    <section class="elem elem-green"><p>Tada!</p></section>
+    <section class="elem elem-green ipsum">
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus imperdiet, nulla et dictum interdum, nisi lorem egestas odio, vitae scelerisque enim ligula venenatis dolor. Maecenas nisl est, ultrices nec congue eget, auctor vitae massa. Fusce luctus vestibulum augue ut aliquet. Mauris ante ligula, facilisis sed ornare eu, lobortis in odio. Praesent convallis urna a lacus interdum ut hendrerit risus congue. Nunc sagittis dictum nisi, sed ullamcorper ipsum dignissim ac. In at libero sed nunc venenatis imperdiet sed ornare turpis. Donec vitae dui eget tellus gravida venenatis. Integer fringilla congue eros non fermentum. Sed dapibus pulvinar nibh tempor porta. Cras ac leo purus. Mauris quis diam velit.
+      </p>
+    </section>
+  </div>
+</div>
+</body>
+</html>

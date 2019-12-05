@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>使用css制作缩略图片</title>
+    <style>
+        /*第一种方法*/
+        /*.crop-technique1 {*/
+            /*float: left;*/
+            /*margin: .5em 10px .5em 0;*/
+            /*overflow: hidden;*/
+            /*border: 1px solid #ccc;*/
+        /*}*/
+        /*input values to crop the image: top right bottom left*/
+        /*.crop-technique1 img {*/
+            /*margin:-350px -550px -200px -650px;*/
+        /*}*/
+        /*第二种方法*/
+        /*.crop-technique2 {*/
+            /*float: left;*/
+            /*margin: 0.5em 10px 0.5em 0;*/
+            /*overflow: hidden;!*this is important*!*/
+            /*position: relative;!*this is important*!*/
+            /*border: 1px solid #ccc;*/
+            /*width: 150px;*/
+            /*height: 90px;*/
+        /*}*/
+        /*.crop-technique2 img {*/
+            /*position: absolute;!*this is important*!*/
+            /*top: -20px;*/
+            /*left: -55px;*/
+        /*}*/
+        /*第三种方法*/
+        .crop-technique3 {
+            float: left;
+            position: relative; /*这个很重要*/
+            margin: 0.5em 10px 0.5em 0;
+            border: 1px solid #ccc;
+            width: 150px;
+            height: 90px;
+        }
+        .crop-technique3 img {
+            margin: 0;
+            position: absolute; /*这个很重要*/
+            top: -20px;
+            left: -55px;
+            clip: rect(20px 205px 110px 55px);
+        }
+    </style>
+</head>
+<body>
+<div>
+    <!--<p class="crop-technique2">-->
+        <!--<a>-->
+            <!--<img src="timg.jpg" alt=""/>-->
+        <!--</a>-->
+    <!--</p>-->
+    <p class="crop-technique3">
+        <img src="timg.jpg" alt="">
+    </p>
+</div>
+<!--<a href="http://www.w3cplus.com/css/pure-css-create-faux-image-cropping"></a>-->
+
+<script>
+    let writeStr = (str) => {
+        document.write(JSON.stringify(str) + '<br>')
+    };
+</script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>prototype和__proto__的区别</title>
+</head>
+<body>
+<script>
+    /**
+     * https://www.cnblogs.com/smoothLily/p/4745856.html
+     * https://www.jianshu.com/p/80bcf8b2004e
+     * https://blog.csdn.net/i10630226/article/details/49304031
+     * https://www.cnblogs.com/nicoco/p/6846406.html
+     * https://www.cnblogs.com/craftsman-gao/p/4537308.html
+     * https://dmitripavlutin.com/7-tips-to-handle-undefined-in-javascript/
+     * https://www.cnblogs.com/nicoco/p/6760526.html
+    * 在JavaScript中万物皆对象，方法是对象，方法的原型是对象。他们有对象的共同特点，即：他们都有属性__proto__，基本上所有浏览器都已经实现
+    * 了这个属性，但是不建议使用这个属性，所有使用两个下划线放在开头和结尾，这个名字proto也很随意，这样做的意图是不建议看法人员使用这个属性，
+    * 这个属性是隐式原型。__proto__指向构造当前对象的构造函数的原型，它保证对象实例能够访问在构造函数原型中定义的属性和方法。
+    *
+    * JavaScript中方法这个对象有点特殊，除了和其他对象一样有隐式属性__proto__之外，还有自己特有的属性prototype，这个属性是一个指针，指向
+    * 一个对象，这个对象用来包含所有实例共享的属性和方法，我们把这个对象叫做原型对象，我们方法的这个prototype属性叫做原型属性。原型对象有
+    * 一个属性，是constructor，这个属性包含了一个指针，指回原构造函数。
+    * */
+    var A = function () {};
+    var B = {};
+    console.log(A.__proto__);
+    console.log(A.__proto__.__proto__);
+    console.log(B.__proto__);
+    function Function() {
+        
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>02消息订阅</title>
+</head>
+<body>
+
+</body><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>1实现Observer</title>
+    <!--https://segmentfault.com/a/1190000006599500-->
+</head>
+<body>
+<script>
+    /**使用Object.defineProperty()来检讨那个变动，递归遍历数据对象的属性，都加上getter和setter，这样给这个对象的某个属性赋值就会触发setter
+     * ，就能监听到数据变化
+     * */
+    let data = {name: 'kindeng'}
+    observer(data)
+    data.name = 'dmq'
+    function observer(data) {
+        if (!data || typeof data !== 'object') {
+            return
+        }
+        // 取出所有属性遍历监听
+        Object.keys(data).forEach((key) => {
+            defineReactive(data, key, data[key])
+        })
+    }
+    function defineReactive(data, key, val) {
+        let dep = new Dep()
+        // 监听自属性
+        observer(val)
+        Object.defineProperty(data, key, {
+            enumerable: true, // 可枚举
+            configurable: false, // 不能再次define
+            get: function () {
+                return val
+            },
+            set: function (newVal) {
+                console.log('哈哈，检测到值的变化了', val, '->', newVal)
+                val = newVal
+                dep.notify()
+            }
+        })
+    }
+    function Dep() {
+        this.subs = []
+    }
+    Dep.prototype = {
+        addSub: function (sub) {
+            this.subs.push(sub)
+        },
+        notify: function () {
+            this.subs.forEach((sub) => {
+                sub.update()
+            })
+        }
+    }
+</script>
+</body>
+</html>
+</html>

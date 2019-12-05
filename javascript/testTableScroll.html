@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        .table-wrapper {width: 300px;}
+        .table-wrapper table {
+            table-layout: fixed;
+            width: 100%;
+            text-align: left;
+            font-size: 10px;
+            border: 1px solid pink;
+        }
+        .table-wrapper table tbody{
+            display: inline-block;
+            width: 100%;
+            overflow: auto;
+            max-height: 100px;
+        }
+        .table-wrapper table tr{
+            display: inline-block;
+            width: 100%;
+            border-bottom: 1px solid #ddd;
+            height: 20px;
+            line-height: 20px;
+        }
+        .table-wrapper table td, .table-wrapper table th {
+            display: inline-block;
+            width: 27.5%;
+            white-space:nowrap;
+            overflow:hidden;
+            text-overflow:ellipsis;
+        }
+        .table-wrapper table td:nth-child(1), .table-wrapper table th:nth-child(1) {
+            width: 30px;
+        }
+    </style>
+</head>
+<body>
+<div class="table-wrapper">
+    <table>
+        <thead>
+        <tr>
+            <th>序号</th>
+            <th>片名1aaaaaaaaaaaaaaaaaaaaa</th>
+            <th>导演</th>
+            <th>剧情介绍</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>1</td>
+            <td>超时空同居</td>
+            <td>导演名</td>
+            <td>每当我遇到自己不敢直视的困难时，我就会闭上双眼，想象自己是一个80岁的老人，为人生中曾放弃和逃避过的无数困难而懊悔不已，我会对自己说，能再年轻一次该有多好，然后我睁开眼睛：砰！我又年轻一次了！</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>2aaaaaaaaaaaaaaaaaaaaa</td>
+            <td>品名1</td>
+            <td>价格1价格1价格1价格1</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>品名1</td>
+            <td>品名1</td>
+            <td>价格1</td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td>品名1</td>
+            <td>品名1</td>
+            <td>价格1</td>
+        </tr>
+        <tr>
+            <td>5</td>
+            <td>品名1</td>
+            <td>品名1</td>
+            <td>价格1</td>
+        </tr>
+        <tr>
+            <td>6</td>
+            <td>品名1</td>
+            <td>品名1</td>
+            <td>价格1</td>
+        </tr>
+        <tr>
+            <td>7</td>
+            <td>品名1</td>
+            <td>品名1</td>
+            <td>价格1</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

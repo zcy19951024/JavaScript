@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>javascript中call，apply，bind</title>
+</head>
+<body>
+<script>
+    let write = (str) => {
+        document.write(JSON.stringify(str) + '<br>');
+    };
+
+    /**
+     * 1.javascript中this对象的含义是指向当期对象中的属性和方法
+     * 2.this指向的可变性。当在全局作用域时，this指向全局；当在某个对象中使用this时，this指向该对象；当把某个对象的方法赋值给
+     * 另外一个对象时，this会指向后一个对象。
+     * 3.this的使用场合有：在全局环境中使用，在构造函数中使用，在对象的方法中使用。
+     * Javascript提供call，apply，bind三个方法来切换this的指向。
+     *
+     * call，apply，bind方法都是继承自Function.property,属于实例方法。下面代码中都返回了true，说明三种方法都是继承自
+     * Function.prototype的。当然，普通的对象，函数，数组都继承了Function.property对象中的这三个方法，所以这三个方法都可以在对象，
+     * 数组，函数中使用。
+     * */
+     // write(Function.prototype.hasOwnProperty('call')); // true
+     // write(Function.prototype.hasOwnProperty('apply')); // true
+     // write(Function.prototype.hasOwnProperty('bind')); // true
+
+
+    /** Function.property.call()
+     * 函数实例的call方法，可以指定该函数内部的this指向，即执行函数时所在的作用域，然后在指定的作用域中，调用该函数。并且会立即执行
+     * 该函数。
+     * **/
+    //call的用法
+     var keith = { rascal: 123 };
+     var rascal = 456;
+     function a() {
+       write(this.rascal); // this默认指向全局对象window
+     }
+     a(); // 456, a()函数中this指向全局对象，返回结果为456。
+     a.call(); // 456， call方法没有参数，在全局对象上执行a()函数，a()函数指向全局对象，结果返回456
+     a.call(null); // 456， call方法的参数是null，在全局对象上执行a()函数，a()函数指向全局对象，结果返回456
+     a.call(undefined); // 456， call方法的参数是undefined，a()函数指向全局对象，结果返回456
+     a.call(this); // 456， call方法的参数是this，这里this是全局对象window,window.rascal是456，结果返回456
+     a.call(keith); // 123，call方法的参数是keith对象，a()函数执行的作用域是keith对象内部，对象内的rascal是123，结果返回123
+
+    /**call()方法可以传递2个参数，第一个参数是指定函数内部this的指向，也就是函数执行时所在的作用域，第二个参数是调用时要传递的参数。
+     * 第一个参数是必须的，可以是null，undefined，this，不能不传。设置为null，undefined，this表明函数的keith此时处于全局作用
+     * 域。第二个参数中更不许一个个添加。apply中必须以数组的形式添加。
+     * */
+    //  function keith(a, b){
+    //    write(a + b);
+    //  }
+    //  keith.call(this, 3, 5); // call()方法的参数是null，keith()函数执行的作用域是window内部，结果返回8
+
+    // call方法调用对象的一个方法，以另一个对象替换当前对象，改变上下文。
+    // 下面代码的意思就是用add来替换sub，add.call(sub, 5, 3) === sub(5, 3)，所以最后输出的是8
+    // js中的函数其实是对象，函数名是对Function对象的引用
+    //  function add(j, k) {
+    //    write(j + k);
+    //  }
+    //
+    //  function sub(j, k) {
+    //    write(j - k);
+    //  }
+    //
+    //  add.call(sub, 5, 3); // add()函数的作用域指向sub()函数内部，并传递参数5，3，结果返回8
+
+    /**call()方法的一个应用是调用对象的原生方法。也可以用于将数组对象转换为数组*/
+    //  var obj = {};
+    //  write(obj.hasOwnProperty('toString')); // 返回false，obj对象没有toString方法
+    //  obj.hasOwnProperty = function () {
+    //    return true;
+    //  }
+    /**定义了对象obj的hasOwnProperty()方法，统一返回true，所以第二个参数无论传入
+     * 什么样的字符串都会返回true*/
+    //  write(obj.hasOwnProperty('toString'));
+    /**hasOwnProperty()是obj对象继承的方法，如果这个方法被覆盖，就不会得到正确结果。call()方法可以解决这个问题，她将
+     * hasOwnProperty()方法的原始定义放到obj对象上执行，这样无论obj上有没有同名方法，都不会影响结果。要注意的是，hasOwnProperty()
+     * 是Object.property原生对象的方法，二call是继承自Function.property的方法。*/
+    //  write(Object.prototype.hasOwnProperty.call(obj, 'toString'));
+
+
+    //这里的意思是把c1的方法放到c2上执行，c2是没有showName方法的，现在把c1的showName放在c2上执行，
+    //箭头函数可以消除这种改变，在箭头函数中this指向定义类所在的对象
+    //    function class1 () {
+    //        this.name = 'class1';
+    //        this.showName = function () {
+    //            write(this.name)
+    //        }
+    //    }
+    //
+    //    function class2 () {
+    //        this.name = 'class2';
+    //        this.showName = () => {
+    //            write(this.name)
+    //        }
+    //    }
+    //
+    //    function class3 () {
+    //        this.name = 'class3';
+    //    }
+
+    //    var c1 = new class1();
+    //    var c2 = new class2();
+    //    var c3 = new class3();
+    //    c1.showName.call(c2); // call()方法的第一个参数是c2，在c2对象上执行c1对象的showName()方法，结果是class2
+    //    c2.showName.call(c3); // call()方法的第一个参数是c3，在c3对象内部执行c2对象的showName()方法，但是这个方法使用箭头函数，绑定当前作用域，结果是class2
+
+    /**Function.property.apply()
+     * apply方法的作用与call方法类似，也是改变this指向，即函数执行时所在的作用域，然后在指定的作用域中，调用该函数，同时会立即执行该函数。
+     * 唯一不同的是，它接受的第二个参数是数组。
+     *
+     * apply方法的第一个参数也是this要指向的那个对象，如果传入null，undefined，或者this，则等同于指向全局对象。第二个参数一定要传一个数组，
+     * 该数组所有成员依次作为参数，在调用时传入原函数。原函数的参数，在call方法中必须一个个添加，但是在apply方法中，必须
+     * 以数组的形式添加。
+     * */
+    //    function keith (a, b) {
+    //        write(a + b);
+    //    }
+    //
+    //    keith.call(null, 2, 3); //call()方法的第一个参数是null，在全局对象window的内部执行keith方法，结果是5
+    //    keith.apply(null, [2, 3]); //apply()方法和call()方法的区别是，第二个参数必须传入一个数组
+
+    /**找出数组中的最大数
+     * javascript中没有提供找出数组中最大值的方法，结合使用继承自Function.prototype的apply和Math.max方法，可以返回数组的最大值。*/
+    //    var a = [2, 4, 5, 7, 8, 10];
+    //    write(Math.max.call(null, ...a)); //call()方法的第一个参数是null，在全局对象window的内部执行Math.max()方法，第二个参数传入扩展表达式，结果是10
+    //    write(Math.max.apply(null, a)); //apply()方法的第一个参数是null，在全局对象window的内部执行Math.max()方法，第二个参数传入数组，结果是10
+
+    /**将数组的空元素变成undefined
+     * */
+    //    var arr = [1, , 3];
+    //    console.log(arr[1]);
+    //    var arr1 = Array(2);
+    //    arr1[0] = 1;
+    //    arr1[2] = 3;
+    //    console.log(arr1[1]); //输出[1,null,3]
+    //    var arr3 = Array.apply(null, [1, , 3]); //apply()方法的第一个参数是null，在全局对象window内部调用Array()构造函数，传入数组[1, , 3]
+    //    console.log(arr3[1]);
+
+    /**空元素与undefined的差别在于，数组的forEach方法会跳过空元素，但是不会跳过undefined和null，因此遍历内部元素的时候会得到不同的结果。
+     * */
+    //    arr.forEach(function (item) {
+    //        console.log(item);
+    //    });
+    //    Array.apply(null,arr).forEach(function(index){
+    //        console.log(index);    ////1,undefined,3  ，将空元素设置为undefined
+    //    })
+
+    /**转换类似数组的对象
+     * 利用数组对象的slice方法，可以将一个类似数组的对象，比如arguments对象转换为真正的数组。slice方法的一个重要应用就是将类似数组的对象转换
+     * 成真正的数组。
+     * apply方法的第一个参数是一个类似数组对象{0: 1, length: 1}，在这个对象内部执行Array.prototype.slice()方法,结果是数组[1]，
+     * 下面三句输出同样的结果[1]。从上面代码可以看出，被处理的对象必须有length舒心个，以及响应的数字键。 by ning*/
+    //    write(Array.prototype.slice.apply({0: 1, length: 1}));
+    //    write([].slice.apply({0: 1, length: 1}));
+    //    write([2, 3].slice.apply({0: 1, length: 1}));
+    //
+    //    function keith (a, b, c) {
+    //        return arguments;
+    //    }
+    //
+    //    write(Array.prototype.slice.call(keith(1)));
+
+    //用call可以实现继承，在c2中Class1.call(this);意思就是在Class2中使用Class1对象代替this对象，这样Class2中就有Class1中所有的属性和方法
+    //    function Class1 () {
+    //        this.name = "class_1";
+    //        this.age = 100;
+    //        this.showTxt = function (txt) {
+    //            write(txt);
+    //        }
+    //    }
+    //
+    //    function Class2 () {
+    //        /**call()方法的第一个参数是this，在当前对象中执行构造函数Class1()，当前对象内部会获得Class1的所有属性和方法。*/
+    //        Class1.call(this);
+    //    }
+    //
+    //    // 执行Class2()构造函数，得到对象c2
+    //    var c2 = new Class2();
+    //     /**调用c2对象上的showTxt()方法，传入参数'ccccc'，构造函数里没有该方法，因为在Class2方法内部执行了Class1.call(this);Class2继承
+    //      * 了Class1的属性和方法。*/
+    //    c2.showTxt('ccccc');
+    //    write(c2.name);
+
+    // 下面再看一个例子, apply的写法
+    //    function Animal (name) {
+    //        this.name = name;
+    //        this.showName = function () {
+    //            write(this.name)
+    //        }
+    //    }
+    //
+    //    function Cat (name) {
+    //        /**apply()方法的第一个参数是this，在当前作用域内部执行构造函数Animal()，传入参数[name]，当前对象Cat获取Animal对象的所有属性和方法。*/
+    //        Animal.apply(this, [name]);
+    //    }
+    //
+    //    var cat = new Cat('gugu');
+    //    cat.showName();
+
+    //可以使用call实现多重继承，如下
+    //    function Class10 () {
+    //        this.showSub = function (a, b) {
+    //            write(a - b);
+    //        }
+    //    }
+    //
+    //    function Class11 () {
+    //        this.showAdd = function (a, b) {
+    //            write(a + b);
+    //        }
+    //    }
+
+    //    function Class12 () {
+    //        /**call()方法的第一个参数是this，在当前作用域内执行构造函数Class10()，获取Class10的所有属性和方法*/
+    //        Class10.call(this);
+    //        /**call()方法的第一个参数是this，在当前作用域内执行构造函数Class11()，获取Class11的所有属性和方法*/
+    //        Class11.call(this);
+    //    }
+
+    /* 调用构造函数Calss12()，获取对象c12**/
+    //    var c12 = new Class12();
+    /**在对象c12上调用showSub()方法，Class12继承了Class10所有的方法，所以调用Class10的showSub()方法，得到结果8*/
+    //    c12.showSub(5, 3);
+    /**在对象c12上调用showSub()方法，Class12继承了Class11所有的方法，所以调用Class11的showAdd()方法，得到结果2*/
+    //    c12.showAdd(5, 3);
+
+    // apply和call一样，只是调用的时候参数列表不一样
+    //  function Person(name, age) {
+    //    this.name = name;
+    //    this.age = age;
+    //	}
+
+    //	function Student(name, age, grade) {
+    //  	// apply可以把一个数组转换成一个参数列表
+    ////    Person.apply(this, arguments);
+    //    Person.call(this, name, age);
+    //    this.grade = grade;
+    //	}
+    //	var student = new Student('qian', 21, '一年级');
+    //  alert(`name:${student.name}  age: ${student.age} grade: ${student.grade}`);
+
+
+    //    function A () {
+    //        this.name = 'zhangsan';
+    //        this.getName = function () {
+    //            return this.name;
+    //        }
+    //    }
+    //
+    //    function B () {
+    //        this.age = 20;
+    //        this.getAge = function () {
+    //            return this.age;
+    //        }
+    //    }
+    //    B.prototype = new A();
+    //
+    //    var x = new B();
+    //    console.log(x.getName());
+    //    console.log(x.getAge());
+
+
+    // eval函数
+    //  eval(alert('你好'))
+
+    //  var i = 100;
+    //  function myFunction() {
+    //    var i = 'text';
+    //    eval('i = "hello"');
+    //    alert(i);
+    //  }
+    //  myFunction();
+    //  alert(i);
+
+    //  let obj = { name: "ManfredHu" };
+    //  function myFunc() {
+    //    alert(this.name);
+    //  }
+    //  myFunc();
+    //  myFunc().call(obj);
+
+    /**bind
+     * fun.bind(this, arg1, arg2 ...)
+     * bind方法用于指定函数内部的this指向，即函数执行时的作用域，创建并返回一个新的函数，称为绑定函数。bind方法并非立即执行函数。
+     * */
+
+    /**下面代码中，如果this.a指向对象内部的a属性，如果这个方法赋值给另外一个变量调用就会报错*/
+    //    var keith = {
+    //        a: 1,
+    //        count: function () {
+    //            write(this.a++);
+    //        }
+    //    };
+    //    keith.count(); //调用keith对象的count()方法，输出当前对象中的a，结果是1
+    //    keith.count(); //调用keith对象的count()方法，输出当前对象中的a，结果是2
+    //    keith.count(); //调用keith对象的count()方法，输出当前对象中的a，结果是3
+    /**下面将keith对象的count方法赋值给另外一个变量，这时this对象指向的不再是keith对象了，而是window对象，而window.a默认是undefined，
+     * 对undefined执行undefined++运算之后得到null，为了解决这个问题，可以使用bind方法，将keith对象里的this绑定到keith对象上，如下代码：*/
+    //    var f = keith.count;
+    //    f();
+    /**bind()方法的第一个参数是keith，将keith.count方法的作用域班定到keith内部，这样就可以获取到内部的变量a了。*/
+    //    f = keith.count.bind(keith);
+    //    f(); //第一次调用输出1
+    //    f(); //第二次调用输出2
+    //    f(); //第三次调用输出3
+
+    //    /**也可以将this绑定到其他的对象上。*/
+    //    var obj = { a: 100 };
+    //    /**bind()方法的第一个参数是obj，将keith.count函数绑定到obj的作用域内部，这样可以获取作用域内部的变量100*/
+    //    f = keith.count.bind(obj);
+    //    f(); //第一次执行输出100
+    //    f(); //第二次执行输出101
+    //    f(); //第三次执行输出102
+
+    //    function keith (a, b) {
+    //        return a + b;
+    //    }
+    //    write(keith.apply(null, [1, 4])); // 5
+    //    write(keith.call(null, 1, 4));    // 5
+    //    write(keith.bind(null, 1, 4));    // 绑定，返回一个函数，输出undefined
+    //    write(keith.bind(null, 1, 4)());  // 5
+
+    /**我们也可以给bind方法传递参数，第一个参数如果为null，undefined或者this，会将函数内部的this对象指向全局环境；第二个参数为调用用到的参数
+     * ，传递参数的形式与call()方法相同。*/
+
+
+    /** fun方法在this环境下调用，该方法传入2个参数，第一个是this，剩下的作为函数的参数*/
+    //    this.a = 1;
+    //    var module = {
+    //        a: 2,
+    //        getA: function () {
+    //            return this.a;
+    //        }
+    //    }
+    //
+    //    // 调用module的getA方法，this指向当前对象，输出2
+    //    var getA1 = module.getA();
+    //    write(getA1);
+    //
+    //    // 在module外部调用，此时this指向全局输出1
+    //    var getA2 = module.getA;
+    //    write(getA2());
+    //
+    //    /** bind()方法的第一个参数是module，
+    //     * 把getA2方法绑定到module环境上，输出2。可以看出要在特定的环境相调用函数，我们可以把函数放在特定的环境下面就用到bind方法。
+    //     * */
+    //    var getA3 = getA2.bind(module);
+    //    write(getA3());
+
+    /**2.给函数添加预设参数*/
+    //    function list () {
+    //        // 让数组arguments拥有数组的方法slice，这个函数实现了把类数组转换成数组的功能
+    //        return Array.prototype.slice.call(arguments);
+    //    }
+    //    // write(list(1,2,3));
+    //
+    //    // 给list绑定一个预设参数4，所以会先输出4，再输出自定义的参数
+    //    var list1 = list.bind(undefined, 4);
+    //    write(list1());
+    //    write(list1(1,2,3))
+
+    /**3.setTimeout的使用
+     * 正常情况下，调用setTimeout的时候this会指向全局对象，但是使用类的方法的时候需要指向类的实例，所以需要把this绑定要回调函数方便
+     * 继续试使用实例
+     * */
+    //    function Fun1 () {
+    //        this.name = 1;
+    //    }
+    //
+    //    Fun1.prototype.Fun2 = function () {
+    //        window.setTimeout(this.Fun3.bind(this), 1000);
+    //    }
+    //    Fun1.prototype.Fun3 = function () {
+    //        console.log('name=' + this.name);
+    //    }
+    //    var fun = new Fun1();
+    //    fun.Fun2();
+
+</script>
+</body>
+</html>

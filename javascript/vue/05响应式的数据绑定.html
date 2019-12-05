@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>响应式数据绑定</title>
+</head>
+<body>
+<div id="app">
+    <input type="text" v-model="text"/>
+    {{ text }}
+</div>
+<script>
+    /**
+     * 使用defineProperty将data中的text设置为vm的访问器属性
+     * @param obj 对象
+     * @param 属性名
+     * @param 属性值
+     * */
+    function defineReactive (obj, key, val) {
+        Object.defineProperty(obj, key, {
+            get: function () {
+                return val
+            },
+            set: function (newVal) {
+                if (newVal === val) {
+                    return
+                }
+                val = newVal
+                // 输出日志
+                console.log(`set方法触发属性值变化${val}`)
+            }
+        })
+    }
+    /**
+     * 给vue实例定义访问器属性
+     * @param obj vue实例中的数据
+     * @param vm vue对象
+     * */
+    function observe (obj, vm) {
+        Object.keys(obj).forEach(function (key) {
+            defineReactive(vm, key, obj[key]);
+        })
+    }
+    /**
+     * 编译过程，给子节点初始化绑定vue实例中的属性值
+     * @param node 子节点
+     * @param vm vue实例
+     * */
+    function compile (node, vm) {
+        let reg = /\{\{(.*)\}\}/
+        // 节点类型为元素
+        if (node.nodeType === 1) {
+            let attr = node.attributes
+            // 解析属性
+            for (let i = 0; i < attr.length; i++) {
+                if (attr[i].nodeName === 'v-model') {
+                    // 获取v-model绑定的属性名
+                    let name = attr[i].nodeValue
+                    // 添加监听事件
+                    node.addEventListener('input', function (e) {
+                        // 给相应的data属性赋值，进而触发该属性的set方法
+                        vm[name] = e.target.value;
+                    });
+                    // 将data的值赋给该node
+                    node.value = vm.data[name];
+                    node.removeAttribute('v-model')
+                }
+            }
+        }
+        // 节点类型为text
+        if (node.nodeType === 3) {
+            if (reg.test(node.nodeValue)) {
+                // 获取匹配到的字符串
+                let name = RegExp.$1
+                name = name.trim()
+                // 将data的值赋给该node
+                node.nodeValue = vm.data[name]
+            }
+        }
+    }
+    /**
+     * DocumentFragment文档片段，可以看作节点容器，它可以包含多个子节点，当将它插入到dom中时只有子节点插入到目标节点中。
+     * 使用documentfragment处理节点速度和性能要高于直接操作dom。vue编译的时候，就是将挂载目标的所有子节点劫持到documentfragment
+     * 中，经过处理后再将documentfragment整体返回到挂载目标中。
+     * @param node 节点
+     * @param vm vue实例
+     * */
+    function nodeToFragment (node, vm) {
+        var flag = document.createDocumentFragment();
+        var child;
+        while (child = node.firstChild) {
+            compile(child, vm);
+            flag.appendChild(child);
+        }
+        return flag;
+    }
+    /*vue类*/
+    function Vue (options) {
+        this.data = options.data
+        let data = this.data
+        // 给vue实例的data定义访问器属性，覆盖原来的同名属性
+        observe(data, this)
+        let id = options.el
+        let dom = nodeToFragment(document.getElementById(id), this)
+        // 编译，劫持完成后将dom返回到app中
+        document.getElementById(id).appendChild(dom)
+    }
+
+    /*定义一个vue实例*/
+    let vm = new Vue({
+        el: 'app',
+        // 这里的data属性不是访问器属性
+        data: {
+            text: 'hello world!'
+        }
+    })
+</script>
+</body>
+</html>

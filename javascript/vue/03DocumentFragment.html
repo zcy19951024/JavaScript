@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DocumentFragment</title>
+</head>
+<body>
+<a href="https://www.cnblogs.com/kidney/p/6052935.html?utm_source=gold_browser_extension">链接</a>
+<div id="app">
+    <input type="text" id="a"/>
+    <span id="b"></span>
+</div>
+<script>
+    function nodeToFragment (node) {
+        let flag = document.createDocumentFragment();
+        let child;
+        while (child = node.firstChild) {
+            flag.appendChild(child)
+        }
+        return flag
+    }
+    let dom = nodeToFragment(document.getElementById('app'))
+    document.getElementById('app').appendChild(dom)
+    console.log(dom)
+</script>
+</body>
+</html>

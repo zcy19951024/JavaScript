@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>令人迷惑的javascript</title>
+</head>
+<body>
+<script>
+    // let writeStr = (str) => {
+    //     document.write(JSON.stringify(str) + '<br>');
+    // };
+
+    /*** 1.
+     * 输出结果 [1, null, null]
+     * parseInt(string, radix)接受两个参数,radix是2~36的整数，map传递了三个，相当于
+     * [parseInt('1', 0), parseInt('2', 1), parseInt('3', 2)]
+     * parseInt('1', 0)，0（等同于10进制）进制中'1'就是1，返回1
+     * parseInt('2', 1)，1进制中'2'不存在，返回null
+     * parseInt('3', 2)，2进制中'3'不存在，返回null
+     */
+    // console.log(['1', '2', '3'].map(parseInt))
+
+
+    /** 2.
+     * 输出["object"， false]
+     * javascript诞生依赖type of null始终返回'object'
+     * */
+    // console.log([typeof null, null instanceof Object]);
+
+    /** 3.
+     * 报错
+     * 在一个空数组上执行reduce报错,
+     * reduce接受两个参数，第一个是回调函数，第二个是初始值，如果没有是数组第一个元素
+     * 回调函数有四个参数，
+     * 第一个是累计器回调的返回值，如果没有则是数组第一个元素
+     * 第二个是数组中正在处理的元素
+     * 第三个是索引
+     * 第四个是原数组
+     * */
+    // console.log([ [3,2,1].reduce(Math.pow), [].reduce(Math.pow) ]);
+    // console.log([3,2,1].reduce(Math.pow)); // 9
+
+    /** 4.
+     * 输出Something
+     * 加号比问号表达式的运算级别高，相当于
+     * console.log('Value is true' ? 'Something' : 'Nothing')
+     */
+    // var val = "smtg";
+    // console.log('Value is ' + (val === 'smtg') ? 'Something' : 'Nothing');
+
+    /*** 5.
+     *  输出Goodbye Jack
+     *  函数和变量会被提升，变量提升是将变量的申明放在作用域顶部
+     */
+    // var name = 'World!';
+    // (function () {
+    //     if (typeof name === 'undefined') {
+    //         var name = 'Jack';
+    //         console.log('Goodbye ' + name);
+    //     } else {
+    //         console.log('Hello ' + name);
+    //     }
+    // })();
+
+    /** 6.
+     * 死循环，浏览器卡死，最后i等于END
+     * Math.pow(2, 53)是javascript中的最大数，i永远小于等于它，死循环，
+     * */
+    // var END = Math.pow(2, 53);
+    // var START = END - 10;
+    // var count = 0;
+    // for (var i = START; i <= END; i++) {
+    //     count++;
+    // }
+    // console.log(count);
+
+    /** 7.
+     *  结果为[], filter操作会忽略掉数组中的稀疏项
+     */
+    // var ary = [0,1,2];
+    // ary[10] = 10;
+    // console.log(ary.length);
+    // var s = ary.filter(function(x) { return x === undefined;});
+    // console.log(s);
+
+    /** 8.
+     * 输出[true, false]
+     * */
+    // var two   = 0.2
+    // var one   = 0.1
+    // var eight = 0.8
+    // var six   = 0.6
+    // console.log([two - one == one, eight - six == two]);
+
+    /*** 9.
+     * 结果为'Do not know!'
+     * switch使用严格比较，相当于===，new String("a")和"A"比较失败
+     */
+    // function showCase(value) {
+    //     switch(value) {
+    //         case 'A':
+    //             console.log('Case A');
+    //             break;
+    //         case 'B':
+    //             console.log('Case B');
+    //             break;
+    //         case undefined:
+    //             console.log('undefined');
+    //             break;
+    //         default:
+    //             console.log('Do not know!');
+    //     }
+    // }
+    // showCase(new String('A'));
+
+
+    /** 10.
+     * 输出 Case A
+     * String("A")不会创建一个对象，但是方法返回一个字符串"A"
+     */
+    // function showCase2(value) {
+    //     switch(value) {
+    //         case 'A':
+    //             console.log('Case A');
+    //             break;
+    //         case 'B':
+    //             console.log('Case B');
+    //             break;
+    //         case undefined:
+    //             console.log('undefined');
+    //             break;
+    //         default:
+    //             console.log('Do not know!');
+    //     }
+    // }
+    // showCase2(String('A'));
+
+
+    /** 10.
+     * 输出：[true, true, true, false, false]
+     * 负数模运算仍然保留负号
+     * */
+    // function isOdd(num) {
+    //     return num % 2 == 1;
+    // }
+    // function isEven(num) {
+    //     return num % 2 == 0;
+    // }
+    // function isSane(num) {
+    //     return isEven(num) || isOdd(num);
+    // }
+    // var values = [7, 4, '13', -9, Infinity];
+    // console.log(values.map(isSane));
+
+    /*** 11.
+     * 输出 3 NaN, 3 , 2进制中不可能出现3
+     */
+    // console.log(parseInt(3, 8));
+    // console.log(parseInt(3, 2));
+    // console.log(parseInt(3, 0));
+
+    /*** 12.
+     * 输出true
+     * 内部逻辑是 Object.prototype.toString.call(Array.prototype) === '[object Array]'
+     */
+    // console.log(Array.isArray(Array.prototype));
+
+    /*** 13.
+     * 输出false
+     * 在if表达式中数组被认为是真， 但是使用==判断的时候就不是了
+     */
+    // var a = [0];
+    // if ([0]) {
+    //     console.log(a == true);
+    // } else {
+    //     console.log("wut");
+    // }
+
+    /** 14.
+     * 输出 false
+     * == 是魔鬼之子
+     */
+    // console.log([[] == [], {} == {}]);
+    // console.log([[] === [], {} === {}]);
+
+    /** 15.
+     * 输出 53 2
+     * 字符串加运算是连接，减号中就是数字
+     */
+    // console.log('5' + 3);
+    // console.log('5' - 3);
+
+    /*** 16.
+     * 输出2
+     * javascript中+，-除了运算，还是正负操作，1后面第一个+是运算，后面的都是正负操作
+     */
+    // console.log(1 + - + + + - + 1);
+
+    /** 17.
+     * chrome浏览器中输出["1", empty × 2]， 实际访问s[1], s[2]都是undefined
+     * map和filter类似会忽略没有初始化的数组元素
+     */
+    // var ary = Array(3);
+    // ary[0]=2
+    // let s = ary.map(function(elem) { return '1'; });
+    // console.log(s);
+
+    /** 18.
+     * 输出21
+     * javascript变量绑定到arguments对象之后，更改这个对象就会更改参数，即使变量不在
+     * 同一范围内。但是不能直接对arguments赋值。
+     */
+    // function sidEffecting(ary) {
+    //     arguments[1] = 10;
+    //     ary[0] = ary[2];
+    // }
+    // function bar(a,b,c) {
+    //     c = 10
+    //     sidEffecting(arguments);
+    //     return a + b + c;
+    // }
+    // console.log(bar(1,1,1))
+
+
+    /*** 19.
+     * 输出111111111111111110000
+     * javascript能表示的最大的数是Math.pow(2, 53)=9007199254740992，大于这个数的都无效
+     *
+     */
+    // var a = 111111111111111110000,
+    //     b = 1111;
+    // console.log(a + b);
+
+    /** 20.
+     * chrome中报错
+     * reverse方法会返回调用者this，x()方法执行的时候是全局上下文，所以是window
+     */
+    // var x = [].reverse;
+    // x();
+
+    /**21.
+     * 输出true
+     * Number.MIN_VALUE是大于零的最小值
+     */
+    // console.log(Number.MIN_VALUE > 0);
+
+    /**22.
+     * 输出[true, true]
+     * 大于，小于运算中，true被强转为1，而false被强转为0
+     */
+    // console.log([1 < 2 < 3, 3 < 2 < 1]);
+
+    /**23.
+     * 输出true
+     * 等号运算时，右边表达式相当于[[[2]]].toString()，结果是"2"
+     */
+    // console.log(2 == [[[2]]]);
+
+    /** 24.
+     * 第一个报错，
+     * 第二个'3'
+     * 第三个报错
+     * x.toString()是一个语法错误
+     * 3.是合法的数字
+     */
+    // console.log(3.toString())
+    // console.log(3..toString())
+    // console.log(3...toString())
+
+    /** 25
+     * 第一句输出1,
+     * 第二句报错
+     * 立即执行表达式里面var定义的时候是局部变量，不带的情况下是全局变量
+     */
+    // (function(){
+    //     var x = y = 1;
+    // })();
+    // console.log(y);
+    // console.log(x);
+
+    /*** 26
+     * 输出 false false
+     * 即使正则的字面量一致, 他们也不相等
+     */
+    // var a = /123/, b = /123/;
+    // console.log(a == b);
+    // console.log(a === b);
+
+    /** 27
+     * 输出false false false true
+     * 字面量相等的数组也不相等，数组在比较大小的时候按照字典序比较，即后面的比前面的“大”
+     */
+    // var a = [1, 2, 3], b = [1, 2, 3], c = [1, 2, 4];
+    // console.log(a ==  b);
+    // console.log(a === b);
+    // console.log(a > c);
+    // console.log(a < c);
+
+    /*** 28
+     * 输出 [false, true]
+     * javascript中prototype是方法才有的属性，对象的prototype是undefined
+     * 对象的原型可以通过Object。getPrototypeOf()方法获取
+     */
+    // var a = {}, b = Object.prototype
+    // console.log([a.prototype === b, Object.getPrototypeOf(a) === b]);
+
+    /** 29
+     * 输出false
+     * f.prototype是方法的原型对象，Object.getPrototypeOf(f)是f的构造函数的原型Function.prototype
+     */
+    // function f() {}
+    // var a = f.prototype, b = Object.getPrototypeOf(f);
+    // console.log(a === b);
+
+    /*** 30
+     * 输出[“foo”， “foo”]，
+     * 函数的name属性不能修改
+     */
+    // function foo() { }
+    // var oldName = foo.name;
+    // foo.name = "bar";
+    // console.log([oldName, foo.name]);
+
+    /*** 31
+     * 输出："1 NaN 3"
+     * replace方法的原型str.replace(regexp|substr, newSubStr|function)
+     * 如果replace的第二个参数是函数，那么这个函数将接受下面参数
+     * match：匹配的字符串
+     * offset match：匹配的索引index
+     * string：整个字符串
+     *
+     * 相当于执行
+     * parseInt('1', 0)
+     * parseInt('2', 2)
+     * parseInt('3', 4)
+     */
+    // console.log("1 2 3".replace(/\d/g, parseInt));
+
+    /*** 32
+     * 输出"f", "Empty", "function", error
+     * f.name 就是函数的名字
+     * Object.getPrototypeOf(f)是Function.property是一个对象，不是函数，没有name属性，所以是空
+     * eval(f.name)相当于执行f， 再用typeof操作，得到Function
+     * parent.name是undefined， eval(undefined) 报错
+     */
+    // function f() {}
+    // var parent = Object.getPrototypeOf(f);
+    // console.log(f.name); // ?
+    // console.log(parent.name); // ?
+    // console.log(typeof eval(f.name)); // ?
+    // console.log(typeof eval(parent.name)); //  ?
+
+    /*** 33
+     * 输出：[true, true]
+     * test会将参数转化为字符串，相当于test('null'), test('undefined')
+     */
+    // var lowerCaseOnly =  /^[a-z]+$/;
+    // console.log([lowerCaseOnly.test(null), lowerCaseOnly.test()]);
+
+    /** 34
+     * 输出,,
+     * javascript在定义数组的时候允许最后一个元素后面跟一个, 定义对象属性也可以在最后一个属性后面
+     * 跟一个, 这里相当于一个长度为3的稀疏数组[empty*3]，最后输出, ,
+     * 最后只输出2个逗号
+     */
+    // console.log([,,,].join(", "));
+
+    /*** 35
+     * chrome环境下输出Animal
+     * class是关键字，部分浏览器得不到正常的结果
+     */
+    // var a = {class: "Animal", name: 'Fido'};
+    // console.log(a.class);
+
+    /*** 36
+     * 输出 Invalid Date
+     * new Date()必须传入合法的时间字符串，即满足Date.parse
+     */
+    // var a = new Date("epoch")
+    // console.log(a);
+
+    /*** 37
+     * 输出false
+     * Function.length = 1
+     * new Function().length = 0
+     * Function.length就是函数参数的个数， new Function()是一个对象，没有参数
+     */
+    // var a = Function.length,
+    //     b = new Function().length
+    // console.log(a === b);
+
+    /*** 38
+     * 输出[false, false, false]
+     * 如果是函数调用，返回的是一个字符串
+     * 如果是构造函数，返回时间对象，不传参是当前时间
+     */
+    // var a = Date(0);
+    // var b = new Date(0);
+    // var c = new Date();
+    // console.log([a === b, b === c, a === c]);
+
+    /*** 39
+     * 输出false
+     * Math.max(),如果不传值，返回-Infinity，完全出乎意料，你以为这是吹风机，其实是个须刨
+     * Math.min(),如果不传值，返回Infinity
+     */
+    // var min = Math.min(), max = Math.max()
+    // console.log(min < max);
+
+    /*** 40
+     * 输出[true, false]
+     * 第一个正则有一个 g 选项 它会‘记忆’他所匹配的内容,
+     * 等匹配后他会从上次匹配的索引继续, 而第二个正则不会
+     */
+    // function captureOne(re, str) {
+    //     var match = re.exec(str);
+    //     return match && match[1];
+    // }
+    // var numRe  = /num=(\d+)/ig,
+    //     wordRe = /word=(\w+)/i,
+    //     a1 = captureOne(numRe,  "num=1"),
+    //     a2 = captureOne(wordRe, "word=1"),
+    //     a3 = captureOne(numRe,  "NUM=2"),
+    //     a4 = captureOne(wordRe,  "WORD=2");
+    // console.log([a1 === a2, a3 === a4]);
+
+    /*** 41
+     * 输出[false, false]
+     * 套路深 new Date(2014, 3, 19) 真实的时间是2014-04-19，月份是从0开始的
+     */
+    // var a = new Date("2014-03-19"),
+    //     b = new Date(2014, 3, 19);
+    // console.log([a.getDate() === b.getDate(), a.getMonth() === b.getMonth()]);
+
+    /** 42
+     * 输出a gif file
+     * String.prototype.match 接受一个正则, 如果不是, 按照 new RegExp(obj) 转化. 所以 . 并不会转义
+     * 那么 /gif 就匹配了 /.gif/
+     */
+    // if ('http://giftwrapped.com/picture.jpg'.match('.gif')) {
+    //    console.log('a gif file');
+    // } else {
+    //     console.log('not a gif file');
+    // }
+
+    /** 43
+     * 输出["hello", "bye"]
+     *  a作为参数其实已经声明了, 所以 var a; var a = 'bye' 其实就是 a; a ='bye'
+     */
+    // function foo(a) {
+    //     var a;
+    //     return a;
+    // }
+    // function bar(a) {
+    //     var a = 'bye';
+    //     return a;
+    // }
+    // console.log([foo('hello'), bar('hello')]);
+</script>
+</body>
+</html>

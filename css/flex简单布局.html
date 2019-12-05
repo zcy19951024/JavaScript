@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>flex简单布局</title>
+  <style>
+    * { box-sizing: border-box; }
+    .container {display: flex;}
+    .elem {border: solid #6AC5AC 3px; position: relative;}
+    .elem-red {border: solid #D64078 3px;}
+    nav {width: 200px;}
+    .flex-column{ flex: 1; }
+    .elem-green{ border: solid #FDC72F 3px }
+    .initial{ flex: initial; width: 200px; min-width: 100px; }
+    .none{ flex: none; width: 200px; }
+    .flex1{ flex-grow: 1;flex-shrink: 1;flex-basis: 0%; }
+    .flex2{flex-grow: 2;flex-shrink: 1;flex-basis: 0%; }
+    .vertical-container{ height: 300px; display: flex; align-items: center; justify-content: center; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <nav class="elem elem-red">
+    <ul>
+      <li><a>Home</a></li>
+      <li><a>Taco Menu</a></li>
+      <li><a>Draft List</a></li>
+      <li><a>Hours</a></li>
+      <li><a>Directions</a></li>
+      <li><a>Contact</a></li>
+    </ul>
+  </nav>
+  <div class="elem elem-red flex-column">
+    <section class="elem elem-green"><p>Flexbox好容易使用!</p></section>
+    <section class="elem elem-green ipsum">
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus imperdiet, nulla et dictum interdum, nisi
+        lorem egestas odio, vitae scelerisque enim ligula venenatis dolor. Maecenas nisl est, ultrices nec congue eget,
+        auctor vitae massa. Fusce luctus vestibulum augue ut aliquet. Mauris ante ligula, facilisis sed ornare eu,
+        lobortis in odio. Praesent convallis urna a lacus interdum ut hendrerit risus congue. Nunc sagittis dictum nisi,
+        sed ullamcorper ipsum dignissim ac. In at libero sed nunc venenatis imperdiet sed ornare turpis. Donec vitae dui
+        eget tellus gravida venenatis. Integer fringilla congue eros non fermentum. Sed dapibus pulvinar nibh tempor
+        porta. Cras ac leo purus. Mauris quis diam velit.
+      </p>
+    </section>
+  </div>
+</div>
+
+<div class="container elem">
+  <section class="elem elem-green initial">
+    <p>空间足够的时候，我的宽度是200px，如果空间不足，我会变窄到100px，但不会再窄了。</p>
+  </section>
+  <section class="elem elem-green none">
+    <p>无论窗口如何变化，我的宽度一直是200px。</p>
+  </section>
+  <section class="elem elem-green flex1">
+    <p>我会占满剩余宽度的1/3。</p>
+  </section>
+  <section class="elem elem-green flex2">
+  <p>我会占满剩余宽度的1/3。</p>
+</section>
+</div>
+<div class="vertical-container elem">
+  <section class="elem elem-green">
+    <p>CSS里总算是有了一种简单的垂直居中布局的方法了！</p>
+  </section>
+</div>
+</body>
+</html>

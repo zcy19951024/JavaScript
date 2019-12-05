@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>数值的扩展</title>
+</head>
+<body>
+<script>
+  let br = () => { document.write('<br>'); return  true; }
+
+  //es6提供二进制和八进制数值的新写法0b和0
+//  document.write(0b111110111 === 503);
+//  br() && document.write(0o767 === 503)
+
+  //如果要把0b和0o字符串转换为十进制要使用Number方法
+//  br() && document.write(Number('0b111'))
+//  br() && document.write(Number('0o10'))
+
+//  //Number.isFinite()用来检查一个数值是否为有限的
+//  br() && document.write(Number.isFinite(15)); // true
+//  br() && document.write(Number.isFinite(0.8)); // true
+//  br() && document.write(Number.isFinite(NaN)); // false
+//  br() && document.write(Number.isFinite(Infinity)); // false
+//  br() && document.write(Number.isFinite(-Infinity)); // false
+//  br() && document.write(Number.isFinite('foo')); // false
+//  br() && document.write(Number.isFinite('15')); // false
+//  br() && document.write(Number.isFinite(true)); // false
+//  //Number.isNaN()用来检查一个值是否为NaN
+//  br() && document.write(Number.isNaN(NaN)) // true
+//  br() && document.write(Number.isNaN(15)) // false
+//  br() && document.write(Number.isNaN('15')) // false
+//  br() && document.write(Number.isNaN(true)) // false
+//  br() && document.write(Number.isNaN(9/NaN)) // true
+//  br() && document.write(Number.isNaN('true'/0)) // true
+//  br() && document.write(Number.isNaN('true'/'true')) // true
+
+  //Number.isInteger()用来判断一个值是否是整数，javascript内部整数和浮点数是同样的存储方式，所以3和3.0被视为同一个值
+//  br() && document.write(Number.isInteger(25));
+//  br() && document.write(Number.isInteger(25.0));
+//  br() && document.write(Number.isInteger('15'))
+//  br() && document.write(Number.isInteger(true))
+
+  //es6新增了指数运算符**
+  br() && document.write(2 ** 6);
+  br() && document.write(Math.pow(2, 6));
+</script>
+</body>
+</html>

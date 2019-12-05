@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Set和Map数据结构</title>
+</head>
+<body>
+<div id="myDiv"></div>
+<script>
+    /**1.简介
+     * es6提供了新的数据结构set，类似数组，但是成员的值都是唯一的，没有重复的值。
+     * Set函数可以接受一个数组，或者具有iterable接口的其他数据结构作为参数，用来初始化。
+     * 可以使用Set函数来去重数组中的重复项: [...new Set(array)]
+     * */
+    //  const s = new Set();
+    //  [2,3,5,4,5,2,2].forEach(x => s.add(x));
+    //  for(let i of s){
+    //      console.log(i);
+    //  }
+    //    const items = new Set([1, 2, 3, 4, 5, 5, 5, 5]);
+    //    console.log(items.size)
+    //    var arr = [1, 2, 3, 4, 5, 5, 5, 5];
+    //    console.log([...new Set(arr)]);
+
+    /**向set加入值的时候，不会发生类型转换，所以2和'2'是两个不同的值。Set内部判断两个值是否相等，使用的算法是精确相等运算===，
+     * 主要区别是NaN等于自身，而精确运算中NaN不等于自身。
+     * 下面代码中向set中添加2个NaN，但是只能成功添加一个，这说明在set内部两个NaN是相等的。
+     * */
+   // let set = new Set();
+   // let a = NaN;
+   // let b = NaN;
+   // set.add(a);
+   // set.add(b);
+   // console.log(set);
+    /**另外，两个对象总是不相等的，下面代码中set结构中将会有2个空的对象。事实上不管两个对象是不是空对象，都被set结构认为是不相等的。*/
+    //    let set = new Set();
+    //    set.add({a: 1});
+    //    set.add({a: 1});
+    //    console.log(set);
+
+    /**set的实例属性和方法, 判断set中是否包含一个键，使用has方法*/
+    //    let set = new Set();
+    //    set.add(1).add(2).add(2);
+    //    console.log(set.has(1));
+    //    console.log(set.has(2));
+    //    console.log(set.has(3));
+    //    console.log(set.delete(2));
+    //    console.log(set.has(2));
+
+    //    const propertites = {
+    //            width: 1,
+    //            height: 2
+    //        };
+    //    if(propertites.width){
+    //        console.log(propertites.width)
+    //    }
+    //    const propertites = new Set();
+    //    propertites.add('width');
+    //    propertites.add('height');
+    //    if(propertites.has('width')){
+    //        console.log(propertites);
+    //    }
+    /**Array.from可以将Set转换成数组，但是会去掉重复的项*/
+    //    const items = new Set([1, 2, 3, 4, 5]);
+    //    const array = Array.from(items);
+    //    console.log(array);
+
+    /**(1).Set的遍历操作
+     * keys,values,entries返回的都是set结构的遍历器对象，由于set没有键名只有键值，所以keys方法和values方法的行为完全一致*/
+
+    //    let set = new Set(['red', 'green', 'blue']);
+    //    for(let item of set.keys()){
+    //        console.log(item);
+    //    }
+    //    for(let item of set.values()){
+    //        console.log(item);
+    //    }
+    //    for(let item of set.entries()){
+    //        console.log(item)
+    //    }
+
+    /**set结构的实例默认可遍历，它的默认遍历器生成函数就是它的values方法，这意味着可以省略values方法，直接使用for...of遍历set*/
+    //    let set = new Set(['red', 'green', 'blue']);
+    //    console.log(Set.prototype[Symbol.iterator]);
+    //    console.log(Set.prototype[Symbol.iterator] === Set.prototype.values);
+    //    for(let x of set){
+    //        console.log(x);
+    //    }
+    /**(2).forEach
+     * Set结构实例的forEach方法，对每个成员执行操作，没有返回值
+     * forEach方法的参数就是第一个处理函数，该函数的参数依次为键值，键名，集合本身。另外forEach方法还可以有第二个参数，表示绑定的this对象*/
+    //    let set = new Set([1,2,3]);
+    //    set.forEach((value, key) => console.log(value * 2));
+
+    /**(3).遍历的应用
+     * 扩展运算符内部使用的是for...of循环，所以也适用于Set结构
+     * 扩展运算符和Set结构结合，就可以去掉数组的重复项*/
+    //    let set = new Set(['red', 'green', 'blue', 'red']);
+    //    console.log([...set]);
+    //    let arr = [3,5,2,2,5];
+    //    console.log([...new Set(arr)]);
+
+    //数组的map和filter方法可以用于set，因此可以很方便的使用Set实现并集，交集，差集
+    //    let a = new Set([1, 2, 3]);
+    //    let b = new Set([4, 3, 2]);
+    //    // 并集
+    //    let union = new Set([...a, ...b]);
+    //    console.log(union);
+    //    //交集
+    //    let interset = new Set([...a].filter(x => b.has(x)));
+    //    console.log(interset);
+    //    // 差集
+    //    let difference = new Set([...a].filter(x => !b.has(x)));
+    //    console.log(difference);
+
+    /**如果想在遍历操作中，同步改变原来Set结构，目前没有直接方法，但是可以变通，
+     * 一种是利用原set结构映射出一个新的set结构，然后再赋值给原来的set结构
+     * 一种是使用Array.from方法，如下：
+     * */
+    //    let set = new Set([1, 2, 3]);
+    //    set = new Set([...set].map(val => val * 2));
+    //    console.log(set);
+    //    set = new Set(Array.from(set, val => val * 2));
+    //    console.log(set);
+
+    /**2.WeakSet
+     * WeakSet 结构和Set结构类似，也是不重复的值的集合，有两点区别
+     * WeakSet的成员只能是对象，不能是其他的值类型*/
+    //    const ws = new WeakSet();
+    //    const obj = {};
+    //    const foo = {};
+    //    ws.add(window);
+    //    ws.add(obj);
+    //    console.log(ws);
+
+    /** WeakSet不能遍历，因为成员都是弱引用，随时可能消失，遍历机制无法保证成员的存在，
+     * 有可能遍历刚刚结束，成员就找不到了。WeakSet可以保存DOM节点，而不用担心这些节点从文档移除的时候
+     * 引发内存泄漏*/
+    //    const foos = new WeakSet();
+    //    class Foo {
+    //        constructor() {
+    //            foos.add(this)
+    //        }
+    //        method () {
+    //            if(!foos.has(this)) {
+    //                throw  new TypeError('Foo.prototype.method 只能在Foo的实例上调用！')
+    //            }
+    //        }
+    //    }
+
+    /** 3.Map
+     * javascript 的对象（Object），本质是键值对的集合（Hash结构）传统上只能用字符串作为键。
+     * 如下是想将一个DOM节点作为对象data的键，但是由于对象只接受字符串作为键名，所以element被自动转为字符串[object HTMLDivElement]
+     * 为了解决这个问题ES6提供了Map数据结构，它类似于对象，也是键值对的集合，但是键的范围不再局限于字符串，各种类型的值，包含
+     * 对象都可以作为键。Object提供了字符串-值的对应，Map结构提供了值-值的对应，是一种更完善的Hash结构的实现。如果要使用键值对结构，
+     * Map更为合适。*/
+    //    const data = {}
+    //    const element = document.getElementById('myDiv');
+    //    data[element] = 'metadata'
+    //    console.log(data);
+    //    console.log(data['[object HTMLDivElement]']);
+
+    /** 下面代码使用Map结构的set方法，将对象o作为m的一个键，然后使用get方法读取这个键，使用delete方法删除这个键 */
+    //    const m = new Map();
+    //    const o = {p: 'Hello World'};
+    //    m.set(o, 'content');
+    //    console.log(m.get(o));
+    //    console.log(m.has(o));
+    //    m.delete(o);
+    //    console.log(m.has(o));
+
+    /** 作为构造函数Map可以接受一个数组作为参数，该数组的成员是一个个标识键值对的数组。如下项Map
+     * 结构中添加了2个键 */
+    //    const map = new Map([
+    //        ['name', '张三'],
+    //        ['title', 'Author']
+    //    ]);
+    //    console.log(map.size);
+    //    console.log(map.has('name'));
+    //    console.log(map.get('name'));
+    //    console.log(map.has('title'));
+    //    console.log(map.get('title'));
+
+    /**事实上，不仅仅是数组，任何有Iterator接口，且每个成员都是一个双元素的数组的数据结构，
+     * 都可以当做Map构造函数的参数，Set，Map啥都可以生成新的Map*/
+    //    const set = new Set([
+    //        ['foo', 1],
+    //        ['bar', 2]
+    //    ]);
+    //    const m1 = new Map(set);
+    //    console.log(m1.get('foo'));
+    //    const m2 = new Map([['baz', 3]]);
+    //    const m3 = new Map(m2);
+    //    console.log(m3.get('baz'));
+
+    /**如果对同一个键多次赋值，后面的值将覆盖前面的值，如下*/
+//    const map = new Map();
+//    map.set(1, 'aaa').set(1, 'bbbb');
+//    console.log(map.get(1));
+
+    /**注意只有对同一个对象的引用，Map结构才会将其视为同一个键.
+     * 下面的set和get方法都用的{a:1}看上去是同一个键，但是其实是两个值，内存地址是不一样的*/
+    // const map = new Map();
+    // map.set({a:1}, 555);
+    // console.log(map.get({a:1}));
+</script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>字符串的扩展</title>
+</head>
+<body>
+<script>
+    // let br = () =
+    // >
+    // {
+    //     document.write('<br>');
+    //     return true;
+    // }
+    //  document.writeln('\u0061');
+    //
+    //  br() && document.write('\uD842\uDFB7');
+    //
+    //  br() && document.writeln("\u00617")
+
+    //codePointAt方法用于返回一个字符的码点，charAt无法读取整个字符，charCodeAt方法只能分别返回前两个字节和后两个字节的值
+    //  let s = '𠮷a';
+    //  br() && document.write(s.codePointAt(0).toString(16))
+    //  br() && document.write(s.codePointAt(1).toString(16))
+    //
+    //  s = '𠮷a';
+    //  for (let ch of s) {
+    //    console.log(ch.codePointAt(0).toString(16));
+    //  }
+    //
+    //  function is32Bit(c) {
+    //    return c.codePointAt(0) > 0xFFFF;
+    //  }
+    //  br() && document.write(is32Bit(s))
+    //  br() && document.write(is32Bit('a'))
+
+    //String.fromCharCode用于从码点返回对应的字符
+    //  br() && document.write(String.fromCharCode(0x20BB7))
+
+    //for of遍历字符串尅识别大于oxFFFF的码点，传统的for循环无法识别
+    //  for (let codePoint of 'foo'){
+    //    br() && document.write(codePoint)
+    //  }
+
+
+    //  var text = String.fromCodePoint(0x20BB7);
+    //  for (let i = 0; i < text.length; i++) {
+    //    br() && document.write(text[i]);
+    //  }
+    //  for (let i of text) {
+    //    br() && document.write(i);
+    //  }
+
+    //charAt方法返回字符串给定位置的字符，但是该方法不能识别码点大于oxFFFF的字符
+    //  br() && document.write('abc'.charAt(0))
+    //  br() && document.write('𠮷'.charAt(0))
+    //
+    //  br() && document.write('abc'.at(0))
+    //  br() && document.write('𠮷'.at(0))
+
+    //javascript使用indexOf判断一个字符是否包含在另外一个字符串中，es6又提供了3中方法，三种方法都支持第二个参数表示开始搜索的位置
+    //  let s  = 'Hello world';
+    //  br() && document.write(s.includes('o'))
+    //  br() && document.write(s.startsWith('H'))
+    //  br() && document.write(s.endsWith('d'))
+
+    //  repeat方法标识将元字符串重复n次
+    //  br() && document.write('x'.repeat(2))
+
+    //padStart方法用于头部补全，省略第二个参数默认使用空格补全长度
+    //  br() && document.write('x'.padStart(5, 'ab'))
+    //  br() && document.write('x'.padStart(4))
+    //最常用的地方是为数值补全指定位数，如下生成10为数字，没有10位的填0
+    //  br() && document.write('1'.padStart(10, '0')) // "0000000001"
+    //  br() && document.write('12'.padStart(10, '0')) // "0000000012"
+    //  br() && document.write('123456'.padStart(10, '0')) // "0000123456"
+    //   let value = 'aa'
+    //   let result = value.padStart(10, ' ')
+    //   console.log(result)
+
+    //另一个用途是提示字符串格式
+    //  br() && document.write('12'.padStart(10, 'YYYY-MM-DD')) // "YYYY-MM-12"
+    //  br() && document.write('09-12'.padStart(10, 'YYYY-MM-DD')) // "YYYY-09-12"
+
+    //String.raw方法
+    //  br() && document.write(String.raw`Hi\n${2+3}!`);
+    //  br() && document.write(String.raw`Hi\u000A!`);
+    // let str = '/search/detail/name/age/country';
+    // let arr = [];
+    //
+    // function getspilt(n) {
+    //     let nextIndex = str.indexOf('/', 1 + n);
+    //     console.log(nextIndex);
+    //     if (nextIndex > -1) {
+    //         arr.push(str.substr(0, nextIndex))
+    //         getspilt(n + nextIndex)
+    //     } else {
+    //         arr.push(str)
+    //     }
+    // }
+
+    // getspilt(0);
+    // console.log(arr);
+
+    //替换字符串
+    let replaceSql = (query, values) => {
+        if (!values) return query;
+        return query.replace(/\:(\w+)/g, function (txt, key) {
+            if (values.hasOwnProperty(key)) {
+                // return this.escape(values[key]);
+                return values[key]
+            }
+            return txt;
+        }.bind(this))
+    }
+    let sql = 'select * from t_user LIMIT :offSet, :pageSize'
+    let param = {offSet: 0, pageSize:10}
+    let result = replaceSql(sql, param)
+    console.log(result)
+
+
+</script>
+</body>
+</html>

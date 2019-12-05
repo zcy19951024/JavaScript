@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <style>
+    #main {
+      width: 100px;
+      height: 100px;
+      background: #ffccff;
+      position: absolute;
+    }
+  </style>
+  <script>
+		/*1：拖拽的时候有文字选中会有问题；
+    原因：这是浏览器的默认拖拽文字的行为
+解决方案：标准浏览器下：阻止默认行为,在onmousedown结尾加上return false即可
+          ie8及其以下版本：设置全局捕获，方法如下设置全局捕获setCapture最后释放releaseCapture*/
+		window.onload = function () {
+			var oDiv = document.getElementById("main");
+			var odiv = document.getElementById("div");
+			oDiv.onmousedown = function (ev) {
+
+				var ev = ev || event;
+				var disX = ev.clientX - this.offsetLeft;
+				var disY = ev.clientY - this.offsetTop;
+
+				if (oDiv.setCapture) {
+					oDiv.setCapture();
+				}
+				document.onmousemove = function (ev) {
+					//这里为什么使用document，是因为快速拖拽的话会鼠标丢失，
+					var ev = ev || event;
+					oDiv.style.left = ev.clientX - disX + "px";
+					oDiv.style.top = ev.clientY - disY + "px";
+				}
+
+				document.onmouseup = function (ev) {
+					document.onmousemove = document.onmouseup = null;
+					//为何不用oDiv.onmouseup是因为被挡住之后会无视掉遮挡的元素
+					if (oDiv.releaseCapture) {
+
+						oDiv.releaseCapture();
+					}
+				}
+				return false;
+			}
+		}
+  </script>
+</head>
+<body>
+2015/11/17wf r3qr
+<div id="main"></div>
+</body>
+</html>

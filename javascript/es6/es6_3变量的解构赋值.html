@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>es6变量的解构赋值</title>
+</head>
+<body>
+<script>
+    let br = () => { document.write('<br>'); return  true; }
+    let writeStr = (str) => {
+        document.write(JSON.stringify(str) + '<br>');
+    };
+    //es6允许按照一定的模式，从数组的和对象中提取，对变量进行赋值
+//    let [a, b, c] = [1, 2, 3];
+//    br() && document.write(c)
+//
+//    let [foo, [[bar], baz]] = [1, [[2], 3]];
+//    br() && document.write(foo)
+//    br() && document.write(bar)
+//    br() && document.write(baz)
+
+//    let [, , third] = ['foo', 'bar', 'baz']
+//    br() && document.write(third)
+
+//    let [head, ...tail] = [5,6,7,8];
+//    br() && document.write(head)
+//    br() && document.write(tail)
+
+//    let [x, y, ...z] = ['a'];
+//    br() && document.write(x)
+//    br() && document.write(y)
+//    br() && document.write(JSON.stringify(z))
+
+    //不完全解构的情况下不会报错，依然可以解构成功
+//    let [x, y] = [1, 2, 3];
+//    let [a, [b], d] = [1, [2, 3], 4]
+//    br() && document.write(`a=${a}, b=${b}`);
+
+    //如果等号右边不是数组，或者说不可遍历的解构，那么都将报错
+    //对于Set结构，也可以使用数组的解构赋值
+//    let [x, y ,z] = new Set(['a', 'b', 'c'])
+//    br() && document.write(`x=${x} y=${y} z=${z}`);
+
+//    let [foo = true] = [];
+//    br() && document.write(foo)
+
+    // 下面代码输出x=1 y=null，如果数组成员是null，解构赋值就不会生效，只要成员的值不严格等于undefined就不会生效
+//    let [x=1] = [undefined];
+//    let [y=1] = [null];
+//    br() && document.write(`x=${x} y=${y}`);
+
+    //如果默认值是一个表达式，这个表达式是惰性求值的，只有在用到的时候才会求值。下面代码中x可以取到值，所以函数f不会执行
+//    function f() {
+//      br() && document.write('aaa');
+//    }
+//    let [x=f()] = [1];
+
+    //默认值也可以引用解构赋值的其他变量，但是变量必须已经声明
+//    let [x=1, y=x] = []; //x=1 y=1
+//    br() && document.write(`x=${x} y=${y}`);
+//    let [x=1, y=2] = [2]; //x=2 y=2
+//    br() && document.write(`x=${x} y=${y}`);
+//    let [x=1, y=x] = [1,2]; //x=1 y=2
+//    br() && document.write(`x=${x} y=${y}`);
+//    let [x=y, y=1] = []; //ReferenceError: y is not defined
+//    br() && document.write(`x=${x} y=${y}`);
+
+    //解构不仅用于数组，也可用于对象
+//    let {foo, bar} = {foo: 'aaa', bar: 'bbb'};
+//    br() && document.write(foo)
+//    br() && document.write(bar)
+
+    //对象的解构和数组不同，数组的元素是按照次序排列的，变量的取值由它的位置决定，而对象的属性没有次序，变量必须与属性同名，
+    // 才能取到正确的值，下面代码中等号左边两个变量的次序和等号右边两个同名属性的次序不一致，但是取值没有影响，是的，我也是这么认为的。
+
+    let {bar, foo} = {foo: 'aaa', bar: 'bbb'};
+    writeStr(bar);
+    writeStr(foo);
+
+    // 对象的结构赋值还可从对象中解构出方法来，这个很有用的，如下代码从Object对象中解构出keys方法，values方法，entries方法，然后将keys
+    // 用在下面的循环中
+    let {keys, values, entries} = Object;
+    for (let key of keys(obj)) {
+        console.log(key);
+    }
+
+    //这里变量在等号右边没有对应的同名属性，导致取不到值，baz的值是unde
+//    let {baz} = {foo:'aaa', bar:'bbb'};
+//    br() && document.write(`baz=${baz}`); //baz=undefined
+
+    //如果变量名和属性名不一致，必须写成下面这样，foo是匹配的模式，baz才是变量，整整被赋值的是变量baz而不是模式foo
+//    let {foo:baz} = {foo:'aaa', bar:'bbb'}
+//    br() && document.write(`baz=${baz}`) //baz=aaa
+
+    //采用这种写法时，变量的声明和赋值是一体的，对于let和const来说变量不能重新声明，所以一旦赋值的变量以前声明过就会报错
+//    let foo;
+//    var {foo} = {foo: 1} //SyntaxError: Identifier 'foo' has already been declared
+//    br() && document.write(`foo=${foo}`)
+
+    //下面代码中let命令下面一行的圆括号是必须的，否则会报错，因为解析器会将开头的大括号理解成一个代码块，而不是赋值语句
+//    let foo;
+//    ({foo} = {foo:1});
+//    br() && document.write(`foo=${foo}`)
+//
+//    let baz;
+//    ({bar: baz} = {bar:2});
+//    br() && document.write(`baz=${baz}`)
+
+    //和数组一样，解构也可以用于嵌套解构的对象，注意p是模式不是变量，英雌不会被赋值
+//    let obj = { p:['hello', {y:'world'}] };
+//    let {p:[x,{y}]} = obj;
+//    br() && document.write(JSON.stringify(obj)) //{"p":["hello",{"y":"world"}]}
+
+    //注意下面代码中只有line是变量，loc和start都是模式
+//    let node = {
+//      loc:{
+//        start:{
+//          line: 1,
+//          column:5
+//        }
+//      }
+//    }
+//    var {loc:{start:{line}}} = node;
+//    br() && document.write(`line=${line}`);
+//    br() && document.write(`loc=${loc}`);
+//    br() && document.write(`start=${start}`);
+
+    //对象的解构也可以指定默认值,默认值生效的条件是是对象的属性值严格等于undefined
+//    var {x=3} = {}; //x=3
+//    var {x, y=5} = {x:1}; //x=1 y=5
+//    var {x:y = 3} = {}; //y=3
+//    var {x:y = 3} = {x:5} //y=5
+
+    //将一个已经声明的变量用于解构赋值必须非常小心，下面javascript会将{}理解为一个代码块，从而发生
+    //语法错误，使用圆括号包裹就可以正常执行
+//    let x;
+//    {x} = {x:1};
+//    ({x} = {x:1});
+//    br() && document.write(`x=${x}`);
+
+    //对象的解构赋值，可以很方便地对现有的对象方法赋值到某个变量，下面代码将Math对象的对数，正玄，余弦三个方法赋值到对应的变量
+    //上，使用起来比较方便
+//    let {log, sin, cos} = Math;
+//    br() && document.write(log(100))
+
+    //字符串的解构赋值
+//    const [a, b, c, d, e] = 'hello';
+//    br() && document.write(`a=${a}`);
+
+    //数组值和布尔值的解构赋值
+//    let {toString, s} = 'aaaa';
+//    br() && document.write(s);
+
+    //函数参数的解构赋值，函数add的参数表面上是一个数组，但是在传入参数的那一刻，函数参数被解构成变量x, y,对函数内部来说他们能感受
+    //到的参数就是x和
+//    function add([x, y]) {
+//      return x + y;
+//    }
+//    br() && document.write(add([1,2]))
+
+    //简单写法如下
+//    let arr = [[1,2], [3,4]].map(([a, b]) => { return a+b });
+//    br() && document.write(JSON.stringify(arr)); [3,7]
+
+    //函数参数的解构也可以使用默认值
+//    function move({x = 0, y = 0} = {}) {
+//      return [x, y];
+//    }
+//    br() && document.write(move({y:8, x:3}));
+//    br() && document.write(move());
+
+    //下面的写法将带来完全不一样的结果
+//    function move({x, y} = { x: 0, y: 0 }) {
+//      return [x, y];
+//    }
+//    br() && document.write(move({x: 3, y: 8})); // [3, 8]
+//    br() && document.write(move({x: 3})); // [3, undefined]
+//    br() && document.write(move({})); // [undefined, undefined]
+//    br() && document.write(move()); // [0, 0]
+
+    
+</script>
+</body>
+</html>

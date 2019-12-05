@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>组件</title>
+    <script src="static/vue.min.js"></script>
+</head>
+<body>
+<div id="app">
+    <my-component></my-component>
+    <table>
+        <my-row></my-row>
+    </table>
+    <div>
+        <simple-counter></simple-counter>
+        <simple-counter></simple-counter>
+        <simple-counter></simple-counter>
+    </div>
+</div>
+<script>
+    /**注册组件*/
+//    Vue.component('my-component', {
+//        template: '<div>A custom component!</div>'
+//    })
+    var Child = {
+        template: '<div>A custom component!</div>'
+    }
+    var MyRow = {
+        template: '<tr><td>table row</td></tr>'
+    }
+    var data = {counter: 0}
+    Vue.component('simple-counter', {
+        template: '<button v-on:click="counter += 1">{{ counter }}</button>',
+        /**data是一个函数，但是我们给组件的每一个实例返回了同一个对象的引用，这样他们是同一个变量，
+         * 三个组件共享同一个data对象，递增一个counter会影响所有的组件*/
+//        data: function () {
+//            return data;
+//        }
+        /**为每个组件返回全新的数据对象，这样他们就不是同一个变量了*/
+        data: function () {
+            return {
+                counter: 0
+            }
+        }
+    })
+    var app = new Vue({
+        el: '#app',
+        /**局部注册组件*/
+        components: {
+            'my-component': Child,
+            'my-row': MyRow
+        }
+    })
+</script>
+</body>
+</html>

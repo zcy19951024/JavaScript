@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>高级模式匹配</title>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+</head>
+<body>
+<div id="app">
+    <router-view></router-view>
+</div>
+<script>
+  const router = new VueRouter({
+    mode: 'history',
+    routes: [
+      {path: '/', meta: 'use'},
+      {path: '/params/:foo/:bar'},
+      {path: '/optional-params/:foo?'},
+      {path: '/optional-with-regex/:id(\\d+)'},
+      {path: '/asterisk/*'},  // 星花匹配任何值
+      {path: '/optional-group/(foo/)?bar'}
+    ]
+  })
+  const app = new Vue({
+    router,
+    template: `
+    <div id="app">
+      <h1>Route Matching</h1>
+      <ul>
+        <li><router-link to="/">/</router-link></li>
+        <li><router-link to="/params/foo/bar">/params/foo/bar</router-link></li>
+        <li><router-link to="/optional-params">/optional-params</router-link></li>
+        <li><router-link to="/optional-params/foo">/optional-params/foo</router-link></li>
+        <li><router-link to="/params-with-regex/123">/params-with-regex/123</router-link></li>
+        <li><router-link to="/params-with-regex/abc">/params-with-regex/abc</router-link></li>
+        <li><router-link to="/asterisk/foo">/asterisk/foo</router-link></li>
+        <li><router-link to="/asterisk/foo/bar">/asterisk/foo/bar</router-link></li>
+        <li><router-link to="/optional-group/bar">/optional-group/bar</router-link></li>
+        <li><router-link to="/optional-group/foo/bar">/optional-group/foo/bar</router-link></li>
+      </ul>
+      <p>Route context</p>
+      <pre>{{ JSON.stringify($route, null, 2) }}</pre>
+    </div>
+  `
+  }).$mount('#app') // 创建并挂载到#app
+</script>
+</body>
+</html>

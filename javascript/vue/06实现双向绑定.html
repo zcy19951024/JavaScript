@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>双向绑定的实现</title>
+</head>
+<body>
+<div id="app">
+    <input type="text" v-model="text">
+    {{ text }}
+</div>
+<script>
+    /**
+     * 使用defineProperty将data中的text设置为vm的访问器属性
+     * @param obj 对象
+     * @param key 属性名
+     * @param val 属性值
+     */
+    function defineReactive(obj, key, val) {
+        // 发布者对象
+        var dep = new Dep();
+        Object.defineProperty(obj, key, {
+            get: function () {
+                // 依赖收集，如果主题对象类的静态属性target有值， 此时Watcher方法被调用，给主题对象添加订阅者
+                if (Dep.target) dep.addSub(Dep.target);
+                return val;
+            },
+            set: function (newVal) {
+                if (newVal === val) return
+                val = newVal;
+                // 属性被修改时通知变更，主题对象作为发布者收到通知推送给订阅者，订阅者收到消息回调
+                dep.notify();
+            }
+        })
+    }
+
+    /**
+     * 给vue实例定义访问器属性，将Vue中的data对象中的属性转化成getter，setter
+     * @param obj vue实例中的数据
+     * @param vm vue对象
+     */
+    function observe(obj, vm) {
+        Object.keys(obj).forEach(function (key) {
+            defineReactive(vm, key, obj[key])
+        })
+    }
+
+    /**
+     * DocumentFragment文档片段
+     * @param node 节点
+     * @param vm vue实例
+     * */
+    function nodeToFragment(node, vm) {
+        var flag = document.createDocumentFragment();
+        var child;
+        while (child = node.firstChild) {
+            // 节点编译，生成Watcher
+            compile(child, vm);
+            flag.appendChild(child);
+        }
+        return flag;
+    }
+
+    /**
+     * 给子节点初始化绑定vue实例中的属性值，并为节点生成Watcher
+     * @param node 子节点
+     * @param vm vue实例
+     */
+    function compile(node, vm) {
+        var reg = /\{\{(.*)\}\}/;
+        // 节点类型为元素，可输入的dom
+        if (node.nodeType === 1) {
+            var attr = node.attributes;
+            // 解析属性
+            for (var i = 0; i < attr.length; i++) {
+                if (attr[i].nodeName === 'v-model') {
+                    // 获取v-model绑定的属性名
+                    var name = attr[i].nodeValue;
+                    node.addEventListener('input', function (e) {
+                        // 给相应的data属性赋值，触发set方法
+                        vm[name] = e.target.value
+                    });
+                    // 将data的值赋给该node
+                    node.value = vm[name];
+                    node.removeAttribute('v-model');
+                }
+            }
+            new Watcher(vm, node, name, 'input')
+        }
+        if (node.nodeType === 3) {
+            if (reg.test(node.nodeValue)) {
+                var name = RegExp.$1; // 获取匹配到的字符串
+                name = name.trim();
+                // 将data的值赋给该node，订阅，同上
+                new Watcher(vm, node, name, 'text');
+            }
+        }
+    }
+
+    /**
+     * 编译 HTML 过程中，为每个与 data 关联的节点生成一个 Watcher，收集依赖的时候会addSub到subs集合中，修改data数据的时候触发dep对象的
+     　　　* notify通知所有Wathcer对象去修改对应视图
+     * @param vm
+     * @param node
+     * @param name
+     * @param nodeType
+     * @constructor
+     */
+    function Watcher(vm, node, name, nodeType) {
+        // 将当前对象赋值给全局变量Dep.target
+        Dep.target = this;
+        this.name = name;
+        this.node = node;
+        this.vm = vm;
+        this.nodeType = nodeType;
+        // 更新
+        this.update();
+        // 设置为空，避免重复添加订阅者
+        Dep.target = null;
+    }
+    Watcher.prototype = {
+        // 更新
+        update: function () {
+            /**调用get,这里Dep.target不为空，getter中会将当前属性添加到订阅者集合中，update函数执行完之后就不行了*/
+            this.get();
+            if (this.nodeType === 'text') {
+                this.node.nodeValue = this.value;
+            }
+            if (this.nodeType === 'input') {
+                this.node.value = this.value;
+            }
+        },
+        get: function () {
+            // this.vm[this.name] 触发getter
+            this.value = this.vm[this.name];
+        }
+    }
+
+    /**
+     * 定义一个发布者
+     * @constructor
+     */
+    function Dep() {
+        // 订阅者集合
+        this.subs = [];
+    }
+
+    /**
+     * 发布者，添加订阅者和通知变化
+     * @type {{addSub: Dep.addSub, notify: Dep.notify}}
+     */
+    Dep.prototype = {
+        // 添加订阅者
+        addSub: function (sub) {
+            this.subs.push(sub);
+        },
+        // 轮询订阅者，通知变化，触发更新
+        notify: function () {
+            this.subs.forEach(function (sub) {
+                sub.update();
+            });
+        }
+    };
+
+    /**
+     * 定义Vue类
+     * @param options Vue参数选项
+     * @constructor
+     */
+    function Vue(options) {
+        this.data = options.data;
+        var data = this.data;
+        observe(data, this);
+        var id = options.el;
+        // 编译，收集依赖
+        var dom = nodeToFragment(document.getElementById(id), this);
+        // 编译完成后，将dom返回到app中
+        document.getElementById(id).appendChild(dom);
+    }
+
+    // 定义Vue实例
+    var vm = new Vue({
+        el: 'app',
+        data: {
+            text: 'hello world'
+        }
+    })
+</script>
+</body>
+</html>

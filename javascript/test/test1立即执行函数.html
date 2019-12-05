@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>立即执行函数</title>
+</head>
+<body>
+
+<div>
+    <ul>
+        <li><a>第一个超链接</a></li>
+        <li><a>第二个超链接</a></li>
+    </ul>
+</div>
+
+<script>
+
+    let writeStr = (str) => {
+        document.write(JSON.stringify(str) + '<br>');
+    };
+
+    /**本文链接地址：https://www.cnblogs.com/TomXu/archive/2011/12/31/2289423.html
+     * */
+
+    //makeCounter，返回一个新的函数（闭包）,这个函数可以访问makeCounter里的局部变量i
+//    function makeCounter () {
+//        var i = 0;
+//        return function () {
+//            document.write(++i);
+//            document.write('<br>');
+//        }
+//    }
+
+    //counter1和counter2是不同的实例，分别拥有自己范围内的变量
+//    var counter1 = makeCounter();
+//    counter1();
+//    counter1();
+//
+//    var counter2 = makeCounter();
+//    counter2();
+//    counter2();
+
+    //很多情况下不需要初始化很多的实例，甚至不需要返回值
+    //我们知道在函数名字后面加上一个圆括号可以立即执行这个函数
+    //    var foo = function() { counter1(); };
+    //    foo();
+
+    //那么直接在函数定义完之后加上一个圆括号是不是就可以直接调用了呢？
+    //这段代码会报错，解析代码时遇到funciton关键字的时候会默认把它当作是一个函数声明，而不是函数表达式
+    //这是为什么呢？在一个表达式后面加上一对圆括号会立即执行这个函数的啊，问题是前面是一个函数声明语句，不是表达式
+    //在后面加上圆括号，只是一个分组操作符，用来控制运算的优先级，小括号里的先计算
+    //function foo1() { counter1(); }();
+    //上面这个语句类等价于
+    //function foo1(){ counter1(); }
+    //();
+    //相当于先声明了一个叫foo的函数，之后进行()内的表达式运算
+
+    //如果我们去掉这个函数名字会怎么样呢，答案是依然报错，因为解析到function这句的时候，默认把他当成一个函数声明，而不是函数
+    //表达式，因为函数声明需要一个函数名，而这里没有。
+
+    //到底要怎么做呢？答案是外层用圆括号包起来，这样做没有报错并且可以执行，在javascript中圆括号内部不能包含语句
+    //当解析器对代码进行解析的时候，先碰到了圆括号，然后碰到了function关键字自动将圆括号内部的代码识别为函数表达式而不是函数声明
+    //立即执行函数的写法五花八门
+    (function () {
+        writeStr(1);
+    }());
+    (function () {
+        writeStr(2);
+    })();
+    var i = function () {
+        writeStr(3);
+    }();
+    true && function () {
+        writeStr(4);
+    }();
+    0, function () {
+        writeStr(5);
+    }();
+    !function () {
+        writeStr(6);
+    }();
+    ~function () {
+        writeStr(7);
+    }();
+    -function () {
+        writeStr(8);
+    }();
+    +function () {
+        writeStr(9);
+    }();
+    // 你也可以这样，但是性能会有英系那个
+    new function () {
+        writeStr(10);
+    }
+    new function () {
+        writeStr(11);
+    }()
+
+    //推荐还是在外面加上括号，例如：
+    var i = function () {
+        return 12;
+    }();
+    writeStr(`i=${i}`)
+    /**如果function内部代码量庞大，我们不得不滚动到最后去查看function(){}后是否带有()来确定i值是
+     个function还是function内部的返回值。所以为了代码的可读性，请尽量加上()无论是否已经是表达式。如下就是一个返回值，推荐下面的写法，
+     以开头就有一个左括号，所以就确定这是一个立即执行函数。
+     */
+    var j = (function () {
+        writeStr(13);
+    }());
+    writeStr(`j=${j}`)
+    //但是就是不能这样写function foo1() { writeStr(14); }();，就是说只要你把这个函数和符号运算符联系起来就可以立即执行它
+
+    /**用闭包保存状态
+     * 像普通函数传参一样，立即执行函数也能传参数。如果在函数内部定义一个函数，而里面那个函数能引用外部的变量和参数，这就是
+     * 闭包，利用这个可以使用立即执行函数锁住变量并保存状态
+     * 结果并不是你想想的那样，因为i(全局变量)的值没有被锁住，点击的时候for循环已经执行完了，i的值已经是elems.length了。
+     * */
+        //    var elems = document.getElementsByTagName('a');
+        //    for (var i = 0; i < elems.length; i++) {
+        //        elems[i].addEventListener('click', function (e) {
+        //            e.preventDefault();
+        //            alert('I am click Link #' + i);
+        //        }, 'false')
+        //    }
+        //其实可以用let
+        //    for (let i = 0; i < elems.length; i++) {
+        //        elems[i].addEventListener('click', function (e) {
+        //            e.preventDefault();
+        //            alert('I am click Link #' + i);
+        //        }, 'false')
+        //    }
+        //这次可以，在立即执行函数的内部，i的值传给了LockedInIndex并保存在内存中，
+        // 尽管for循环结束后i的值已经改变，但是立即执行函数内部lockedIndex的值并不会改变，
+    var elems = document.getElementsByTagName('a');
+    for (var i = 0; i < elems.length; i++) {
+        (function (LockedInIndex) {
+            elems[i].addEventListener('click', function (e) {
+                e.preventDefault();
+                alert('I am cliick Link #' + LockedInIndex);
+            }, 'false')
+        })(i)
+    }
+
+    //也可以这么写，但是很显然这样比较难懂
+    //    for ( var i = 0; i < elems.length; i++ ) {
+    //      elems[ i ].addEventListener( 'click', (function( lockedInIndex ){
+    //        return function(e){
+    //          e.preventDefault();
+    //          alert( 'I am link #' + lockedInIndex );
+    //        };
+    //      })( i ), 'false' );
+    //    }
+
+    // 创建一个立即执行的匿名函数
+    // 该函数返回一个对象，包含你要暴露的属性
+    // 如下代码如果不使用立即执行函数，就会多一个属性i
+    // 如果有了属性i，我们就能调用counter.i改变i的值
+    // 对我们来说这种不确定的因素越少越好
+    var counter = (function () {
+        var i = 0;
+
+        return {
+            get: function () {
+                return i;
+            },
+            set: function (val) {
+                i = val;
+            },
+            increment: function () {
+                return ++i;
+            }
+        };
+    }());
+    writeStr(counter.get());
+    counter.set(3);
+    writeStr(counter.increment());
+    writeStr(counter.increment());
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>双向绑定的实现</title>
+</head>
+<body>
+<div id="app">
+    <a href="https://www.cnblogs.com/kidney/p/6052935.html?utm_source=gold_browser_extension">链接</a>
+    <input type="text" v-model="text">
+    {{ text }}
+</div>
+<script>
+
+  // 显示定义
+  // var obj = {}
+  // Object.defineProperty(obj, 'key', {
+  //   enumerable: false,
+  //   configurable: false,
+  //   writable: false,
+  //   value: "statics"
+  // });
+  // console.log(obj);
+
+  // // 循环使用统一对象
+  // function withValue (value) {
+  //   var d = withValue.d || (
+  //     withValue.d = {
+  //       enumerable: false,
+  //       writable: false,
+  //       configurable: false,
+  //       value: null
+  //     }
+  //   );
+  //   d.value = value;
+  //   return d;
+  // }
+  //
+  // var obj = {}
+  // Object.defineProperty(obj, 'key', withValue('static'));
+  // console.log(obj);
+
+
+  // // 在对象中添加一个属性与数据描述符的实例, 对象o拥有了属性a，值为37
+  // var obj = {};
+  // Object.defineProperty(obj, "a", {
+  //   value: 37,
+  //   writable: false,
+  //   enumerable: false,
+  //   configurable: true
+  // });
+  // console.log(obj);
+
+  // 在对象中添加一个属性与数据描述符的实例, 对象o拥有了属性a，值为37
+  // var obj = {};
+  // Object.defineProperty(obj, "a", {
+  //   value: 37,
+  //   writable: false,
+  //   enumerable: false,
+  //   configurable: true
+  // });
+  // console.log(obj);
+
+
+  // 在对象中添加一个属性与存取描述符,对象o拥有了属性b，值为38
+  var bValue;
+  Object.defineProperty(obj, 'b', {
+    get: function () {
+      return bValue;
+    },
+    set: function (newValue) {
+      bValue = newValue;
+    },
+    enumerable: true,
+    configurable: true
+  });
+  // o.b的值现在总是与bValue相同，除非重新定义o.b
+  bValue = 200;
+  console.log(obj.b);
+
+
+  // /**使用defineProperty将data中的text设置为vm的访问属性*/
+  // function defineReactive (obj, key, val) {
+  //   Object.defineProperty(obj, key, {
+  //     get: function () {
+  //       return val
+  //     },
+  //     set: function (newVal) {
+  //       if (newVal === val) {
+  //         return
+  //       }
+  //       val = newVal
+  //       // 输出日志
+  //       console.log(`set方法触发${val}`)
+  //     }
+  //   })
+  // }
+  //
+  // function observe (obj, vm) {
+  //   Object.keys(obj).forEach(function (key) {
+  //     defineReactive(vm, key, obj[key])
+  //   })
+  // }
+  //
+  // function compile (node, vm) {
+  //   let reg = /\{\{(.*)\}\}/
+  //   // 节点类型为元素
+  //   if (node.nodeType === 1) {
+  //     let attr = node.attributes
+  //     // 解析属性
+  //     for (let i = 0; i < attr.length; i++) {
+  //       if (attr[i].nodeName === 'v-model') {
+  //         // 获取v-model绑定的属性名
+  //         let name = attr[i].nodeValue
+  //         // 将data的值赋给该node
+  //         node.value = vm.data[name]
+  //         node.removeAttribute('v-model')
+  //       }
+  //     }
+  //   }
+  //   // 节点类型为text
+  //   if (node.nodeType === 3) {
+  //     if (reg.test(node.nodeValue)) {
+  //       // 获取匹配到的字符串
+  //       let name = RegExp.$1
+  //       name = name.trim()
+  //       // 将data的值赋给该node
+  //       node.nodeValue = vm.data[name]
+  //     }
+  //   }
+  // }
+  //
+  // /**DocumentFragment文档片段，可以看作节点容器，它可以包含多个子节点，当将它插入到dom中时只有子节点插入到目标节点中。
+  //  * 使用documentfragment处理节点速度和性能要高于直接操作dom。vue编译的时候，就是将挂载目标的所有子节点劫持到documentfragment
+  //  * 中，经过处理后再将documentfragment整体返回到挂载目标中。
+  //  * */
+  // function nodeToFragment (node, vm) {
+  //   var flag = document.createDocumentFragment();
+  //   var child;
+  //   while (child = node.firstChild) {
+  //     compile(child, vm);
+  //     flag.appendChild(child);
+  //   }
+  //   return flag;
+  // }
+  //
+  // function Vue (options) {
+  //   this.data = options.data
+  //   let data = this.data
+  //   observe(data, this)
+  //   let id = options.el
+  //   let dom = nodeToFragment(document.getElementById(id), this)
+  //   // 编译，劫持完成后将dom返回到app中
+  //   document.getElementById(id).appendChild(dom)
+  // }
+  //
+  // let vm = new Vue({
+  //   el: 'app',
+  //   data: {
+  //     text: 'hello world!'
+  //   }
+  // })
+</script>
+</body>
+</html>
