@@ -7,14 +7,14 @@
 </head>
 <body>
 <script>
-    // 函数内部可以直接读取全局变量
+    // 函数内部可以直接读取外部的全局变量
     //  var n = 99;
     //  function f1() {
     //    alert(n);
     //  }
     //  f1();
 
-    //函数外部无法读取函数内部的局部变量，这里会报错
+    //函数外部无法读取函数内部的局部变量，这里会报错。在函数内部不使用var，则是全局变量
     //  function f2() {
     //    m = 99;
     //  }
@@ -22,20 +22,20 @@
     //  alert(m)
 
     //  //正常情况下无法读取到函数内部的局域变量，可以通过变通方法获取，如下在函数f3内部定义一个函数f4，在f4内部读取f3的变量并返回这
-    //  //函数f4，外部将f3函数赋值给一个变量，再调用这个变量
+    //  //函数f4，外部将f3函数赋值给一个变量，再调用这个函数，再调用这个函数，就得到了这个变量
     //  function f3() {
     //    var a = 999;
     //
     //    function f4() {
-    //      alert(a);
+    //      return a;
     //    }
     //    return f4
     //  }
     //  var result = f3();
-    //  result();
+    //  alert(result());
 
     //
-    //  //上面f4就是一个闭包函数，用它来读取函数f3内部的变量，闭包可以把函数内部和外部连接起来，闭包函数还可以让变量始终保持在内存中
+    //  //上面f4就是一个闭包函数，用它来读取函数f3内部的变量，闭包可以把函数内部和外部连接起来，闭包函数还可以让变量始终保持在内存中， 这个会造成内存泄露
     //  function f5() {
     //    var b = 111;
     //    nAdd = function () {
@@ -50,12 +50,13 @@
     //  result1();
     //  nAdd();
     //  result1();
-    //
+
+    // 在window对象上定义name属性
     //  var name = 'The Window';
     //  var object = {
     //    name: 'My Object',
     //    getNameFunc: function () {
-    //      // 这里的this是函数
+    //      // 这里的this是函数getNameFunc的当前对象
     //      console.info(this)
     //      return function () {
     //        //匿名函数的执行环境是windows
@@ -66,25 +67,27 @@
     //  };
     //  alert(object.getNameFunc()());
 
-    //  var name1 = "The Window";
-    //  var object1 = {
-    //    name1: 'My Object1',
-    //    getNameFunc:function () {
-    //      return  () => {
-    //        return this.name1
-    //      }
-    //    }
-    //  }
-    //  alert(object1.getNameFunc()());
-    //
-    //  var foo = function(){
-    //    var name = "exe";
-    //    return function inner(){
-    //      console.log( name );
-    //    }
-    //  }
-    //  var bar = foo();//这里虽然得到的是函数inner的引用，而不是那一坨代码
-    //  bar();//这里开始执行inner函数，回头看看上面加粗的那句话
+    // var name1 = "The Window";
+    // var object1 = {
+    //     name1: 'My Object1',
+    //     getNameFunc: function () {
+    //         console.log(this.name1)
+    //         return () => {
+    //             // 箭头函数的this指向当前箭头函数的上一层对象，和getNameFunc上的this一样
+    //             return this.name1
+    //         }
+    //     }
+    // }
+    // alert(object1.getNameFunc()());
+
+    // var foo = function(){
+    //   var name = "exe";
+    //   return function inner(){
+    //     console.log( name );
+    //   }
+    // }
+    // var bar = foo();//这里虽然得到的是函数inner的引用，而不是那一坨代码
+    // bar();//这里开始执行inner函数，回头看看上面加粗的那句话
 
 
     //let命令只在代码块内有效，在下面的代码块中分别使用let和var声明2个变量，在代码块外面访问，let声明的会报错，var不会报错
@@ -111,13 +114,23 @@
     //  f6();
 
 
+    /**
+     * 输出5->5,5,5,5,5
+     * 代码输出的都是5，并且是先输出一个5，最后几乎同时输出5个5，这个是因为JavaScript有同步任务和异步任务，同步任务立即执行，异步任务先
+     * 进入到异步任务队列中，等所有的同步任务执行完毕，异步任务队列判断是否可执行，满足条件就可以执行。setTimeout就属于异步任务。
+     **/
     // for(var i = 0; i < 5; i++){
     //     setTimeout(function () {
-    //         console.log(new Date, i);
+    //         console.log(new Date(), i);
     //     }, 1000)
     // }
     // console.log(new Date, i);
 
+
+    /**
+     * 输出5->0,1,2,3,4
+     * 使用立即执行函数表达式传递参数，setTimeout内的代码仍然在同步任务执行完立即执行，并且几乎同时执行
+     */
     // for (var i = 0; i < 5; i++) {
     //     (function (j) {
     //         setTimeout(function () {
@@ -129,13 +142,14 @@
 
 
     /**
-     * 传入参数
-     * /
-    // function output (i) {
+     * 传入参数，JavaScript给形参传值，如果是基本类型（Number，BigInt，Undefined，String，Symbol，NaN，Boolean）传递的是值。调用
+     * output函数的时候传递值。
+     */
+    // function output(i) {
     //     setTimeout(function () {
     //         console.log(new Date, i);
     //     }, 1000);
-    // };
+    // }
     // for (var i = 0; i < 5; i++) {
     //     output(i);
     // }
@@ -143,8 +157,8 @@
 
 
     /**
-     * 立即执行表达式
-     * /
+     * for循环中的let会记住当前计数器，但是只能在循环内部使用，外部使用会报错
+     */
     // for (let i = 0; i < 5; i++) {
     //     setTimeout(function () {
     //         console.log(new Date, i);
@@ -152,6 +166,9 @@
     // }
     // console.log(new Date, i);
 
+    /**
+     * 输出0->1->2->3->4->5
+     */
     // for (var i = 0; i < 5; i++) {
     //     (function (j) {
     //         setTimeout(function () {
@@ -187,6 +204,7 @@
     /**
      * Promise实现
      * */
+    //数组存放异步操作的 Promise
     // const task = []
     // const output = i => new Promise(resolve => {
     //     setTimeout(() => {
@@ -212,7 +230,6 @@
     // const sleep = timeountMS => new Promise(resolve => {
     //     setTimeout(resolve, timeountMS);
     // });
-    //
     // (async () => {
     //     for (var i = 0; i < 5; i++) {
     //         await sleep(1000)
@@ -221,6 +238,17 @@
     //     await sleep(1000)
     //     console.log(new Date(), i);
     // })()
+
+
+    function sleep(delay) {
+        var start = (new Date()).getTime();
+        while ((new Date()).getTime() - start < delay) {
+            continue;
+        }
+    }
+    sleep(1000)
+    console.log('1')
+
 </script>
 </body>
 </html>
