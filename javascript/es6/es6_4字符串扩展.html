@@ -102,21 +102,25 @@
     // getspilt(0);
     // console.log(arr);
 
-    //替换字符串
-    let replaceSql = (query, values) => {
-        if (!values) return query;
-        return query.replace(/\:(\w+)/g, function (txt, key) {
-            if (values.hasOwnProperty(key)) {
-                // return this.escape(values[key]);
-                return values[key]
-            }
-            return txt;
-        }.bind(this))
-    }
-    let sql = 'select * from t_user LIMIT :offSet, :pageSize'
-    let param = {offSet: 0, pageSize:10}
-    let result = replaceSql(sql, param)
-    console.log(result)
+    //替换字符串，sql转义方法
+    // let replaceSql = (query, values) => {
+    //     if (!values) return query;
+    //     return query.replace(/\:(\w+)/g, function (txt, key) {
+    //         if (values.hasOwnProperty(key)) {
+    //             // return this.escape(values[key]);
+    //             return values[key]
+    //         }
+    //         return txt;
+    //     }.bind(this))
+    // }
+    // let sql = 'select * from t_user LIMIT :offSet, :pageSize'
+    // let param = {offSet: 0, pageSize:10}
+    // let result = replaceSql(sql, param)
+
+
+    let str = 'F:\\demo\\parttimejob\\parttimeApp\\public\\upload\\tmp\\9cf92a6dc400c753604f7e2846f8a703';
+
+    console.log(str.replace(/\\tmp/, '\\test'))
 
 
 </script>

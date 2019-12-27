@@ -240,14 +240,34 @@
     // })()
 
 
-    function sleep(delay) {
-        var start = (new Date()).getTime();
-        while ((new Date()).getTime() - start < delay) {
-            continue;
-        }
+    // 用死循环阻塞主线程的方法
+    // function sleep(delay) {
+    //     var start = (new Date()).getTime();
+    //     while ((new Date()).getTime() - start < delay) {
+    //         continue;
+    //     }
+    // }
+    // sleep(1000)
+    // console.log('1')
+
+    //可以采用JS的异步新特性Promise类来实现
+    sleep = function(delay) {
+        var p = new Promise(function(resolve, reject){ //做一些异步操作
+            setTimeout(function(){
+                resolve();
+            }, delay);
+        });
+        return p;
     }
-    sleep(1000)
-    console.log('1')
+
+    //测试代码
+    async function test_sleep() {
+        console.log("test1");
+        await sleep(2000);
+        console.log("test2");
+    }
+
+    test_sleep();
 
 </script>
 </body>

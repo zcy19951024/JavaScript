@@ -153,14 +153,14 @@
      * 这里querySelectorAll方法返回的不是数组，而是一个NodeList对象，它是一个类似数组的对象。阔转运算符可以将它转化为真正的数组，
      * 原因就是NodeList对象实现了Iterator接口。
      **/
-    Number.prototype[Symbol.iterator] = function* () {
-        let i = 0
-        let num = this.valueOf()
-        while (i < num) {
-            yield i++
-        }
-    }
-    console.log([...5])
+    // Number.prototype[Symbol.iterator] = function* () {
+    //     let i = 0
+    //     let num = this.valueOf()
+    //     while (i < num) {
+    //         yield i++
+    //     }
+    // }
+    // console.log([...5]);
     /**上面代码中，定义了Number对象的便利器接口 */
 
 
@@ -473,12 +473,12 @@
     //     return seed;
     // },{})
     // console.log(n);
-    //
-    // let s = Object.getOwnPropertyNames(['qiang','ming','tao','li','liang','you','qiang','tao'].reduce(function(seed, item, index) {
-    //     seed[item] = index;
-    //     return seed;
-    // },{}))
-    // console.log(s);
+
+    let s = Object.getOwnPropertyNames(['qiang','ming','tao','li','liang','you','qiang','tao'].reduce(function(seed, item, index) {
+        seed[item] = index;
+        return seed;
+    },{}))
+    console.log(s);
 
 </script>
 </body>
