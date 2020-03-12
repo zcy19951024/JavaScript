@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BCF</title>
+</head>
+<body>
+<div class="outer">
+    <div class="float">I am floated element.</div>
+    I am text inside the outer box.
+    <!--If there is enough text then the-->
+    <!--text will wrap around thd floated element. The border on the outer-->
+    <!--will then wrap around the text.-->
+</div>
+
+<style>
+    .outer {
+        border: 5px dotted rgb(21, 129, 137);
+        border-radius: 5px;
+        width: 450px;
+        padding: 10px;
+        margin-bottom: 40px;
+        overflow: auto;
+    }
+    .float {
+        padding: 10px;
+        border: 5px solid rgba(214, 129, 137, .4);
+        border-radius: 5px;
+        background-color: rgba(233, 78, 119, .4);
+        color: #fff;
+        float: left;
+        width: 200px;
+        margin: 0 20px 0 0;
+    }
+</style>
+</body>
+</html>
