@@ -90,9 +90,10 @@
         },
         methods: {
             initLocation() {
-                let random = (Math.random() * 180).toFixed()
-                console.log(random)
-
+                let angle = (Math.PI / 180) * 360 * Math.random()
+                let x = 100 * Math.sign(angle)
+                let y = 100 * Math.cos(angle)
+                console.log(x, y)
 
             }
         }
