@@ -17,11 +17,6 @@
             margin: 0;
             padding: 0;
         }
-
-        .container {
-
-        }
-
         .total {
             display: flex;
             align-items: center;
@@ -35,7 +30,6 @@
             -moz-box-shadow: -20px -20px 40px 3px rgb(255, 102, 63) inset;
             -webkit-box-shadow: -20px -20px 40px 8px rgb(255, 102, 63) inset;
         }
-
         .totalAdd {
             animation-name: totalScale;
             animation-timing-function: ease-in-out;
@@ -131,8 +125,7 @@
 <div id="app">
     <div class="container">
         <div :class="totalClass" ref="refTotal" @click="receiveIntegral">{{totalText}}</div>
-
-        <div :class="inteClass"
+        <div :class="integralClass"
              v-for="item in integral"
              :data-angle="item.angle"
              :style="{ left: item.x + 'px', top: item.y + 'px', animationTimingFunction: item.timing}">{{item.value}}
@@ -150,7 +143,7 @@
                 totalIntegral: 1212,
                 totalText: '点击领取',
                 totalClass: {total: true, totalAdd: false},
-                inteClass: {foo: true, fooClear: false},
+                integralClass: {foo: true, fooClear: false},
                 integral: [
                     {value: 11, x: 0, y: 0, angle: 0, timing: ''},
                     {value: 13, x: 0, y: 0, angle: 0, timing: ''},
@@ -175,7 +168,10 @@
                 // this.integral = []
                 // for (let i = 90; i < 270; i++) {
                 //     let angle = Math.PI / 180 * i
-                //     this.integral.push({ x: 190 + 100 * Math.sin(angle), y: 100 + 100 * Math.cos(angle) })
+                //     this.integral.push({
+                //         x: xAxis + 100 * Math.sin(angle),
+                //         y: 100 + 100 * Math.cos(angle)
+                //     })
                 // }
             },
             // 求两个数之间的随机数
@@ -184,7 +180,7 @@
             },
             // 领取积分
             receiveIntegral() {
-                this.inteClass.fooClear = true
+                this.integralClass.fooClear = true
                 this.totalClass.totalAdd = true
                 this.totalText = `${this.totalIntegral}积分`
                 let count = this.integral.length, timeoutID = null, tasks = [], totalTime = parseInt(1500 / count)
