@@ -7,27 +7,102 @@
 <body>
 <canvas id="canvas"></canvas>
 <script>
-    function draw() {
-        var ctx = document.getElementById('canvas').getContext('2d');
+  // function draw() {
+  //     var ctx = document.getElementById('canvas').getContext('2d');
+  //
+  //     ctx.fillRect(0, 0, 150, 150);   // 使用默认状态绘制一个矩形
+  //     ctx.save();                  // 保存状态
+  //
+  //     ctx.fillStyle = '#09F';      // 修改设置
+  //     ctx.fillRect(15, 15, 120, 120); // 使用新设置绘制矩形
+  //
+  //     ctx.save();                  // 保存状态
+  //     ctx.fillStyle = '#FFF';      // 修改设置
+  //     ctx.globalAlpha = 0.5;
+  //     ctx.fillRect(30, 30, 90, 90);   // 使用新设置绘制矩形
+  //
+  //     ctx.restore();               // 恢复之前状态
+  //     ctx.fillRect(45, 45, 60, 60);   // 使用恢复之后的状态绘图
+  //
+  //     ctx.restore();               // 再次恢复之前状态
+  //     ctx.fillRect(60, 60, 30, 30);   // 使用恢复之后的状态绘图
+  // }
 
-        ctx.fillRect(0, 0, 150, 150);   // 使用默认状态绘制一个矩形
-        ctx.save();                  // 保存状态
+  // function draw() {
+  //   var ctx = document.getElementById('canvas').getContext('2d');
+  //   for (var i = 0; i < 3; i++) {
+  //     for (var j = 0; j < 3; j++) {
+  //       ctx.save(); // 保存位置
+  //       ctx.fillStyle = 'rgb(' + (51 * i) + ', ' + (255 - 51 * i) + ', 255)'; // 设置样式
+  //       ctx.translate(10 + j * 50, 10 + i * 50); // 转移
+  //       ctx.fillRect(0, 0, 25, 25); // 画图
+  //       ctx.restore(); // 从最近的状态中恢复状态
+  //     }
+  //   }
+  // }
+  // function draw() {
+  //   var ctx = document.getElementById('canvas').getContext('2d');
+  //
+  //   // 保存状态
+  //   ctx.save();
+  //   // 蓝色矩形
+  //   ctx.fillStyle = '#0095DD';
+  //   ctx.fillRect(30, 30, 100, 100);
+  //   ctx.rotate((Math.PI / 180) * 25);
+  //   // 绿色矩形
+  //   ctx.fillStyle = '#4D4E53';
+  //   ctx.fillRect(30, 30, 100, 100);
+  //   ctx.restore();
+  //
+  //   // 右边矩形，从中心位置旋转
+  //   ctx.fillStyle = '#0095DD';
+  //   ctx.fillRect(150, 30, 100, 100);
+  //
+  //   ctx.translate(200, 80); // 转移位置
+  //                           // x = x + 0.5 * width
+  //                           // y = y + 0.5 * height
+  //   ctx.rotate((Math.PI / 180) * 25); // 旋转
+  //   ctx.translate(-200, -80); // 位置回归
+  //
+  //   // 画矩形
+  //   ctx.fillStyle = '#4D4E53';
+  //   ctx.fillRect(150, 30, 100, 100);
+  // }
+  // function draw() {
+  //   var ctx = document.getElementById('canvas').getContext('2d');
+  //
+  //   // 画一个隽星，并x轴放大19倍，y轴缩放3倍
+  //   ctx.save();
+  //   ctx.scale(10, 3);
+  //   ctx.fillRect(1, 10, 10, 10);
+  //   ctx.restore();
+  //
+  //   // 水平镜像
+  //   ctx.scale(-1, 1);
+  //   ctx.font = '48px serif';
+  //   ctx.fillText('MDN', -135, 120);
+  // }
 
-        ctx.fillStyle = '#09F';      // 修改设置
-        ctx.fillRect(15, 15, 120, 120); // 使用新设置绘制矩形
 
-        ctx.save();                  // 保存状态
-        ctx.fillStyle = '#FFF';      // 修改设置
-        ctx.globalAlpha = 0.5;
-        ctx.fillRect(30, 30, 90, 90);   // 使用新设置绘制矩形
+  function draw() {
+    var ctx = document.getElementById('canvas').getContext('2d');
 
-        ctx.restore();               // 恢复之前状态
-        ctx.fillRect(45, 45, 60, 60);   // 使用恢复之后的状态绘图
-
-        ctx.restore();               // 再次恢复之前状态
-        ctx.fillRect(60, 60, 30, 30);   // 使用恢复之后的状态绘图
+    var sin = Math.sin(Math.PI / 6);
+    var cos = Math.cos(Math.PI / 6);
+    ctx.translate(100, 100);
+    var c = 0;
+    for (var i = 0; i <= 12; i++) {
+      c = Math.floor(255 / 12 * i);
+      ctx.fillStyle = 'rgb(' + c + ', ' + c + ', ' + c + ')';
+      ctx.fillRect(0, 0, 100, 10);
+      ctx.transform(cos, sin, -sin, cos, 0, 0);
     }
-    draw()
+
+    ctx.setTransform(-1, 0, 0, 1, 100, 100);
+    ctx.fillStyle = 'rgba(255, 128, 255, 0.5)';
+    ctx.fillRect(0, 50, 100, 100);
+  }
+  draw()
 </script>
 </body>
 </html>
