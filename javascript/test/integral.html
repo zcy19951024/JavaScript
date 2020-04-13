@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" style="font-size:37.5px;">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>积分领取</title>
@@ -12,11 +12,11 @@
     <style>
         body {
             width: 100%;
-            min-height: 100%;
             display: block;
             margin: 0;
             padding: 0;
         }
+
         .total {
             display: flex;
             align-items: center;
@@ -33,7 +33,9 @@
         .totalAdd {
             animation-name: totalScale;
             animation-timing-function: ease-in-out;
+            /*动画只播放一次*/
             animation-iteration-count: 1;
+            /*动画停留在最后一个关键帧*/
             animation-fill-mode: forwards;
             -webkit-animation-duration: 1500ms;
             -moz-animation-duration: 1500ms;
@@ -57,6 +59,15 @@
                 -o-transform: scale(1, 1);
             }
         }
+
+
+
+        .total, .foo {
+            border-radius: 50%;
+            color: #FF0000;
+            background: rgb(255, 202, 168);
+        }
+
         .foo {
             display: flex;
             font-size: 10px;
@@ -68,18 +79,15 @@
             top: 0;
             left: 0;
             animation-name: slideDown;
+            /*默认贝塞尔函数*/
             animation-timing-function: ease-out;
+            /*动画时间*/
             animation-duration: 1500ms;
+            /*动画循环播放*/
             animation-iteration-count: infinite;
             -moz-box-shadow: -5px -5px 10px 3px rgb(277, 102, 63) inset;
             -webkit-box-shadow: -5px -5px 10px 3px rgb(277, 102, 63) inset;
             box-shadow: -5px -5px 10px 3px rgb(277, 102, 63) inset;
-        }
-
-        .total, .foo {
-            border-radius: 50%;
-            color: #FF0000;
-            background: rgb(255, 202, 168);
         }
 
         /*小积分上下闪烁*/
@@ -139,7 +147,7 @@
         data() {
             return {
                 screenSize: {width: window.screen.width, height: window.screen.height},
-                timeFun: ['ease', 'ease-in', 'ease-in-out', 'ease-out'],
+                timeFun: ['ease', 'ease-in', 'ease-in-out', 'ease-out'], // 贝塞尔函数实现闪烁效果
                 totalIntegral: 1212,
                 totalText: '点击领取',
                 totalClass: {total: true, totalAdd: false},
@@ -159,17 +167,21 @@
         methods: {
             initLocation() {
                 let xAxis = this.screenSize.width / 2
+
                 this.integral.forEach(i => {
-                    let angle = Math.PI / 180 * this.getRandomArbitrary(90, 270)
+                    // 角度转化为弧度
+                    let angle = Math.PI * this.getRandomArbitrary(90, 270)  / 180
+                    // 根据弧度获取坐标
                     i.x = xAxis + 100 * Math.sin(angle)
                     i.y = 100 + 100 * Math.cos(angle)
+                    // 贝塞尔函数
                     i.timing = this.timeFun[parseInt(this.getRandomArbitrary(0, 3))]
                 })
                 // this.integral = []
                 // for (let i = 90; i < 270; i++) {
                 //     let angle = Math.PI / 180 * i
                 //     this.integral.push({
-                //         x: xAxis + 100 * Math.sin(angle),
+                //         x: xAxis - 15 + 100 * Math.sin(angle),
                 //         y: 100 + 100 * Math.cos(angle)
                 //     })
                 // }
@@ -186,7 +198,9 @@
                 let count = this.integral.length, timeoutID = null, tasks = [], totalTime = parseInt(1500 / count)
                 const output = (i) => new Promise((resolve) => {
                     timeoutID = setTimeout(() => {
+                        // 积分递增
                         this.totalIntegral += this.integral[i].value
+                        // 修改响应式属性
                         this.totalText = `${this.totalIntegral}积分`
                         resolve();
                     }, totalTime * i);

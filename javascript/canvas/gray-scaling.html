@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<canvas id="canvas" width="300" height="200"></canvas><br/>
+<button id="grayscalebtn">GrayScale</button>
+<button id="invertbtn">Invert</button>
+
+<script>
+    var img = new Image();
+    img.src = './../images/rhino.jpg';
+    img.onload = function () {
+        draw(this);
+    };
+
+    function draw(img) {
+        var canvas = document.getElementById('canvas');
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        img.style.display = 'none';
+        var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        var data = imageData.data;
+        var invert = function () {
+            for (var i = 0; i < data.length; i += 4) {
+                data[i] = 255 - data[i];            // 红色
+                data[i + 1] = 255 - data[i + 1];    // 绿色
+                data[i + 2] = 255 - data[i + 2];    // 蓝色
+            }
+            ctx.putImageData(imageData, 0, 0);
+        };
+        var grayscale = function () {
+            for (var i = 0; i < data.length; i += 4) {
+                var avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+                data[i] = avg; // red
+                data[i + 1] = avg; // green
+                data[i + 2] = avg; // blue
+            }
+            ctx.putImageData(imageData, 0, 0);
+        };
+        var invertbtn = document.getElementById('invertbtn');
+        invertbtn.addEventListener('click', invert);
+        var grayscalebtn = document.getElementById('grayscalebtn');
+        grayscalebtn.addEventListener('click', grayscale);
+    }
+</script>
+</body>
+</html>
